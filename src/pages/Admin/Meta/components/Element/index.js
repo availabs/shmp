@@ -29,7 +29,7 @@ const Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBl
   return (
     <div className='w-full'>
         <div className='relative px-4 sm:px-6 lg:px-12'>
-            Test 123
+            Element Editor
             <div className='font-normal text-lg leading-8 text-gray-600'>
                 {ElementType ? 
                 <ElementType.Input
