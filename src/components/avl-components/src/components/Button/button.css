@@ -1,0 +1,16 @@
+@keyframes scroll {
+  from {
+    transform: translateX(0%);
+    left: 100%;
+  }
+  to {
+    transform: translateX(-100%);
+    left: 0%;
+  }
+}
+
+.button-confirm-message {
+  position: absolute;
+  white-space: nowrap;
+  animation: scroll 5s linear;
+}
