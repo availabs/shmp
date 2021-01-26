@@ -1,5 +1,6 @@
 import React from "react"
 import ElementComp from './Element'
+import ElementSelectorComp from './Element/ElementSelector'
 // import ReadOnlyEditor from "components/dms/components/editor/editor.read-only"
 // import { useTheme } from '@availabs/avl-components'
 
@@ -65,7 +66,7 @@ const View = ({value, edit, remove, moveUp, moveDown,}) => {
                 <div className='flex-1 py-1'>{value.title} <span className='text-sm font-normal text-blue-500'>{value.section && edit ? ` #${value.section}` : `` }</span></div>
                 <ValueItem edit={edit} remove={remove}  moveUp={moveUp} moveDown={moveDown} />
             </h3>
-            <ElementComp.view value={value.element} />
+            <ElementSelectorComp.view value={value.element} />
         </div>
     )
                

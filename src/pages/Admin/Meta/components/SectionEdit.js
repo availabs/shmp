@@ -12,6 +12,7 @@ import { useDmsSections } from "components/dms/components/utils/dms-input-utils"
 import { Button } from "@availabs/avl-components"
 
 import ElementComp from './Element'
+import ElementSelectorComp from './Element/ElementSelector'
 
 import get from 'lodash.get'
 
@@ -69,7 +70,7 @@ let Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBlur
                     value={ get(value, `[${Element.key}]`, createEmpty()) }
                     placeholder={'Section Content'}
                     onChange={Element.onChange}
-                    EditComp={ElementComp.edit}
+                    EditComp={ElementSelectorComp.edit}
                 /> : ''}
             </div>
         </div>
