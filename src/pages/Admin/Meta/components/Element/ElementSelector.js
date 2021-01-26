@@ -15,6 +15,15 @@ import { Select } from '@availabs/avl-components'
 
 import get from 'lodash.get'
 
+function isJson(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
 const Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBlur, onChange, value, save, buttonDisabled, ...props }, ref) => {
   value = value || {};
   console.log('trying element edit')
@@ -25,9 +34,9 @@ const Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBl
   let ElementType = get(Sections, '[0].attributes',[]).filter(a => a.key === 'element-type').pop()
 
   let ElementData = get(Sections, '[0].attributes',[]).filter(a => a.key === 'element-data').pop()
-
-    if (ElementData){
-        console.log('element-data?', get(value, `[${ElementData.key}]`, ''))
+    let color = {}
+    if (ElementData && isJson(get(value, `[${ElementData.key}]`, ''))){
+        color = JSON.parse(get(value, `[${ElementData.key}]`, ''))
     }
   return (
     <div className='w-full'>
@@ -55,7 +64,7 @@ const Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBl
                     onChange={ElementData.onChange}
                 /> : ''}
                 {ElementData ?
-                    <div style={{height: '150px', ...JSON.parse(get(value, `[${ElementData.key}]`, ''))}}></div> : ''}
+                    <div style={{height: '150px', ...color}}></div> : ''}
             </div>
 
         </div>
