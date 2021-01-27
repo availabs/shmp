@@ -11,19 +11,19 @@ import Elements from './index'
 
 import get from 'lodash.get'
 
-function isJson(str) {
-    try {
-        JSON.parse(str);
-    } catch (e) {
-        return false;
-    }
-    return true;
-}
-
-const colorMapping = {
-    'RedBox' : {'backgroundColor': 'red'},
-    'BlueBox' : {'backgroundColor': 'blue'},
-}
+// function isJson(str) {
+//     try {
+//         JSON.parse(str);
+//     } catch (e) {
+//         return false;
+//     }
+//     return true;
+// }
+//
+// const colorMapping = {
+//     'RedBox' : {'backgroundColor': 'red'},
+//     'BlueBox' : {'backgroundColor': 'blue'},
+// }
 
 const Edit = React.forwardRef(({
                                    Attribute,

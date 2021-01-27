@@ -11,7 +11,7 @@ import { createEmpty } from "components/dms/components/editor"
 import { useDmsSections } from "components/dms/components/utils/dms-input-utils"
 import { Button } from "@availabs/avl-components"
 
-import ElementComp from './Element'
+// import ElementComp from './Element'
 import ElementSelectorComp from './Element/ElementSelector'
 
 import get from 'lodash.get'

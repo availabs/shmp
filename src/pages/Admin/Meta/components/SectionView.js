@@ -1,5 +1,5 @@
 import React from "react"
-import ElementComp from './Element'
+// import ElementComp from './Element'
 import ElementSelectorComp from './Element/ElementSelector'
 // import ReadOnlyEditor from "components/dms/components/editor/editor.read-only"
 // import { useTheme } from '@availabs/avl-components'

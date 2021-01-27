@@ -6,10 +6,10 @@ import { useAuth } from "components/dms/contexts/auth-context"
 
 import { useSetSections } from "components/dms/wrappers/dms-create"
 
-import { createEmpty } from "components/dms/components/editor"
+// import { createEmpty } from "components/dms/components/editor"
 
 import { useDmsSections } from "components/dms/components/utils/dms-input-utils"
-import { Button } from "@availabs/avl-components"
+// import { Button } from "@availabs/avl-components"
 
 
 import get from 'lodash.get'
@@ -63,20 +63,20 @@ Edit.settings = {
     name: 'ElementEdit'
 }
 
-const View = ({value}) => {
-    if(!value) return false
-    console.log('value', value)
-    return (
-        <div className='relative w-full border border-dashed p-1'>
-            <div className='font-normal text-lg text-gray-600 leading-8'>
-                Type: {value['element-type']}
-            </div>
-            <div className='font-normal text-lg text-gray-600 leading-8'>
-                Data: {value['element-data']}
-            </div>
-        </div>
-    )           
-}
+// const View = ({value}) => {
+//     if(!value) return false
+//     console.log('value', value)
+//     return (
+//         <div className='relative w-full border border-dashed p-1'>
+//             <div className='font-normal text-lg text-gray-600 leading-8'>
+//                 Type: {value['element-type']}
+//             </div>
+//             <div className='font-normal text-lg text-gray-600 leading-8'>
+//                 Data: {value['element-data']}
+//             </div>
+//         </div>
+//     )
+// }
 
 const BlueBox = () => (
     <div className='font-normal text-lg leading-8 text-gray-600'>
