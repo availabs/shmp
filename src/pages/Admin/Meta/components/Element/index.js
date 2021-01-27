@@ -33,14 +33,14 @@ const Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBl
     let ElementType = get(Sections, '[0].attributes',[]).filter(a => a.key === 'element-type').pop()
     let ElementData = get(Sections, '[0].attributes',[]).filter(a => a.key === 'element-data').pop()
     
-    if(ElementType) {
+    /*if(ElementType) {
         console.log(
             'trying element edit',
             ComponentRegistry, 
             get(value, `[${ElementType.key}]`, ''), 
             get(value, `[${ElementData.key}]`, '') 
         )
-    }
+    }*/
 
     return (
         <div className='w-full'>
@@ -55,12 +55,11 @@ const Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBl
                         placeholder={'Element Type'}
                         onChange={ElementType.onChange}
                         EditComp={Select}
-                        domain={['ColorBox']}
+                        domain={[Object.keys(ComponentRegistry)].map(k => ComponentRegistry[k].name)}
                         multi={false}
                     /> :''}
                 </div>
                 <div className='font-normal text-lg leading-8 text-gray-600'>
-                    ElementData
                     {ElementType && ComponentRegistry[get(value, `[${ElementType.key}]`, null)] ? 
                     <ElementData.Input
                         ref={ ref }
