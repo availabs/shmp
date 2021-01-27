@@ -78,11 +78,23 @@ const View = ({value}) => {
     )           
 }
 
+const BlueBox = () => (
+    <div className='font-normal text-lg leading-8 text-gray-600'>
+            <div style={{height: '150px', 'backgroundColor': 'blue'}}></div>
+    </div>
+)
 
+const RedBox = () => (
+    <div className='font-normal text-lg leading-8 text-gray-600'>
+            <div style={{height: '150px', 'backgroundColor': 'red'}}></div>
+    </div>
+)
 
 
 
 export default {
-    "edit": Edit,
-    "view": View
+    // "edit": Edit,
+    // "view": View,
+    'BlueBox': BlueBox,
+    'RedBox': RedBox
 }

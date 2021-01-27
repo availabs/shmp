@@ -7,7 +7,7 @@ import {useSetSections} from "components/dms/wrappers/dms-create"
 
 import {useDmsSections} from "components/dms/components/utils/dms-input-utils"
 import {Select} from "@availabs/avl-components"
-
+import Elements from './index'
 
 import get from 'lodash.get'
 
@@ -43,12 +43,14 @@ const Edit = React.forwardRef(({
     const sections = useSetSections(Attribute.Format),
         Sections = useDmsSections(sections, value, onChange, Props);
 
-    let ElementType = get(Sections, '[0].attributes', []).filter(a => a.key === 'element-type').pop()
+    let ElementType = get(Sections, '[0].attributes', []).filter(a => a.key === 'element-type')[0]
+    let ElementData = get(Sections, '[0].attributes',[]).filter(a => a.key === 'element-data')[0]
 
-    let color = {}
+    let Element;
     if (ElementType) {
-        color = colorMapping[get(value, `[${ElementType.key}]`, '')]
+        Element = Elements[get(value, `[${ElementType.key}]`, '')]
     }
+
     return (
         <div className='w-full'>
             <div className='relative px-4 sm:px-6 lg:px-12'>
@@ -62,13 +64,23 @@ const Edit = React.forwardRef(({
                             placeholder={'Element Type'}
                             onChange={ElementType.onChange}
                             EditComp={Select}
-                            domain={['BlueBox', 'RedBox']}
+                            domain={Object.keys(Elements)}
                             multi={false}
                         /> : ''}
                 </div>
                 <div className='font-normal text-lg leading-8 text-gray-600'>
-                    {ElementType ?
-                        <div style={{height: '150px', ...color}}></div> : ''}
+                    {ElementData ?
+                        <ElementData.Input
+                            ref={ref}
+                            autoFocus={true}
+                            disabled={true}
+                            value={get(value, `[${ElementType.key}]`, '')}
+                            placeholder={'Element Type'}
+                            onChange={ElementType.onChange}
+                        /> : ''}
+                    {
+                        Element ? <Element /> : ''
+                    }
                 </div>
 
             </div>
@@ -84,7 +96,7 @@ Edit.settings = {
 
 const View = ({value}) => {
     if (!value) return false
-    let color = colorMapping[value['element-type']] || {}
+    let Element = Elements[value['element-type']]
 
     return (
         <div className='relative w-full border border-dashed p-1'>
@@ -92,7 +104,8 @@ const View = ({value}) => {
                 Type: {value['element-type']}
             </div>
 
-            <div style={{height: '150px', ...color}}></div>
+            <Element />
+
         </div>
     )
 }
