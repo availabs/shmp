@@ -59,7 +59,6 @@ const ValueItem = ({ isPlaceholder, remove, edit, moveUp, moveDown, disabled = f
 
 const View = ({value, edit, remove, moveUp, moveDown,}) => {
     if(!value) return false
-    console.log('value', value)
     return (
         <div className='relative px-4 sm:px-6 lg:px-12 w-full'>
             <h3 className='section-header text-xl tracking-wider mx-auto my-2 font-medium border-b border-t border-gray-200 py-1 flex'>

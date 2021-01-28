@@ -43,7 +43,6 @@ Edit.settings = {
 const View = ({value}) => {
     if(!value) return false
     let data = JSON.parse(value['element-data'])
-    console.log('color-box view', data)
     return (
         <div className='relative w-full border border-dashed p-1'>
             <div style={{height: '150px', backgroundColor: data.color}}></div>
