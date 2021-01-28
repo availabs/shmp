@@ -26,7 +26,8 @@ function isJson(str) {
 
 const Edit = ({value, onChange}) => {
     //console.log('props', props)
-    let data = JSON.parse(value) ? JSON.parse(value) : {}
+    let data = value && isJson(value) ? JSON.parse(value) : {}
+    console.log('data', data, value, isJson(value))
     const ColorSelect = (v) => {
         console.log('onChange', v)
         let newValue = Object.assign({}, data, {'color': v})
