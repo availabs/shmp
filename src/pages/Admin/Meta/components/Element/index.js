@@ -11,13 +11,15 @@ import { useDmsSections } from "components/dms/components/utils/dms-input-utils"
 import {Select} from "@availabs/avl-components"
 
 import ColorBox from './color-box'
+import TextArea from './textArea'
 
 import get from 'lodash.get'
 
 
 // register components here
 const ComponentRegistry = {
-    "ColorBox": ColorBox
+    "ColorBox": ColorBox,
+    "TextArea": TextArea
 }
 
 
@@ -55,7 +57,7 @@ const Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBl
                         placeholder={'Element Type'}
                         onChange={ElementType.onChange}
                         EditComp={Select}
-                        domain={[Object.keys(ComponentRegistry)].map(k => ComponentRegistry[k].name)}
+                        domain={Object.keys(ComponentRegistry).map(k => ComponentRegistry[k].name)}
                         multi={false}
                     /> :''}
                 </div>
