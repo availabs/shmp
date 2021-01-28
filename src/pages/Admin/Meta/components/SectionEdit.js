@@ -70,7 +70,7 @@ let Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBlur
                     value={ get(value, `[${Element.key}]`, createEmpty()) }
                     placeholder={'Section Content'}
                     onChange={Element.onChange}
-                    EditComp={ElementSelectorComp.edit}
+                    EditComp={ElementSelectorComp.Edit}
                 /> : ''}
             </div>
         </div>
