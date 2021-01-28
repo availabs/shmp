@@ -66,7 +66,7 @@ const View = ({value, edit, remove, moveUp, moveDown,}) => {
                 <div className='flex-1 py-1'>{value.title} <span className='text-sm font-normal text-blue-500'>{value.section && edit ? ` #${value.section}` : `` }</span></div>
                 <ValueItem edit={edit} remove={remove}  moveUp={moveUp} moveDown={moveDown} />
             </h3>
-            <Element.view value={value.element} />
+            <Element.View value={value.element} />
         </div>
     )
                

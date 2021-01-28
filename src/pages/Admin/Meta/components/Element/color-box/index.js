@@ -1,19 +1,5 @@
 import React from "react"
-
-import { useDms } from "components/dms/contexts/dms-context"
-import { useAuth } from "components/dms/contexts/auth-context"
-// import { useTheme } from "components/avl-components/wrappers/with-theme"
-
-import { useSetSections } from "components/dms/wrappers/dms-create"
-
-import { createEmpty } from "components/dms/components/editor"
-
-import { useDmsSections } from "components/dms/components/utils/dms-input-utils"
-import { Button } from "@availabs/avl-components"
 import { Select } from '@availabs/avl-components'
-
-
-import get from 'lodash.get'
 
 function isJson(str) {
     try {
@@ -27,9 +13,7 @@ function isJson(str) {
 const Edit = ({value, onChange}) => {
     //console.log('props', props)
     let data = value && isJson(value) ? JSON.parse(value) : {}
-    console.log('data', data, value, isJson(value))
     const ColorSelect = (v) => {
-        console.log('onChange', v)
         let newValue = Object.assign({}, data, {'color': v})
         onChange(JSON.stringify(newValue))
     }
