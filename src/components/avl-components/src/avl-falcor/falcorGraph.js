@@ -2,6 +2,8 @@ import { Model } from 'falcor'
 import ModelRoot from "falcor/lib/ModelRoot"
 import HttpDataSource from 'falcor-http-datasource'
 
+import throttle from "lodash.throttle"
+
 class CustomSource extends HttpDataSource {
  onBeforeRequest (config) {
    if (window.localStorage) {
@@ -25,66 +27,80 @@ function cacheFromStorage () {
  return falcorCache;
 }
 
+const noop = () => {};
+
 const chunker = (values, request, options = {}) => {
- const {
-   placeholder = "replace_me",
-   chunkSize = 50
- } = options;
+  const {
+    placeholder = "replace_me",
+    chunkSize = 100
+  } = options;
 
- const requests = [];
+  const requests = [];
 
- for (let n = 0; n < values.length; n += chunkSize) {
-   requests.push(request.map(r => r === placeholder ? values.slice(n, n + chunkSize) : r));
- }
- return requests.length ? requests : [request];
+  for (let n = 0; n < values.length; n += chunkSize) {
+    requests.push(request.map(r => r === placeholder ? values.slice(n, n + chunkSize) : r));
+  }
+  return requests.length ? requests : [request];
 }
-const falcorChunker = (values, request, options = {}) => {
- const {
-   falcor,
-   ...rest
- } = options;
- return chunker(values, request, rest)
-   .reduce((a, c) => {
-// console.log("REQUEST:", c)
-     return a.then(() => falcor.get(c))
-      // .then(res => console.log("RES:", res));
-   }, Promise.resolve());
+const falcorChunker = (requests, options = {}) => {
+  const {
+    falcor,
+    onProgress = noop,
+    ...rest
+  } = options;
+
+  const throttledCB = throttle(onProgress, 50);
+
+  let progress = 0, total = 0;
+
+  return requests.reduce((accum, [val, req]) => {
+    const chunked = chunker(val, req, rest);
+    total += chunked.length;
+    accum.push(...chunked);
+    return accum;
+  }, [])
+    .reduce((a, c) => {
+      return a.then(() => falcor.get(c))
+        .then(() => {
+          throttledCB(++progress, total);
+        });
+    }, Promise.resolve());
 }
 
 const getArgs = args =>
- args.reduce((a, c) => {
-   if (Array.isArray(c)) {
-     a[0].push(c);
-   }
-   else {
-     a[1] = c;
-   }
-   return a;
+  args.reduce((a, c) => {
+    if (Array.isArray(c)) {
+      a[0].push(c);
+    }
+    else {
+      a[1] = c;
+    }
+    return a;
  }, [[], {}])
 
 const falcorChunkerNice = (...args) => {
- const [requests, options] = getArgs(args);
- const {
-   index = null,
-   placeholder = "replace_me",
-   ...rest
- } = options;
+  const [requests, options] = getArgs(args);
+  const {
+    index = null,
+    placeholder = "replace_me",
+    ...rest
+  } = options;
 
- return requests.reduce((a, c) => {
-   return a.then(() => {
-     let values = [], found = false;
+  const reduced = requests.reduce((a, c) => {
+    let values = [], found = false;
 
-     const replace = c.map((r, i) => {
-       if (Array.isArray(r) && r.length && !found && (index === null || index === i)) {
-         found = true;
-         values = r;
-         return placeholder;
-       }
-       return r;
-     })
-     return falcorChunker(values, replace, { ...rest, placeholder });
-   })
- }, Promise.resolve())
+    const request = c.map((r, i) => {
+      if (Array.isArray(r) && r.length && !found && (index === null || index === i)) {
+        found = true;
+        values = r;
+        return placeholder;
+      }
+      return r;
+    });
+    a.push([values, request]);
+    return a;
+  }, []);
+  return falcorChunker(reduced, { ...rest, placeholder });
 }
 
 // let counter = 0;

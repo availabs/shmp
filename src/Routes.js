@@ -3,7 +3,7 @@
 import Meta from 'pages/Admin/Meta'
 
 import CMS from 'pages/Admin/CMS/edit'
-import Public from 'pages/Admin/CMS/view'
+import Public from 'pages/Admin/Meta/view'
 import AdminHome from 'pages/Admin/Home'
 import DataSources from 'pages/Admin/DataSources'
 

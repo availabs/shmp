@@ -63,10 +63,10 @@ const View = ({item, dataItems, ...props}) => {
                 {   data.showSidebar ? 
                     <SectionSideNav sections={ get(data, `sections`, []) } /> : ''
                 }
-                <div className={`h-full ${data.showSidebar ? 'sm:ml-64' : ''} p-1 md:p-6`}>
+                <div className={`h-full ${data.showSidebar ? 'sm:ml-56' : ''} p-1 md:p-6`}>
                 
-                    <div className={'bg-white shadow'}>
-                    	<div className='border-l border-gray-200 py-8 max-w-6xl mx-auto'>
+                    <div className={'bg-white'}>
+                    	<div className='border-l border-white py-8 max-w-6xl mx-auto'>
                         {get(data, `sections`, []).map((section,i) => <SectionView key={i} value={section}/>)}
                         </div>
                     </div>

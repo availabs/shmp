@@ -61,7 +61,7 @@ const View = ({value, edit, remove, moveUp, moveDown,}) => {
     if(!value) return false
     return (
         <div className='relative px-4 sm:px-6 lg:px-12 w-full'>
-            <h3 className='section-header text-xl tracking-wider mx-auto my-2 font-medium border-b border-t border-gray-200 py-1 flex'>
+            <h3 className='section-header text-xl tracking-wider mx-auto my-2 font-medium  py-1 flex'>
                 <div className='flex-1 py-1'>{value.title} <span className='text-sm font-normal text-blue-500'>{value.section && edit ? ` #${value.section}` : `` }</span></div>
                 <ValueItem edit={edit} remove={remove}  moveUp={moveUp} moveDown={moveDown} />
             </h3>

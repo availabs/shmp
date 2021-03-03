@@ -20,6 +20,7 @@ import makeLinkItPlugin from "./linkify-it"
 import makeSuperSubScriptPlugin from "./super-sub-script"
 import makePositionablePlugin from "./positionable"
 import makeStuffPlugin from "./stuff"
+
 import makeResizablePlugin from "./resizable"
 
 const buttonPlugin = makeButtonPlugin(),

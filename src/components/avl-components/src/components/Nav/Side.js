@@ -1,7 +1,6 @@
 import React from "react"
 import { Link } from 'react-router-dom'
-// import { useTheme } from "../../wrappers/with-theme"
-import {useTheme} from '@availabs/avl-components'
+import { useTheme } from "../../wrappers/with-theme"
 import SidebarItem from './Item'
 
 const MobileSidebar = ({open, toggle,logo = null, menuItems=[]}) => {
@@ -33,14 +32,13 @@ const MobileSidebar = ({open, toggle,logo = null, menuItems=[]}) => {
 		            		<SidebarItem  to={ page.path } icon={page.icon} theme={theme} className={page.itemClass}>
 		    					{ page.name }
 		  					</SidebarItem>
-		  					{page.children ? 
-		  						<div className={theme.navitemSideChildContainer}>
-		  							{page.children.map((child,x) => 			  						
-			  							<SidebarItem key={ x } to={ child.path } icon={child.icon} theme={theme} className={child.itemClass}>
-				    						{ child.name }
-				  						</SidebarItem>
-					  				)}
-		  						</div> : ''}
+		  					{page.children ? page.children.map((child,x) => {
+		  						return (
+		  							<SidebarItem key={ x } to={ child.path } icon={child.icon} theme={theme} className={child.itemClass}>
+			    						{ child.name }
+			  						</SidebarItem>
+			  					)
+		  					}) : ''}
 	  					</div>
 	            	)
 	           	})}
@@ -73,26 +71,16 @@ const DesktopSidebar = ({menuItems = [], fixed, topMenu, logo = null, ...rest}) 
             {menuItems.map((page, i) => {
             	return (
           			<div key={ i } className={page.sectionClass}>
-	            		<SidebarItem  
-	            			to={ page.path } 
-	            			icon={page.icon} 
-	            			theme={theme} 
-	            			className={page.className}>
+	            		<SidebarItem  to={ page.path } icon={page.icon} theme={theme} className={page.itemClass}>
 	    					{ page.name }
 	  					</SidebarItem>
-	  					{page.children ? 
-  						<div className={theme.navitemSideChildContainer}>
-	  						{page.children.map((child,x) => 
-	  							<SidebarItem 
-	  								key={ x } 
-	  								to={ child.path } 
-	  								icon={child.icon} 
-	  								theme={theme} 
-	  								className={child.className}>
+	  					{page.children ? page.children.map((child,x) => {
+	  						return (
+	  							<SidebarItem key={ x } to={ child.path } icon={child.icon} theme={theme} className={child.itemClass}>
 		    						{ child.name }
-		  						</SidebarItem>	
-		  					)}
-	  					</div> : ''}
+		  						</SidebarItem>
+		  					)
+	  					}) : ''}
   					</div>
             	)
            	})}

@@ -1,5 +1,6 @@
 import { processAction, checkAuth } from "../../utils"
 
+import clonedeep from "lodash.clonedeep"
 import get from "lodash.get"
 
 const flattenAttributes = (Sections, Attributes = [], depth = 0, id = [0]) => {
@@ -28,21 +29,20 @@ const flattenAttributes = (Sections, Attributes = [], depth = 0, id = [0]) => {
 }
 
 export const processFormat = (format, formats = {}) => {
-  format = JSON.parse(JSON.stringify(format));
+  const Format = clonedeep(format);
 
-  if (format.registerFormats) {
-    format.registerFormats.forEach(f => processFormat(f, formats));
+  if (Format.registerFormats) {
+    Format.registerFormats.forEach(f => processFormat(f, formats));
   }
 
-  if (!format.sections) {
-    const attributes = format.attributes;
-    format.attributes = flattenAttributes([{ attributes }]);
+  if (!Format.sections) {
+    Format.attributes = flattenAttributes([{ attributes: Format.attributes }]);
   }
   else {
-    format.attributes = flattenAttributes(format.sections.reverse());
+    Format.attributes = flattenAttributes(Format.sections.reverse());
   }
 
-  formats[`${ format.app }+${ format.type }`] = format;
+  formats[`${ Format.app }+${ Format.type }`] = Format;
 
   return formats;
 }
@@ -202,6 +202,7 @@ export const makeOnClick = (...args) => {
     return /^(dms:)*back$/.test(action) ?
       (e => {
         e.stopPropagation();
+        e.preventDefault();
         push({
           pathname: get(stack, [stackLength - 1], basePath),
           search: get(searchStack, [searchLength - 1], ""),
@@ -214,6 +215,7 @@ export const makeOnClick = (...args) => {
       : /^(dms:)*home$/.test(action) ?
         (e => {
           e.stopPropagation();
+          e.preventDefault();
           push({
             pathname: basePath,
             state: {
@@ -225,6 +227,7 @@ export const makeOnClick = (...args) => {
       : /^api:/.test(action) ?
         (e => {
           e.stopPropagation();
+          e.preventDefault();
           return Promise.resolve(interact(action, itemId, propsToSeed))
             .then(() => doThen())
             .then(() => push({
@@ -238,6 +241,7 @@ export const makeOnClick = (...args) => {
         })
       : (e => {
           e.stopPropagation();
+          e.preventDefault();
           push({
             pathname: makePath(basePath, action, itemId, propsToSeed),
             search: !propsToSeed ? "" : `?${ Object.keys(propsToSeed).map(k => `${ k }=${ propsToSeed[k] }`).join('&') }`,
@@ -251,6 +255,7 @@ export const makeOnClick = (...args) => {
   return (
     e => {
       e.stopPropagation();
+      e.preventDefault();
       if (!hasAuth) return Promise.resolve();
       return Promise.resolve(interact(action, itemId, propsToSeed))
         .then(() => /^api:/.test(action) && doThen())

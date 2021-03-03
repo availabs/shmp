@@ -30,8 +30,14 @@ const MobileMenu = ({open, menuItems=[], customTheme}) => {
 const DesktopMenu = ({menuItems=[], open, toggle, fixed, width, logo, rightMenu, customTheme=false}) => {
   const theme = Object.assign({},useTheme(), customTheme);
   return (
-    <div className={`${theme.topNavHeight || 'h-16'}  ${theme.sidebarBg}  ${theme.topMenuBorder} ${theme.topMenuScroll}` }>
-      <div className={`${theme.contentWidth} flex justify-between ${theme.topNavHeight ? theme.topNavHeight : 'h-16'}`}>
+    <div className={ `
+      h-${ theme.topNavHeight || 16 } ${ theme.sidebarBg }
+      ${ theme.topMenuBorder } ${ theme.topMenuScroll }
+    ` }>
+      <div className={ `
+        ${ theme.contentWidth } flex justify-between
+        h-${ theme.topNavHeight || 16 }
+      ` }>
         <div className="flex">
           <Link to={'/'} className={`flex-shrink-0 flex items-center ${theme.text}`}>
             {logo}
@@ -79,7 +85,10 @@ export default (props) => {
     //theme = useTheme()
 
   return (
-    <nav className={`${theme.menuBg} ${theme.topNavHeight ? theme.topNavHeight : 'h-16'}  ${theme.sidebarBorder}`}>
+    <nav className={ `
+      ${ theme.menuBg } ${ theme.sidebarBorder }
+      h-${ theme.topNavHeight || 16 }
+    ` }>
       <DesktopMenu
 
         toggle={e => {

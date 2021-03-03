@@ -28,8 +28,9 @@ import {
 } from "@availabs/ams"
 
 import Theme from 'Theme'
-
 import 'styles/tailwind.css';
+
+console.log('theme', Theme)
 
 addComponents(DmsComponents);
 addWrappers(DmsWrappers);

@@ -39,7 +39,7 @@ const ParseItems = ({ Component, ...props}) => {
   // return <Component { ...props } routerParams={ { action, id } }/>
 }
 
-export default (Component, options = {}) =>
+const dmsRouter = (Component, options = {}) =>
   props => {
     const { path } = useRouteMatch(),
       alt11 = `${ path }/:action`,
@@ -49,14 +49,12 @@ export default (Component, options = {}) =>
     const location = useLocation(),
       history = useHistory();
 
-    const routerProps = React.useMemo(() =>
-      ({
-        basePath: path,
-        useRouter: true,
-        location,
-        history
-      })
-    , [path, location, history]);
+    const routerProps = React.useMemo(() => ({
+      useRouter: true,
+      basePath: path,
+      location,
+      history
+    }), [path, location, history]);
 
     return (
       <RouterContext.Provider value={ routerProps }>
@@ -74,3 +72,4 @@ export default (Component, options = {}) =>
       </RouterContext.Provider>
     )
   }
+export default dmsRouter;

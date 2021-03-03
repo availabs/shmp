@@ -1,6 +1,4 @@
-import { /*docsPage, docsSection,*/ shmpDoc } from './docs.type'
-//import SectionManager from './components/SectionManager'
-//import PageEdit from './components/PageEdit'
+import { metaDoc } from './metadocs.type'
 import PageView from './components/PageView'
 
 
@@ -15,7 +13,7 @@ let config = {
     "with-auth"
   ],
   props: {
-    format: shmpDoc
+    format: metaDoc
   }
 }
 

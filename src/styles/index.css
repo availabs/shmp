@@ -92,11 +92,8 @@
 
 @tailwind utilities;
 
-.custom-bg {
-	background-color: #f2f4f8;
-}
 
-.section-header::before {
+/*.section-header::before {
     content: "";
     background-color: #3f83f8;
     width: 7px;
@@ -104,4 +101,4 @@
     left: -4px;
     top: 21px;
     position: absolute;
-}
+}*/

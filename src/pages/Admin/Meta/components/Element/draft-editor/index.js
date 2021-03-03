@@ -1,6 +1,6 @@
 import React from "react"
 // import { useTheme } from "components/avl-components/wrappers/with-theme"
-import {TextArea} from "@availabs/avl-components"
+import ReadOnlyEditor from "components/dms/components/editor/editor.read-only"
 
 const Edit = ({value, onChange}) => {
     return (
@@ -25,9 +25,9 @@ const View = ({value}) => {
     if (!value) return false
     let data = value['element-data']
     return (
-        <pre className='relative w-full border border-dashed p-1'>
-            {data}
-        </pre>
+        <div className='relative w-full border border-dashed p-1'>
+            <ReadOnlyEditor value={value.content} isRaw={value.content.blocks ? true : false} />
+        </div>
     )
 }
 

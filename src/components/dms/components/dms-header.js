@@ -2,50 +2,55 @@ import React from "react"
 
 import { useTheme, HeaderComponent } from "@availabs/avl-components"
 import { useDms } from "../contexts/dms-context"
-import { useMessenger } from "../contexts/messenger-context"
 
 import { DmsButton } from "./dms-button"
+import { useMessenger } from "../contexts/messenger-context"
 
-export default ({ title, shadowed = true, showHome = true, dmsActions = [], navBarSide = true, ...props }) => {
+const DmsHeader = ({ title, shadowed = true, showHome = true, dmsActions = [], navBarSide = true, ...props }) => {
   const { stack, top, item } = useDms(),
     { pageMessages, attributeMessages } = useMessenger();
 
   if (stack.length > 1) {
-    dmsActions.unshift({
-      action: "dms:back",
-      // showConfirm: Boolean(pageMessages.length)
-    });
+    dmsActions = [
+      { action: "dms:back" },
+      ...dmsActions
+    ];
   }
   if ((stack.length > 1) && showHome) {
-     dmsActions.unshift({
-       action: "dms:home",
-       // showConfirm: Boolean(pageMessages.length)
-     });
+    dmsActions = [
+      { action: "dms:home" },
+      ...dmsActions
+    ];
   }
   if (top.dmsAction === "list") {
-    dmsActions.unshift({ action: "dms:create" });
+    dmsActions = [
+      { action: "dms:create" },
+      ...dmsActions
+    ];
   }
   const theme = useTheme();
 
   return (
     <div className={ `
-        fixed top-0 left-0 right-0
+        fixed top-0 left-0 right-0 z-50
         ${ navBarSide ? `md:ml-${ theme.sidebarW }` : '' }
       ` }>
-      <HeaderComponent title={ title || `${ props.app } Manager` }>
-        <div className="flex-0 flex items-center">
-          { !pageMessages.length ? null :
-            <Warning warnings={ pageMessages }/>
-          }
-          { !attributeMessages.length ? null :
-            <Warning warnings={ attributeMessages } type="att"/>
-          }
-          { dmsActions.map(a =>
-              <DmsButton className="ml-1" key={ a.action || a } action={ a } item={ item }/>
-            )
-          }
-        </div>
-      </HeaderComponent>
+      <div className="container mx-auto">
+        <HeaderComponent title={ title || `${ props.app } Manager` }>
+          <div className="flex-0 flex items-center">
+            { !pageMessages.length ? null :
+              <Warning warnings={ pageMessages }/>
+            }
+            { !attributeMessages.length ? null :
+              <Warning warnings={ attributeMessages } type="att"/>
+            }
+            { dmsActions.map(a =>
+                <DmsButton className="ml-1" key={ a.action || a } action={ a } item={ item }/>
+              )
+            }
+          </div>
+        </HeaderComponent>
+      </div>
     </div>
   )
 }
@@ -76,3 +81,4 @@ const Warning = ({ warnings, type = "page" }) => {
     </div>
   )
 }
+export default DmsHeader;

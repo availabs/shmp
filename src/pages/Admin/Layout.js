@@ -1,6 +1,6 @@
 import React  from "react"
-import {useTheme} from '@availabs/avl-components'
-import { SideNav } from 'components/avl-components/src/components'
+import {useTheme, SideNav} from '@availabs/avl-components'
+//import { SideNav } from 'components/avl-components/src/components'
 import AuthMenu from 'pages/Auth/AuthMenu'
 import logo from './Logo.js'
 

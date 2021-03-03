@@ -1,13 +1,13 @@
 import React from "react"
 
 const SectionSideNav = ({sections}) => (
-    <div className='bg-white shadow w-64 h-full hidden sm:block fixed' >
+    <div className='bg-white shadow w-56 h-full hidden sm:block fixed' >
         <ul className='py-6 pl-4 pr-4 text-md'>
             { 
                sections.map((section,i) => {
 
                     return (
-                        <React.Fragment>
+                        <React.Fragment key={i}>
                         {(i === 0 || (sections[i-1] && sections[i-1].section !== section.section)) ? 
                             <li 
                                 key={section.section+i} 

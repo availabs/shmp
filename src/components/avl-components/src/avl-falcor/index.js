@@ -6,6 +6,10 @@ export * from "./falcorGraph"
 
 const FalcorContext = React.createContext();
 
+export const useFalcor = () => React.useContext(FalcorContext);
+
+export const FalcorConsumer = FalcorContext.Consumer;
+
 export const FalcorProvider = ({ falcor, children }) => {
   const [falcorCache, setFalcorCache] = React.useState({});
 

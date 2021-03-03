@@ -31,23 +31,23 @@ const light_base = {
     topMenuScroll: '',
     headerShadow: '',
     navText: 'text-gray-100',
-    navitemTop: 'px-4 text-sm font-medium tracking-widest uppercase inline-flex items-center  border-transparent  leading-5 text-white hover:bg-white hover:text-darkblue-500 border-gray-200 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out h-full',
-    navitemTopActive: 'px-4 text-sm font-medium tracking-widest uppercase inline-flex items-center leading-5 text-darkblue-500 bg-white focus:outline-none  sfocus:border-indigo-700 transition duration-150 ease-in-out',
+    navitemTop: 'px-4 text-sm font-medium tracking-widest uppercase inline-flex items-center border-b-2 border-r border-transparent  leading-5 text-gray-600 hover:bg-white hover:text-blue-500 border-gray-200 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out h-full',
+    navitemTopActive: 'px-4 text-sm font-medium tracking-widest uppercase inline-flex items-center  border-b-2 border-r-0 leading-5 text-blue-500 bg-white focus:outline-none  sfocus:border-indigo-700 transition duration-150 ease-in-out',
     topNavHeight: 'h-12',
 
     navMenu: 'h-full relative',
-    navMenuOpen: 'bg-darkblue-500 text-white shadow-lg w-56 rounded-t-lg',
-    navMenuBg: 'bg-darkblue-500 bb-rounded-10 shadow-lg text-white rounded-b-lg',
+    navMenuOpen: 'bg-blue-600 text-white shadow w-56 rounded-t-lg',
+    navMenuBg: 'bg-blue-600 bb-rounded-10 shadow-lg text-white rounded-b-lg',
     navMenuItem: 'hover:font-medium cursor-pointer px-2 py-1 text-lg font-semibold',
 
 
-    bg: 'bg-white',
-    sidebarBg: 'bg-darkblue-500',
+    bg: 'bg-gray-50',
+    sidebarBg: 'bg-white',
     sidebarW: '56',
     sidebarBorder: ' border-r border-gray-200',
     navitemSideChildContainer: 'pl-4',
-    navitemSide: 'font-sans group flex pl-8 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-white hover:text-blue-600 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out',
-    navitemSideActive: 'group flex pl-8 pr-4 py-2 bg-white text-base font-medium text-darkblue-500 focus:outline-none hover:text-indigo-800 focus:text-indigo-800 focus:bg-blue-200 focus:border-indigo-700 transition duration-150 ease-in-out',
+    navitemSide: 'font-sans group flex pl-8 pr-4 border-l-4 border-transparent text-base font-base text-gray-600 hover:text-blue-600 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out',
+    navitemSideActive: 'group flex pl-8 pr-4 border-l-4 border-blue-500 text-base font-base text-gray-600 focus:outline-none hover:text-indigo-800 focus:text-indigo-800 focus:bg-blue-200 focus:border-indigo-700 transition duration-150 ease-in-out',
 
 
     menuBg: 'bg-white z-50',

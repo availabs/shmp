@@ -1,6 +1,6 @@
 {
   "name": "@availabs/avl-components",
-  "version": "1.0.25",
+  "version": "1.0.36",
   "description": "Reusable components styled by tailwind css for use in AVAIL projects.",
   "main": "dist/index.js",
   "scripts": {
@@ -73,9 +73,12 @@
     "lodash.throttle": "4.x",
     "match-sorter": "5.x",
     "prop-types": "^15.7.2",
+    "react": "^17.0.1",
     "react-beautiful-dnd": "13.x",
+    "react-dom": "^17.0.1",
     "react-markdown-renderer": "^1.4.0",
     "react-router-dom": "^5.1.2",
-    "react-table": "^7.6.2"
+    "react-table": "^7.6.2",
+    "styled-components": "^5.2.1"
   }
 }

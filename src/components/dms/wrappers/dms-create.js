@@ -2,12 +2,11 @@ import React, { useState, useEffect, useMemo, useCallback } from "react"
 
 import deepequal from "deep-equal"
 import get from "lodash.get"
-import throttle from "lodash.throttle"
+import debounce from "lodash.debounce"
 
 import { hasValue, useTheme, AvlModal } from "@availabs/avl-components"
 import { DmsCreateStateClass, makeNewAttribute } from "./utils/dms-create-utils"
-
-import { useMessenger } from "../contexts/messenger-context"
+// import { getValue } from "../utils"
 
 export const useSetSections = format => {
   return useMemo(() => {
@@ -18,133 +17,165 @@ export const useSetSections = format => {
           title = c.title;
           a.push({ title, attributes: [] });
         }
+        if (get(c, ["dmsActions", "length"], 0)) {
+          a[a.length - 1].dmsActions = c.dmsActions;
+        }
         a[a.length - 1].attributes.push(c);
         return a;
       }, []);
   }, [format]);
 }
 
-export const useDmsCreateState = props => {
+const InitialState = {
+  section: 0,
+  Sections: [],
+  values: {},
+  usingLocalState: false,
+  showModal: false
+}
+// const Reducer = (state, action) => {
+//   const { type, ...payload } = action;
+//   switch (action.type) {
+//     default:
+//       return state;
+//   }
+// }
+
+export const useDmsCreateState = (props, mode = "create") => {
 
   const { dmsAction, format, item } = props,
     sections = useSetSections(format);
 
-  const dmsMsg = useMessenger(),
-    { attributeMessages } = dmsMsg;
+  const [state, setState] = useState(InitialState);
 
-  const [section, setSection] = useState(0);
-  const [values, setValues] = useState({});
+  const setValues = React.useCallback(newValues => {
+    setState(({ values, ...prev }) => ({
+      ...prev,
+      values: typeof newValues === "function" ? newValues(values) : newValues
+    }));
+  }, []);
 
-  const [[DmsCreateState, Sections], setState] = useState([new DmsCreateStateClass(setValues, dmsMsg), []]);
+  const {
+    values,
+    section,
+    Sections
+  } = state;
+
+  const DmsCreateState = React.useMemo(() => {
+    setState(InitialState);
+    return new DmsCreateStateClass(setValues, format, item);
+  }, [format, item, setValues]);
 
   useEffect(() => {
-    return () => DmsCreateState.cleanup();
+    return () => {
+      DmsCreateState.cleanup();
+    }
   }, [DmsCreateState]);
 
   useEffect(() => {
     if (!Sections.length && sections.length) {
-      const DmsCreateState = new DmsCreateStateClass(setValues, dmsMsg);
 
-      const Sections = sections.map(({ title, attributes }, index) => ({
-        index,
-        title,
-        isActive: false,
-        verified: false,
-        attributes: attributes.map(att => makeNewAttribute(att, DmsCreateState.setValues, dmsMsg, props))
-      }))
+      let firstUnhidden = Infinity;
+
+      const Sections = sections
+        .map(({ title, attributes, dmsActions }, index) => {
+          const hidden = dmsActions ? !dmsActions.includes(dmsAction) : false;
+          firstUnhidden = hidden ? firstUnhidden : Math.min(firstUnhidden, index);
+          return {
+            index,
+            title,
+            hidden,
+            isActive: false,
+            verified: false,
+            attributes: attributes.map(att => makeNewAttribute(att, DmsCreateState.setValues, props, mode))
+          };
+        });
 
       DmsCreateState.sections = Sections;
       DmsCreateState.numSections = Sections.length;
       DmsCreateState.attributes = Sections.reduce((a, c) => a.concat(c.attributes), []);
 
-      DmsCreateState.initValues(values, false);
-
-      setState([DmsCreateState, Sections]);
+      setState(prev => ({ ...prev, Sections, section: firstUnhidden }));
     };
-  }, [Sections.length, sections, props, dmsMsg, values]);
+  }, [Sections.length, sections, props, DmsCreateState, dmsAction, mode]);
 
-  return React.useMemo(() => {
+  if (Sections.length) {
 
-    if (Sections.length) {
+    DmsCreateState.values = values;
+    DmsCreateState.saveValues = DmsCreateState.getValues(values);
 
-      DmsCreateState.values = values;
-      DmsCreateState.saveValues = DmsCreateState.getValues(values);
-      DmsCreateState.hasValues = DmsCreateState.attributes.reduce((a, c) =>
-        a || (
-          (c.editable !== false) &&
-          c.checkHasValue(values[c.key]) &&
-          !deepequal(c.defaultValue, DmsCreateState.saveValues[c.key])
-        )
-      , false);
+    DmsCreateState.hasValues = false;
+    DmsCreateState.defaultsLoaded = true;
 
-      DmsCreateState.defaultsLoaded = DmsCreateState.attributes.reduce((a, c) =>
-        a && (!c.hasDefault || c.defaultLoaded)
-      , true);
+    DmsCreateState.attributes.forEach(att => {
+      DmsCreateState.hasValues = DmsCreateState.hasValues || (
+        (att.editable !== false) &&
+        att.checkHasValue(values[att.key]) &&
+        !deepequal(att.defaultValue, DmsCreateState.saveValues[att.key])
+      );
+      DmsCreateState.defaultsLoaded = DmsCreateState.defaultsLoaded && (
+        !att.hasDefault || att.defaultLoaded
+      );
+    });
 
-      Sections.forEach((sect, index) => {
-        sect.isActive = section === index;
-        sect.verified = sect.attributes.reduce((a, c) => a && c.verified, true);
-        const msgIds = sect.attributes.reduce((a, c) => a.concat(c.getWarnings()), []);
-        sect.warnings = attributeMessages.filter(({ id }) => msgIds.includes(id));
-        sect.hasWarning = Boolean(sect.warnings.length);
-      })
-      DmsCreateState.verified = Sections.reduce((a, c) => a && c.verified, true);
-      DmsCreateState.warnings = Sections.reduce((a, c) => a.concat(c.warnings), []);
+    Sections.forEach((sect, index) => {
+      sect.isActive = section === index;
+      sect.verified = sect.attributes.reduce((a, c) => a && c.verified, true);
+      // const msgIds = sect.attributes.reduce((a, c) => a.concat(c.getWarnings()), []);
+      // sect.warnings = attributeMessages.filter(({ id }) => msgIds.includes(id));
+      // sect.hasWarning = Boolean(sect.warnings.length);
+    })
+    DmsCreateState.verified = Sections.reduce((a, c) => a && c.verified, true);
+    DmsCreateState.warnings = Sections.reduce((a, c) => a.concat(c.warnings), []);
 
-      DmsCreateState.activeSection = Sections[section];
-      DmsCreateState.activeIndex = section;
+    DmsCreateState.activeSection = Sections[section];
+    DmsCreateState.activeIndex = section;
 
-      DmsCreateState.hasWarning = Sections[section].hasWarning;
-      const { canGoNext, canGoPrev } = Sections[section].warnings
-        .reduce((a, c) => ({
-          canGoPrev: a.canGoPrev && c.canGoPrev,
-          canGoNext: a.canGoNext && c.canGoNext
-        }), { canGoNext: true, canGoPrev: true });
+    // DmsCreateState.hasWarning = Sections[section].hasWarning;
+    // const { canGoNext, canGoPrev } = Sections[section].warnings
+    //   .reduce((a, c) => ({
+    //     canGoPrev: a.canGoPrev && c.canGoPrev,
+    //     canGoNext: a.canGoNext && c.canGoNext
+    //   }), { canGoNext: true, canGoPrev: true });
 
-      DmsCreateState.canGoNext = canGoNext &&
-        Sections[section].verified && ((section + 1) < Sections.length);
-      DmsCreateState.next = () => {
-        if (!DmsCreateState.canGoNext) return;
-        setSection(section + 1);
-      };
-      DmsCreateState.canGoPrev = canGoPrev && (section > 0);
-      DmsCreateState.prev = () => {
-        if (!DmsCreateState.canGoPrev) return;
-        setSection(section - 1);
-      };
+    DmsCreateState.canGoNext = Sections[section].verified &&
+      ((section + 1) < Sections.length) && !Sections[section + 1].hidden;
+    DmsCreateState.next = () => {
+      if (!DmsCreateState.canGoNext) return;
+      setState(prev => ({ ...prev, section: prev.section + 1 }));
+    };
+    DmsCreateState.canGoPrev = (section > 0);
+    DmsCreateState.prev = () => {
+      if (!DmsCreateState.canGoPrev) return;
+      setState(prev => ({ ...prev, section: prev.section - 1 }));
+    };
+  }
+
+  DmsCreateState.dmsAction = {
+    action: "api:create",
+    label: dmsAction,
+    seedProps: () => DmsCreateState.getValues(values),
+    disabled: !DmsCreateState.verified,
+    then: () => {
+      DmsCreateState.onSave();
+      DmsCreateState.clearValues();
+      window.localStorage.removeItem(DmsCreateState.storageId);
     }
+  }
 
-    DmsCreateState.dmsAction = {
-      action: "api:create",
-      label: dmsAction,
-      seedProps: () => DmsCreateState.getValues(values),
-      disabled: DmsCreateState.hasWarning || !DmsCreateState.verified,
-      then: () => {
-        DmsCreateState.onSave();
-        if (window.localStorage) {
-          window.localStorage.removeItem(makeStorageId(format, item));
-        }
-      }
-    }
-
-    return DmsCreateState;
-  }, [DmsCreateState, Sections, attributeMessages, section, values, dmsAction, format, item]);
+  return DmsCreateState;
 }
-
-const makeStorageId = (format = {}, item = null) =>
-  `${ format.app }+${ format.type }${ item ? `:${ item.id }` : `` }`;
 
 const useLocalStorage = (DmsCreateState, format = {}, doSave = false, ready = true, item = null) => {
 
+// THIS FORCES THE MODAL TO ALWAYS SLIDE IN WHEN ENTERING CREATE
   const [_ready, setReady] = useState(false);
   useEffect(() => {
-    const timeout = setTimeout(setReady, 50, Boolean(window.localStorage))
+    const timeout = setTimeout(setReady, 25, Boolean(window.localStorage))
     return () => clearTimeout(timeout);
   }, []);
 
   ready = ready && _ready;
-
-  const storageId = makeStorageId(format, item);
 
   const [showModal, setShowModal] = useState(false),
     [checked, setChecked] = useState(!Boolean(window.localStorage)),
@@ -157,11 +188,11 @@ const useLocalStorage = (DmsCreateState, format = {}, doSave = false, ready = tr
   useEffect(() => {
     if (!ready || checked || showModal) return;
 
-    const data = JSON.parse(window.localStorage.getItem(storageId));
+    const data = JSON.parse(window.localStorage.getItem(DmsCreateState.storageId));
     setShowModal(Boolean(data));
     setChecked(!Boolean(data));
     setData(data);
-  }, [storageId, checked, data, DmsCreateState, format, item, ready, showModal]);
+  }, [checked, data, DmsCreateState, format, item, ready, showModal]);
 
   const loadData = useCallback(() => {
     DmsCreateState.initValues(data);
@@ -170,21 +201,24 @@ const useLocalStorage = (DmsCreateState, format = {}, doSave = false, ready = tr
 
   const { saveValues } = DmsCreateState;
 
-  const saveToLocalStorage = useMemo(() => throttle((storageId, DmsCreateState) => {
+  const saveToLocalStorage = useMemo(() => debounce((DmsCreateState) => {
     const { saveValues } = DmsCreateState;
-    window.localStorage.setItem(storageId, JSON.stringify(saveValues));
+    if (hasValue(saveValues)) {
+      window.localStorage.setItem(DmsCreateState.storageId, JSON.stringify(saveValues));
+    }
   }, 500), []);
 
   useEffect(() => {
     if (!ready || !checked) return;
 
     if (doSave) {
-      saveToLocalStorage(storageId, DmsCreateState);
+      saveToLocalStorage(DmsCreateState);
     }
     else if (!doSave) {
-      window.localStorage.removeItem(storageId);
+      saveToLocalStorage.cancel();
+      window.localStorage.removeItem(DmsCreateState.storageId);
     }
-  }, [doSave, storageId, ready, checked, DmsCreateState, saveValues, saveToLocalStorage]);
+  }, [doSave, ready, checked, DmsCreateState, saveValues, saveToLocalStorage]);
 
   return [showModal, onHide, loadData];
 }
@@ -208,17 +242,17 @@ const LoadModal = ({ action, ...props }) => {
 }
 
 export const dmsCreate = Component => {
-  return ({ ...props }) => {
+  return props => {
     const DmsCreateState = useDmsCreateState(props);
 
-    useEffect(() => {
-      if (DmsCreateState.hasValues && DmsCreateState.verified) {
-        DmsCreateState.setWarning("unsaved", "You have unsaved data!!!");
-      }
-      else {
-        DmsCreateState.setWarning("unsaved", null);
-      }
-    }, [DmsCreateState.hasValues, DmsCreateState.verified, DmsCreateState]);
+    // useEffect(() => {
+    //   if (DmsCreateState.hasValues && DmsCreateState.verified) {
+    //     DmsCreateState.setWarning("unsaved", "You have unsaved data!!!");
+    //   }
+    //   else {
+    //     DmsCreateState.setWarning("unsaved", null);
+    //   }
+    // }, [DmsCreateState.hasValues, DmsCreateState.verified, DmsCreateState]);
 
     useEffect(() => {
       if (DmsCreateState.defaultsLoaded) return;
@@ -226,6 +260,7 @@ export const dmsCreate = Component => {
       const values = {};
 
       DmsCreateState.attributes.forEach(att => {
+
         // if (("default" in att) && !att.hasValue) {
         //   const value = getValue(att.default, { props });
         //   hasValue(value) && (values[att.key] = value);
@@ -235,7 +270,7 @@ export const dmsCreate = Component => {
           hasValue(value) && (values[att.key] = value);
         }
       })
-      if (Object.keys(values).length) {
+      if (hasValue(values)) {
         DmsCreateState.initValues(values);
       }
     });
@@ -264,35 +299,64 @@ const hasBeenUpdated = (base, DmsCreateState) => {
 }
 
 export const dmsEdit = Component => {
-  return ({ ...props }) => {
+  return props => {
 
-    const { item } = props;
-
+    const { item, interact } = props;
     const [data, setData] = useState({});
-    useEffect(() => {
-      setData(get(item, "data", {}));
-    }, [item]);
 
-    const DmsCreateState = useDmsCreateState(props),
-      updated = hasBeenUpdated(data, DmsCreateState);
+    const DmsCreateState = useDmsCreateState(props, "edit"),
+      updated = hasBeenUpdated(data, DmsCreateState) && DmsCreateState.initialized;
 
-    useEffect(() => {
-      if (DmsCreateState.hasValues && DmsCreateState.verified && updated) {
-        DmsCreateState.setWarning("unsaved", "You have unsaved edits!!!");
-      }
-      else {
-        DmsCreateState.setWarning("unsaved", null);
-      }
-    }, [DmsCreateState, DmsCreateState.hasValues, DmsCreateState.verified, updated]);
+    DmsCreateState.hasBeenUpdated = updated;
 
     DmsCreateState.dmsAction.action = "api:edit";
     DmsCreateState.dmsAction.disabled = !updated || DmsCreateState.dmsAction.disabled;
 
     useEffect(() => {
-      if (!DmsCreateState.initialized && Object.keys(data).length) {
+      const data = get(item, "data", {});
+      if (hasValue(data)) {
+        DmsCreateState.initialized = false;
         DmsCreateState.initValues(data);
       }
-    }, [data, DmsCreateState]);
+      setData(data);
+    }, [item, DmsCreateState]);
+
+    const debounced = React.useMemo(() => {
+      return debounce((disabled, itemId, saveValues) => {
+        if (!disabled) {
+          interact("api:edit", itemId, saveValues, { loading: false })
+            .then(() => {
+              DmsCreateState.onSave();
+              DmsCreateState.clearValues();
+              window.localStorage.removeItem(DmsCreateState.storageId);
+            });
+          DmsCreateState.initialized = false;
+        }
+      }, 50);
+    }, [interact, DmsCreateState]);
+
+    React.useEffect(() => {
+      if (!item) return;
+
+      const doLiveUpdate = DmsCreateState.attributes.reduce((a, c) => {
+        const doLive = (a || c.doLiveUpdate);
+        c.doLiveUpdate = false;
+        return doLive;
+      }, false);
+
+      if (doLiveUpdate) {
+        debounced(DmsCreateState.dmsAction.disabled, item.id, DmsCreateState.saveValues);
+      }
+    }, [DmsCreateState.saveValues, DmsCreateState, item, debounced]);
+
+    // useEffect(() => {
+    //   if (DmsCreateState.hasValues && DmsCreateState.verified && updated) {
+    //     DmsCreateState.setWarning("unsaved", "You have unsaved edits!!!");
+    //   }
+    //   else {
+    //     DmsCreateState.setWarning("unsaved", null);
+    //   }
+    // }, [DmsCreateState, DmsCreateState.hasValues, DmsCreateState.verified, updated]);
 
     const attributeMap = DmsCreateState.attributes
       .reduce((a, c) => { a[c.key] = c; return a; }, {});
@@ -307,14 +371,14 @@ export const dmsEdit = Component => {
       }
     }
 
-    const [showModal, onHide, loadData] = useLocalStorage(DmsCreateState, props.format, DmsCreateState.hasValues && updated, Boolean(item), item);
+    const [show, onHide, loadData] = useLocalStorage(DmsCreateState, props.format, DmsCreateState.hasValues && DmsCreateState.hasBeenUpdated, Boolean(item), item);
 
     return (
       <>
         { (!DmsCreateState.activeSection || !DmsCreateState.hasValues) ? null :
           <Component { ...props } createState={ DmsCreateState }/>
         }
-        <LoadModal show={ showModal }
+        <LoadModal show={ show }
           onHide={ onHide }
           action={ loadData }/>
       </>
