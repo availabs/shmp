@@ -12,6 +12,7 @@ import {Select} from "@availabs/avl-components"
 
 import ColorBox from './color-box'
 import TextArea from './textArea'
+import DraftEditor from './draft-editor'
 
 import get from 'lodash.get'
 
@@ -19,13 +20,14 @@ import get from 'lodash.get'
 // register components here
 const ComponentRegistry = {
     "ColorBox": ColorBox,
-    "TextArea": TextArea
+    "TextArea": TextArea,
+    "DraftEditor": DraftEditor
 }
 
 
 
 const Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBlur, onChange, value, save, buttonDisabled, ...props }, ref) => {
-  value = value || {};
+    value = value || {};
   
   
     const Props = { ...props, ...useDms(), user: useAuth().user };
@@ -35,19 +37,18 @@ const Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBl
     let ElementType = get(Sections, '[0].attributes',[]).filter(a => a.key === 'element-type').pop()
     let ElementData = get(Sections, '[0].attributes',[]).filter(a => a.key === 'element-data').pop()
     
-    /*if(ElementType) {
+    if(ElementType) {
         console.log(
             'trying element edit',
             ComponentRegistry, 
             get(value, `[${ElementType.key}]`, ''), 
             get(value, `[${ElementData.key}]`, '') 
         )
-    }*/
+    }
 
     return (
         <div className='w-full'>
             <div className='relative'>
-                
                 <div className='font-normal text-lg leading-8 text-gray-600'>
                     {ElementType ? 
                     <ElementType.Input
@@ -90,7 +91,7 @@ Edit.settings = {
 const View = ({value}) => {
     if (!value) return false
 
-    console.log('got into view', get(value, `element-type`, null))
+    // console.log('got into view', get(value, `element-type`, null))
     let Comp = ComponentRegistry[get(value, `element-type`, null)] ?  
         ComponentRegistry[get(value, `element-type`, null)].view : 
         () => <div> Component {value['element-type']} Not Registered </div>

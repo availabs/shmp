@@ -1,15 +1,27 @@
 import React from "react"
 // import { useTheme } from "components/avl-components/wrappers/with-theme"
+import Editor, { createEmpty } from "components/dms/components/editor"
 import ReadOnlyEditor from "components/dms/components/editor/editor.read-only"
 
+function isJson(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
+
 const Edit = ({value, onChange}) => {
+    let data = value && isJson(value) ? JSON.parse(value) : createEmpty()
+
     return (
         <div className='w-full'>
             <div className='relative'>
-                TextArea Editor
-                <TextArea
-                    value={value}
-                    onChange={onChange}
+                Draft Editor
+                <Editor 
+                    value ={ data }
                 />
             </div>
         </div>
@@ -33,7 +45,7 @@ const View = ({value}) => {
 
 
 export default {
-    "name": 'TextArea',
+    "name": 'Draft Editor',
     "edit": Edit,
     "view": View
 }

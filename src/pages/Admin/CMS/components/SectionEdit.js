@@ -17,6 +17,8 @@ import get from 'lodash.get'
 let Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBlur, onChange, value, save, buttonDisabled, ...props }, ref) => {
   value = value || {};
 
+  console.log('---------------------------')
+  console.log('Attribute', Attribute, JSON.stringify(Attribute.format))
   const Props = { ...props, ...useDms(), user: useAuth().user };
   const sections = useSetSections(Attribute.Format),
     Sections = useDmsSections(sections, value, onChange, Props);

@@ -27,8 +27,7 @@ let Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBlur
   let Section = get(Sections, '[0].attributes',[]).filter(a => a.key === 'section').pop()
   let Element = get(Sections, '[0].attributes',[]).filter(a => a.key === 'element').pop()
  
-  // console.log('element', Element)
-
+  
   return (
     <div className='w-full'>
         <div className='relative px-4 sm:px-6 lg:px-12'>
@@ -51,7 +50,7 @@ let Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBlur
                 </Button>
             </h3>
             <div className='h-10 border-b w-full'>
-
+                Section
                 {Section ? 
                 <Section.Input
                     ref={ ref }
@@ -63,6 +62,7 @@ let Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBlur
                 /> : ''}
             </div>
             <div className='font-normal text-lg leading-8 text-gray-600'>
+                Element
                 {Element ? 
                 <Element.Input
                     ref={ ref }
