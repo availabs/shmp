@@ -26,7 +26,6 @@ const Edit = ({value, onChange}) => {
     if (value){
         data = convertFromRaw(data);
         data = EditorState.createWithContent(data)
-        console.log('??', data)
     }
     return (
         <div className='w-full'>
@@ -34,10 +33,7 @@ const Edit = ({value, onChange}) => {
                 Draft Editor
                 <Editor 
                     value ={ !value ? createEmpty() : data }
-                    //onChange={(e) => onChange(JSON.stringify(convertToRaw(e.getCurrentContent())))}
                     onChange={(e) => {
-                        console.log('onChange', e, JSON.stringify(convertToRaw(e.getCurrentContent())))
-                        //onChange(JSON.stringify(e.getCurrentContent()))
                         onChange(JSON.stringify(convertToRaw(e.getCurrentContent())))
                     }}
                 />
