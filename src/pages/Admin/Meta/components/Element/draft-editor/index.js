@@ -23,14 +23,17 @@ function isJson(str) {
 
 const Edit = ({value, onChange}) => {
     let data = value ? isJson(value) ? JSON.parse(value) : value : createEmpty()
-    console.log('in edit of draft', data, 'value', value)
-
+    if (value){
+        data = convertFromRaw(data);
+        data = EditorState.createWithContent(data)
+        console.log('??', data)
+    }
     return (
         <div className='w-full'>
             <div className='relative'>
                 Draft Editor
                 <Editor 
-                    value ={ !value ? createEmpty() : EditorState.createWithContent(data) }
+                    value ={ !value ? createEmpty() : data }
                     //onChange={(e) => onChange(JSON.stringify(convertToRaw(e.getCurrentContent())))}
                     onChange={(e) => {
                         console.log('onChange', e, JSON.stringify(convertToRaw(e.getCurrentContent())))
