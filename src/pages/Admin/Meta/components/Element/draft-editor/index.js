@@ -31,6 +31,7 @@ const Edit = ({value, onChange}) => {
                     onChange={(e) => {
                         onChange(JSON.stringify(convertToRaw(e.getCurrentContent())))
                     }}
+                    imgUploadUrl ={'https://graph.availabs.org/img/new'}s
                 />
             </div>
         </div>
