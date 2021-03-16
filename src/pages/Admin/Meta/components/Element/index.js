@@ -13,6 +13,7 @@ import {Select} from "@availabs/avl-components"
 import ColorBox from './color-box'
 import TextArea from './textArea'
 import DraftEditor from './draft-editor'
+import NFIPTable from "./NFIPTable";
 
 import get from 'lodash.get'
 
@@ -21,7 +22,8 @@ import get from 'lodash.get'
 const ComponentRegistry = {
     "ColorBox": ColorBox,
     "TextArea": TextArea,
-    "DraftEditor": DraftEditor
+    "DraftEditor": DraftEditor,
+    "NFIPTable": NFIPTable
 }
 
 
@@ -29,7 +31,7 @@ const ComponentRegistry = {
 const Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBlur, onChange, value, save, buttonDisabled, ...props }, ref) => {
     value = value || {};
   
-  
+
     const Props = { ...props, ...useDms(), user: useAuth().user };
     const sections = useSetSections(Attribute.Format),
         Sections = useDmsSections(sections, value, onChange, Props);
@@ -40,9 +42,9 @@ const Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBl
     if(ElementType) {
         console.log(
             'trying element edit',
-            ComponentRegistry, 
-            get(value, `[${ElementType.key}]`, ''), 
-            get(value, `[${ElementData.key}]`, '') 
+            ComponentRegistry,
+            get(value, `[${ElementType.key}]`, ''),
+            get(value, `[${ElementData.key}]`, '')
         )
     }
 
