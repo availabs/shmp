@@ -32,14 +32,16 @@ function renderMetaOptions(props, state, setState) {
 }
 
 function processData(state, cache) {
-    const childGeo = 'counties'; // state.geo === 'State' ? 'counties' : 'municipalities';
+    const childGeo = state.geo === 'State' ? 'counties' : 'municipalities';
     const geoGraph = get(cache, ['geo', '36', childGeo, 'value'], [])
     let data = [],
         columns = [];
 
     if (!geoGraph || !geoGraph.length) return {data, columns};
 
-    geoGraph.forEach(geoId => {
+    geoGraph
+        .filter(geoId => childGeo === 'counties' ? geoId.length === 5 : geoId.length > 5)
+        .forEach(geoId => {
         let graph = get(cache, ['nfip', 'losses', 'byGeoid', geoId, 'allTime'])
             data.push({
                 'Jurisdiction': get(cache, ['geo', geoId, 'name']),
@@ -77,7 +79,7 @@ function NFIPTable(props) {
     const {falcor, falcorCache} = useFalcor();
     const values = props.value ? JSON.parse(props.value) : {geo: null, cols: []}
     const [state, setState] = useState({'geo': values.geo || null, 'cols': values.cols || []})
-    const childGeo = 'counties'; // state.geo === 'State' ? 'counties' : 'municipalities';
+    const childGeo = state.geo === 'State' ? 'counties' : 'municipalities';
 
     useEffect(() => {
         async function fetchData() {
