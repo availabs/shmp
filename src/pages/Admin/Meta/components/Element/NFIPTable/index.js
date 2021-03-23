@@ -26,8 +26,7 @@ const View = ({value}) => {
     let data = value['element-data']
 
     return (
-        <pre className='relative w-full border border-dashed p-1'>
-            {data}
+        <pre className='relative w-full'>
             <NFIPTable
                 viewOnly={true}
                 value={ data }
