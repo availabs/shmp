@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Select, Table, useFalcor} from '@availabs/avl-components'
+import {Select, Table, Input, useFalcor} from '@availabs/avl-components'
 import _ from 'lodash'
 import get from 'lodash.get'
 
@@ -16,7 +16,7 @@ function renderMetaOptions(props, state, setState) {
                 key={'geo'}
                 domain={['State', 'County', 'Municipality']}
                 value={state.geo}
-                onChange={e => handleChange({geo: e, cols: state.cols})}
+                onChange={e => handleChange({geo: e, cols: state.cols, pageSize: state.pageSize})}
                 multi={false}
             />
             <label> Select Columns: </label>
@@ -24,9 +24,16 @@ function renderMetaOptions(props, state, setState) {
                 key={'cols'}
                 domain={['Jurisdiction', 'total losses', 'closed losses', 'open losses', 'cwop losses', 'total payments']}
                 value={_.uniqBy(['Jurisdiction', ...state.cols])}
-                onChange={e => handleChange({geo: state.geo, cols: e})}
+                onChange={e => handleChange({geo: state.geo, cols: e, pageSize: state.pageSize})}
             />
-
+            <label>Page Size</label>
+            <Input
+                key={'pageSize'}
+                type={'number'}
+                placeholder={'10'}
+                value={state.pageSize}
+                onChange={e => handleChange({geo: state.geo, cols: state.cols, pageSize: parseInt(e)})}
+                />
         </React.Fragment>
     )
 }
@@ -42,7 +49,7 @@ function processData(state, cache) {
     geoGraph
         .filter(geoId => childGeo === 'counties' ? geoId.length === 5 : geoId.length > 5)
         .forEach(geoId => {
-        let graph = get(cache, ['nfip', 'losses', 'byGeoid', geoId, 'allTime'])
+        let graph = get(cache, ['nfip', 'losses', 'byGeoid', geoId, 'allTime'], {})
             data.push({
                 'Jurisdiction': get(cache, ['geo', geoId, 'name']),
                 "total losses": graph.total_losses,
@@ -71,14 +78,13 @@ function processData(state, cache) {
 
 function renderTable(state, cache) {
     if (!state.cols || !state.geo) return null;
-
-    return <Table {...processData(state, cache)} />
+    return <Table {...processData(state, cache)} initialPageSize={Math.min(100, state.pageSize || 10)}/>
 }
 
 function NFIPTable(props) {
     const {falcor, falcorCache} = useFalcor();
-    const values = props.value ? JSON.parse(props.value) : {geo: null, cols: []}
-    const [state, setState] = useState({'geo': values.geo || null, 'cols': values.cols || []})
+    const values = props.value ? JSON.parse(props.value) : {geo: null, cols: [], pageSize: null}
+    const [state, setState] = useState({'geo': values.geo || null, 'cols': values.cols || [], 'pageSize': values.pageSize || null})
     const childGeo = state.geo === 'State' ? 'counties' : 'municipalities';
 
     useEffect(() => {
@@ -98,7 +104,8 @@ function NFIPTable(props) {
         }
 
         return fetchData();
-    }, [falcor, state]);
+    }, [childGeo, falcor, state]);
+
 
     return (
         <div>
