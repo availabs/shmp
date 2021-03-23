@@ -66,7 +66,7 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                 		menuItems={subNav} 
                 		customTheme={{
                             sidebarBg: 'bg-white',
-                            topNavHeight: 'h-12' ,
+                            topNavHeight: '12' ,
                             navitemTop: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-gray-800 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
                             navitemTopActive: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-blue-500 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out'
                         }} /> 

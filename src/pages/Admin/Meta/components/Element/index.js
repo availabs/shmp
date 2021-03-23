@@ -101,9 +101,7 @@ const View = ({value}) => {
         () => <div> Component {value['element-type']} Not Registered </div>
 
     return (
-        <div className='relative w-full border border-dashed p-1'>
-          <div>{value['element-type']}</div>
-          <div>{value['element-data']}</div>
+        <div className='relative w-full'>
            <Comp value={value} />
         </div>
     )
