@@ -14,6 +14,7 @@ import ColorBox from './color-box'
 import TextArea from './textArea'
 import DraftEditor from './draft-editor'
 import NFIPTable from "./NFIPTable";
+import AssetsTable from "./AssetsTable";
 
 import get from 'lodash.get'
 
@@ -23,7 +24,8 @@ const ComponentRegistry = {
     "ColorBox": ColorBox,
     "TextArea": TextArea,
     "DraftEditor": DraftEditor,
-    "NFIPTable": NFIPTable
+    "NFIPTable": NFIPTable,
+    "AssetsTable": AssetsTable
 }
 
 
