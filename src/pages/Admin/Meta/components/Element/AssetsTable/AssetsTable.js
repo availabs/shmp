@@ -26,7 +26,7 @@ function renderMetaOptions(props, state, setState, cache) {
             get(cache, ['geo', '36', childGeo, 'value'], []).map(d => d) : //get(cache, ['geo', d, 'name'], 'No Name')
             (
                 filterByTypes[state.filterBy] || []
-            ).map(d => d.value)
+            )
     }
 
     return (
@@ -51,8 +51,11 @@ function renderMetaOptions(props, state, setState, cache) {
             <label> Select Filter By Column Value: </label>
             <Select
                 key={'filterByValue'}
-                domain={populateFilterByValues()}
-                value={state.filterByValue.map(fbv => filterByTypes.getName(filterByTypes[state.groupBy], fbv))}
+                options={populateFilterByValues()}
+                value={state.filterByValue}
+                listAccessor={d => d.name}
+                accessor={d => d.name}
+                valueAccessor={d => d.value}
                 onChange={e => handleChange(Object.assign({}, state, {filterByValue: e}))}
             />
 
@@ -98,16 +101,17 @@ function processData(state, cache) {
     let graph = get(cache, ['building', 'byGeoid', activeGeo, nameMapping[state.groupBy]], {})
 
     data = filterByTypes.getValues(filterByTypes[state.groupBy])
-            .reduce((a, gbvKey) => {
-                let newKey = state.groupBy === 'Land Use Type' ? gbvKey - (gbvKey % 100) : gbvKey;
+        .filter(gbvKey => state.filterByValue.includes(gbvKey))
+        .reduce((a, gbvKey) => {
+            let newKey = state.groupBy === 'Land Use Type' ? gbvKey - (gbvKey % 100) : gbvKey;
 
-                a[newKey] = {
-                    [state.groupBy]: filterByTypes.getName(filterByTypes[state.groupBy], newKey.toString()),
-                    'Number of Assets': get(a, [newKey, 'Number of Assets'], 0) + parseInt(get(graph, [gbvKey, 'sum', 'count', 'value'], 0)),
-                    'Value of Assets': get(a, [newKey, 'Value of Assets'], 0) + parseInt(get(graph, [gbvKey, 'sum', 'replacement_value', 'value'], 0))
-                }
-                return a
-            }, {})
+            a[newKey] = {
+                [state.groupBy]: filterByTypes.getName(filterByTypes[state.groupBy], newKey.toString()),
+                'Number of Assets': get(a, [newKey, 'Number of Assets'], 0) + parseInt(get(graph, [gbvKey, 'sum', 'count', 'value'], 0)),
+                'Value of Assets': get(a, [newKey, 'Value of Assets'], 0) + parseInt(get(graph, [gbvKey, 'sum', 'replacement_value', 'value'], 0))
+            }
+            return a
+        }, {})
     data = Object.keys(data)
         .map(gbvKey => data[gbvKey])
 
