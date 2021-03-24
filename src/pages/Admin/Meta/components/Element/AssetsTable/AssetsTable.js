@@ -23,7 +23,10 @@ function renderMetaOptions(props, state, setState, cache) {
         const childGeo = nameMapping[state.geo];
 
         return state.filterBy === 'Jurisdiction' ?
-            get(cache, ['geo', '36', childGeo, 'value'], []).map(d => d) : //get(cache, ['geo', d, 'name'], 'No Name')
+            get(cache, ['geo', '36', childGeo, 'value'], []).map(d => ({
+                value: d,
+                name: get(cache, ['geo', d, 'name'], 'No Name')
+            })) :
             (
                 filterByTypes[state.filterBy] || []
             )
@@ -100,13 +103,13 @@ function processData(state, cache) {
 
     let graph = get(cache, ['building', 'byGeoid', activeGeo, nameMapping[state.groupBy]], {})
 
-    data = filterByTypes.getValues(filterByTypes[state.groupBy])
-        .filter(gbvKey => state.filterByValue.includes(gbvKey))
+    data = (state.groupBy === 'Jurisdiction' ? geoGraph : filterByTypes.getValues(filterByTypes[state.groupBy]))
+        .filter(gbvKey => state.filterByValue.includes(gbvKey) || !state.filterByValue.length)
         .reduce((a, gbvKey) => {
             let newKey = state.groupBy === 'Land Use Type' ? gbvKey - (gbvKey % 100) : gbvKey;
 
             a[newKey] = {
-                [state.groupBy]: filterByTypes.getName(filterByTypes[state.groupBy], newKey.toString()),
+                [state.groupBy]: state.groupBy === 'Jurisdiction' ? get(cache, ['geo', newKey, 'name']) : filterByTypes.getName(filterByTypes[state.groupBy], newKey.toString()),
                 'Number of Assets': get(a, [newKey, 'Number of Assets'], 0) + parseInt(get(graph, [gbvKey, 'sum', 'count', 'value'], 0)),
                 'Value of Assets': get(a, [newKey, 'Value of Assets'], 0) + parseInt(get(graph, [gbvKey, 'sum', 'replacement_value', 'value'], 0))
             }
@@ -166,15 +169,16 @@ function AssetsTable(props) {
 
             response = get(response, ['json', 'geo', '36', childGeo], []);
             let scenarios = get(response, ['json', 'plan', activePlan, 'scenarios'], []);
+            let groupByValues = state.groupBy === 'Jurisdiction' ? response : filterByTypes.getValues(filterByTypes[state.groupBy]);
 
             let reqs = [
                 ['geo', [activeGeo, ...response], ['name']],
-                ['building', 'byGeoid', activeGeo, nameMapping[state.groupBy], filterByTypes.getValues(filterByTypes[state.groupBy]), 'sum', ['count', 'replacement_value']],
+                ['building', 'byGeoid', activeGeo, nameMapping[state.groupBy], groupByValues, 'sum', ['count', 'replacement_value']],
             ];
 
             if (scenarios) {
                 scenarios = scenarios.filter(f => f.name.includes('DFIRM')).map(f => f.id);
-                reqs.push(['building', 'byGeoid', activeGeo, nameMapping[state.groupBy], filterByTypes.getValues(filterByTypes[state.groupBy]), 'byRiskScenario', scenarios, 'byRiskZone', 'all'])
+                reqs.push(['building', 'byGeoid', activeGeo, nameMapping[state.groupBy], groupByValues, 'byRiskScenario', scenarios, 'byRiskZone', 'all'])
                 console.log('sc?', scenarios)
             }
             if (response.length) {
@@ -186,7 +190,7 @@ function AssetsTable(props) {
 
         return fetchData();
     }, [childGeo, falcor, falcorCache, state]);
-
+    console.log('cache?', falcorCache)
     return (
         <div>
             {props.viewOnly ? null : renderMetaOptions(props, state, setState, falcorCache)}
