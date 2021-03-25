@@ -16,6 +16,7 @@ const nameMapping = {
 }
 
 const formatMapping = {
+    null: (d) => d,
     'None': (d) => d,
     'Number': d => fnum(d, false),
     '$ Amount': d => fnum(d, true)
