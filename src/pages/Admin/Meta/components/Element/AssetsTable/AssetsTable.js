@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react'
-import {Input, Select, Table, useFalcor} from '@availabs/avl-components'
+import {BooleanInput, Input, List, ListItemRemovable, Select, Table, useFalcor} from '@availabs/avl-components'
 import _ from 'lodash'
 import get from 'lodash.get'
 import filterByTypes from './meta'
+import {fnum} from "utils/fnum";
 
 const nameMapping = {
     'Jurisdiction': 'jurisdiction',
@@ -14,10 +15,27 @@ const nameMapping = {
     'Annual 0.2%': '500 yr',
 }
 
+const formatMapping = {
+    'None': null,
+    'Number': d => fnum(d, false),
+    '$ Amount': d => fnum(d, true)
+}
 const keyCols = ['Jurisdiction', 'Owner Type', 'Land Use Type'];
 
 function renderMetaOptions(props, state, setState, cache) {
+    const columns =
+        [state.groupBy, 'Number of Assets', 'Value of Assets', '# in 100 yr', '$ in 100 yr', '# in 500 yr', '$ in 500 yr']
+            .reduce((acc, col) => {
+                acc[col] = {
+                    disableFilters: false,
+                    disableSortBy: false,
+                    format: fnum
+                };
+                return acc;
+            }, {})
+
     const handleChange = (e) => {
+        console.log('e?', e)
         setState(e)
         props.onChange(JSON.stringify(e))
     }
@@ -71,17 +89,71 @@ function renderMetaOptions(props, state, setState, cache) {
                 value={state.groupBy}
                 onChange={e => handleChange(Object.assign({}, state, {
                     groupBy: e,
-                    cols: _.uniqBy([e, ..._.difference(state.cols, keyCols)])
+                    cols: _.uniqBy([e, ..._.difference(_.keys(state.cols), keyCols)])
                 }))}
                 multi={false}
             />
             <label> Select Columns: </label>
             <Select
                 key={'cols'}
-                domain={[state.groupBy, 'Number of Assets', 'Value of Assets', '# in 100 yr', '$ in 100 yr', '# in 500 yr', '$ in 500 yr']}
-                value={_.uniqBy([state.groupBy, ...state.cols])}
-                onChange={e => handleChange(Object.assign({}, state, {cols: e}))}
+                domain={_.keys(columns)}
+                value={_.uniqBy([state.groupBy, ..._.keys(state.cols)])}
+                onChange={e => handleChange(Object.assign({}, state, {cols: e.reduce((acc, tmpCol) => Object.assign(acc, {[tmpCol]: columns[tmpCol]}), {})}))}
             />
+            {
+                !state.cols ? null :
+                    <React.Fragment>
+                        <p>Select Properties</p>
+                        <List>
+                            {Object.keys(state.cols)
+                                .map(column =>
+                                    <ListItemRemovable
+                                        item={
+                                            <React.Fragment>
+                                                <p>{column}</p>
+                                                <List>
+                                                    <ListItemRemovable
+                                                        item={
+                                                            <React.Fragment>
+                                                                <label>Sort</label>
+                                                                <BooleanInput value={!(!!state.cols[column].disableSortBy)}
+                                                                              onChange={d => {
+                                                                                  state.cols[column].disableSortBy = !d;
+                                                                                  handleChange(
+                                                                                      state
+                                                                                  )
+                                                                              }
+                                                                              }/>
+                                                                <label>Filter</label>
+                                                                <BooleanInput value={!(!!state.cols[column].disableFilters)}
+                                                                              onChange={d => {
+                                                                                  state.cols[column].disableFilters = !d;
+                                                                                  handleChange(
+                                                                                      state
+                                                                                  )
+                                                                              }
+                                                                              }/>
+                                                                <label>Format</label>
+                                                                <Select
+                                                                    domain={['None', 'Number', '$ Amount']}
+                                                                    value={state.cols[column].format}
+                                                                    onChange={e => {
+                                                                        state.cols[column].format = e
+                                                                        handleChange(state)
+                                                                    }}
+                                                                    multi={false}
+                                                                />
+                                                            </React.Fragment>
+                                                        }
+                                                    />
+                                                </List>
+                                            </React.Fragment>
+                                        }
+                                    />
+                                )}
+                        </List>
+                    </React.Fragment>
+            }
             <label>Page Size</label>
             <Input
                 key={'pageSize'}
@@ -94,7 +166,8 @@ function renderMetaOptions(props, state, setState, cache) {
     )
 }
 
-function processData(state, cache) {
+function processData(state, cache)
+{
     const childGeo = nameMapping[state.geo];
     const geoGraph = get(cache, ['geo', '36', childGeo, 'value'], []);
     const activeGeo = '36'
@@ -151,28 +224,31 @@ function processData(state, cache) {
         }, {[state.groupBy]: 'Total'})
     )
 
-    state.cols.forEach(column => {
+    _.keys(get(state, `cols`, {})).forEach(column => {
             columns.push({
                 Header: column,
-                accessor: column,
-                align: 'center'
+                accessor: c => fnum(c[column], state.cols[column].format === '$ Amount'),
+                align: 'center',
+                ...state.cols[column],
             })
         }
     )
-
+    console.log('passing..', columns)
     return {data, columns}
 }
 
-function renderTable(state, cache) {
+function renderTable(state, cache)
+{
     if (!state.cols || !state.geo) return null;
     return <Table {...processData(state, cache)} initialPageSize={Math.min(100, state.pageSize || 10)}/>
 }
 
-function AssetsTable(props) {
+function AssetsTable(props)
+{
     const {falcor, falcorCache} = useFalcor();
     const values = props.value ? JSON.parse(props.value) : {
         geo: 'County',
-        cols: [],
+        cols: {},
         filterBy: null,
         filterByValue: [],
         groupBy: 'Jurisdiction',
@@ -181,7 +257,7 @@ function AssetsTable(props) {
     const [state, setState] =
         useState({
             geo: values.geo || null,
-            cols: values.cols || [],
+            cols: values.cols || {},
             filterBy: values.filterBy || null,
             filterByValue: values.filterByValue || [],
             groupBy: values.groupBy || null,
