@@ -35,7 +35,6 @@ function renderMetaOptions(props, state, setState, cache) {
             }, {})
 
     const handleChange = (e) => {
-        console.log('e?', e)
         setState(e)
         props.onChange(JSON.stringify(e))
     }
@@ -87,10 +86,14 @@ function renderMetaOptions(props, state, setState, cache) {
                 key={'groupBy'}
                 domain={keyCols}
                 value={state.groupBy}
-                onChange={e => handleChange(Object.assign({}, state, {
-                    groupBy: e,
-                    cols: _.uniqBy([e, ..._.difference(_.keys(state.cols), keyCols)])
-                }))}
+                onChange={e => {
+                    console.log('cols?', _.difference(_.keys(state.cols), keyCols))
+                    handleChange(Object.assign({}, state, {
+                        groupBy: e,
+                        cols: _.uniqBy([e, ..._.difference(_.keys(state.cols), keyCols)])
+                            .reduce((acc, tmpCol) => Object.assign(acc, {[tmpCol]: columns[tmpCol]}), {})
+                    }))
+                }}
                 multi={false}
             />
             <label> Select Columns: </label>
@@ -116,7 +119,7 @@ function renderMetaOptions(props, state, setState, cache) {
                                                         item={
                                                             <React.Fragment>
                                                                 <label>Sort</label>
-                                                                <BooleanInput value={!(!!state.cols[column].disableSortBy)}
+                                                                <BooleanInput value={!(!!get(state, ['cols', column, 'disableSortBy'], false))}
                                                                               onChange={d => {
                                                                                   state.cols[column].disableSortBy = !d;
                                                                                   handleChange(
@@ -125,7 +128,7 @@ function renderMetaOptions(props, state, setState, cache) {
                                                                               }
                                                                               }/>
                                                                 <label>Filter</label>
-                                                                <BooleanInput value={!(!!state.cols[column].disableFilters)}
+                                                                <BooleanInput value={!(!!get(state, ['cols', column, 'disableFilters'], false))}
                                                                               onChange={d => {
                                                                                   state.cols[column].disableFilters = !d;
                                                                                   handleChange(
@@ -136,7 +139,7 @@ function renderMetaOptions(props, state, setState, cache) {
                                                                 <label>Format</label>
                                                                 <Select
                                                                     domain={['None', 'Number', '$ Amount']}
-                                                                    value={state.cols[column].format}
+                                                                    value={get(state, ['cols', column, 'format'], null)}
                                                                     onChange={e => {
                                                                         state.cols[column].format = e
                                                                         handleChange(state)
@@ -182,7 +185,7 @@ function processData(state, cache)
     data = (state.groupBy === 'Jurisdiction' ? geoGraph : filterByTypes.getValues(filterByTypes[state.groupBy]))
         .filter(gbvKey => state.filterByValue.includes(gbvKey) || !state.filterByValue.length)
         .reduce((a, gbvKey) => {
-
+            gbvKey = parseInt(gbvKey)
             let newKey = state.groupBy === 'Land Use Type' ? gbvKey - (gbvKey % 100) : gbvKey;
 
             let riskData =
@@ -227,13 +230,13 @@ function processData(state, cache)
     _.keys(get(state, `cols`, {})).forEach(column => {
             columns.push({
                 Header: column,
-                accessor: c => fnum(c[column], state.cols[column].format === '$ Amount'),
+                accessor: c => fnum(c[column], get(state, ['cols', column, 'format'], null) === '$ Amount'),
                 align: 'center',
                 ...state.cols[column],
             })
         }
     )
-    console.log('passing..', columns)
+
     return {data, columns}
 }
 
