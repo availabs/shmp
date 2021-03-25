@@ -16,7 +16,7 @@ const nameMapping = {
 }
 
 const formatMapping = {
-    'None': null,
+    'None': (d) => d,
     'Number': d => fnum(d, false),
     '$ Amount': d => fnum(d, true)
 }
@@ -27,9 +27,9 @@ function renderMetaOptions(props, state, setState, cache) {
         [state.groupBy, 'Number of Assets', 'Value of Assets', '# in 100 yr', '$ in 100 yr', '# in 500 yr', '$ in 500 yr']
             .reduce((acc, col) => {
                 acc[col] = {
-                    disableFilters: false,
+                    disableFilters: true,
                     disableSortBy: false,
-                    format: fnum
+                    format: 'None'
                 };
                 return acc;
             }, {})
@@ -119,23 +119,25 @@ function renderMetaOptions(props, state, setState, cache) {
                                                         item={
                                                             <React.Fragment>
                                                                 <label>Sort</label>
-                                                                <BooleanInput value={!(!!get(state, ['cols', column, 'disableSortBy'], false))}
-                                                                              onChange={d => {
-                                                                                  state.cols[column].disableSortBy = !d;
-                                                                                  handleChange(
-                                                                                      state
-                                                                                  )
-                                                                              }
-                                                                              }/>
+                                                                <BooleanInput
+                                                                    value={!(!!get(state, ['cols', column, 'disableSortBy'], false))}
+                                                                    onChange={d => {
+                                                                        state.cols[column].disableSortBy = !d;
+                                                                        handleChange(
+                                                                            state
+                                                                        )
+                                                                    }
+                                                                    }/>
                                                                 <label>Filter</label>
-                                                                <BooleanInput value={!(!!get(state, ['cols', column, 'disableFilters'], false))}
-                                                                              onChange={d => {
-                                                                                  state.cols[column].disableFilters = !d;
-                                                                                  handleChange(
-                                                                                      state
-                                                                                  )
-                                                                              }
-                                                                              }/>
+                                                                <BooleanInput
+                                                                    value={!(!!get(state, ['cols', column, 'disableFilters'], false))}
+                                                                    onChange={d => {
+                                                                        state.cols[column].disableFilters = !d;
+                                                                        handleChange(
+                                                                            state
+                                                                        )
+                                                                    }
+                                                                    }/>
                                                                 <label>Format</label>
                                                                 <Select
                                                                     domain={['None', 'Number', '$ Amount']}
@@ -169,8 +171,7 @@ function renderMetaOptions(props, state, setState, cache) {
     )
 }
 
-function processData(state, cache)
-{
+function processData(state, cache) {
     const childGeo = nameMapping[state.geo];
     const geoGraph = get(cache, ['geo', '36', childGeo, 'value'], []);
     const activeGeo = '36'
@@ -230,7 +231,7 @@ function processData(state, cache)
     _.keys(get(state, `cols`, {})).forEach(column => {
             columns.push({
                 Header: column,
-                accessor: c => fnum(c[column], get(state, ['cols', column, 'format'], null) === '$ Amount'),
+                accessor: c => formatMapping[get(state, ['cols', column, 'format'], 'None')](c[column]), //fnum(c[column], get(state, ['cols', column, 'format'], null) === '$ Amount'),
                 align: 'center',
                 ...state.cols[column],
             })
@@ -240,14 +241,12 @@ function processData(state, cache)
     return {data, columns}
 }
 
-function renderTable(state, cache)
-{
+function renderTable(state, cache) {
     if (!state.cols || !state.geo) return null;
     return <Table {...processData(state, cache)} initialPageSize={Math.min(100, state.pageSize || 10)}/>
 }
 
-function AssetsTable(props)
-{
+function AssetsTable(props) {
     const {falcor, falcorCache} = useFalcor();
     const values = props.value ? JSON.parse(props.value) : {
         geo: 'County',
