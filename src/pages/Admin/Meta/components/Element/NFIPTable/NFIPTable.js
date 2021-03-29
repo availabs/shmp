@@ -1,9 +1,14 @@
 import React, {useEffect, useState} from 'react'
-import {Select, Table, Input, useFalcor} from '@availabs/avl-components'
+import {Input, Select, Table, useFalcor} from '@availabs/avl-components'
 import _ from 'lodash'
 import get from 'lodash.get'
 
-function renderMetaOptions(props, state, setState) {
+const nameMapping = {
+    'State': 'counties',
+    'County': 'municipalities',
+}
+
+function renderMetaOptions(props, state, setState, cache) {
     const handleChange = (e) => {
         setState(e)
         props.onChange(JSON.stringify(e))
@@ -14,17 +19,30 @@ function renderMetaOptions(props, state, setState) {
             <label> Select Geography Level: </label>
             <Select
                 key={'geo'}
-                domain={['State', 'County', 'Municipality']}
+                domain={['State', 'County']}
                 value={state.geo}
-                onChange={e => handleChange({geo: e, cols: state.cols, pageSize: state.pageSize})}
+                onChange={e => handleChange(Object.assign(state, {geo: e}))}
                 multi={false}
+            />
+
+            <label> Filter Geography: </label>
+            <Select
+                domain={get(cache, ['geo', '36', 'counties', 'value'], []).map(d => ({
+                    value: d,
+                    name: get(cache, ['geo', d, 'name'], 'No Name')
+                }))}
+                value={state.filterBy}
+                listAccessor={d => d.name}
+                accessor={d => d.name}
+                valueAccessor={d => d.value}
+                onChange={e => handleChange(Object.assign(state, {filterBy: e || []}))}
             />
             <label> Select Columns: </label>
             <Select
                 key={'cols'}
                 domain={['Jurisdiction', 'total losses', 'closed losses', 'open losses', 'cwop losses', 'total payments']}
                 value={_.uniqBy(['Jurisdiction', ...state.cols])}
-                onChange={e => handleChange({geo: state.geo, cols: e, pageSize: state.pageSize})}
+                onChange={e => handleChange(Object.assign(state, {cols: e}))}
             />
             <label>Page Size</label>
             <Input
@@ -32,15 +50,16 @@ function renderMetaOptions(props, state, setState) {
                 type={'number'}
                 placeholder={'10'}
                 value={state.pageSize}
-                onChange={e => handleChange({geo: state.geo, cols: state.cols, pageSize: parseInt(e)})}
-                />
+                onChange={e => handleChange(Object.assign(state, {pageSize: parseInt(e)}))}
+            />
         </React.Fragment>
     )
 }
 
 function processData(state, cache) {
-    const childGeo = state.geo === 'State' ? 'counties' : 'municipalities';
-    const geoGraph = get(cache, ['geo', '36', childGeo, 'value'], [])
+    const childGeo = nameMapping[state.geo];
+    const geoGraph = get(cache, ['geo', '36', childGeo, 'value'], []),
+        allGeoids = _.keys(get(cache, ['geo'], {}));
     let data = [],
         columns = [];
 
@@ -48,8 +67,18 @@ function processData(state, cache) {
 
     geoGraph
         .filter(geoId => childGeo === 'counties' ? geoId.length === 5 : geoId.length > 5)
+        .filter(geoId => {
+            if (childGeo === 'counties') {
+                return get(state, ['filterBy'], get(cache, ['geo', '36', 'counties', 'value'], [])).includes(geoId)
+            } else if (childGeo === 'municipalities') {
+                let countyGeo = allGeoids.filter(countyGeo => get(cache, ['geo', countyGeo, 'municipalities', 'value'], []).includes(geoId))
+                return !state.filterBy.length || (state.filterBy.length && _.intersection(state.filterBy, countyGeo).length);
+            } else {
+                return true
+            }
+        })
         .forEach(geoId => {
-        let graph = get(cache, ['nfip', 'losses', 'byGeoid', geoId, 'allTime'], {})
+            let graph = get(cache, ['nfip', 'losses', 'byGeoid', geoId, 'allTime'], {})
             data.push({
                 'Jurisdiction': get(cache, ['geo', geoId, 'name']),
                 "total losses": graph.total_losses,
@@ -65,11 +94,11 @@ function processData(state, cache) {
         })
 
     state.cols.forEach(column => {
-        columns.push({
-            Header: column,
-            accessor: column,
-            align: 'center'
-        })
+            columns.push({
+                Header: column,
+                accessor: column,
+                align: 'center'
+            })
         }
     )
 
@@ -83,14 +112,29 @@ function renderTable(state, cache) {
 
 function NFIPTable(props) {
     const {falcor, falcorCache} = useFalcor();
-    const values = props.value ? JSON.parse(props.value) : {geo: null, cols: [], pageSize: null}
-    const [state, setState] = useState({'geo': values.geo || null, 'cols': values.cols || [], 'pageSize': values.pageSize || null})
-    const childGeo = state.geo === 'State' ? 'counties' : 'municipalities';
+    const values = props.value ? JSON.parse(props.value) : {geo: 'State', cols: [], pageSize: null, filterBy: []}
+    const [state, setState] = useState({
+        'geo': values.geo || null,
+        'cols': values.cols || [],
+        'pageSize': values.pageSize || null,
+        'filterBy': values.filterBy || []
+    })
+    const childGeo = nameMapping[state.geo];
 
     useEffect(() => {
         async function fetchData() {
-            let response = await falcor.get(["geo", '36', childGeo])
-            response = get(response, `json.geo.36.${childGeo}`, [])
+            let response = await falcor.get(["geo", '36', 'counties'], ["geo", '36', 'municipalities'])
+            let childGeos = await falcor.get(['geo', get(response, ['json', 'geo', '36', 'counties'], []), 'municipalities'])
+
+            response = [
+                ...get(response, `json.geo.36.counties`, []),
+                ...get(response, `json.geo.36.municipalities`, []),
+                ...get(response, ['json', 'geo', '36', 'counties'], [])
+                    .reduce((a, c) =>
+                        [...a,
+                            ...get(childGeos, `json.geo.${c}.municipalities`, []),
+                        ], [])
+            ]
 
             if (response.length) {
                 await falcor.get(
@@ -106,10 +150,9 @@ function NFIPTable(props) {
         return fetchData();
     }, [childGeo, falcor, state]);
 
-
     return (
         <div>
-            {props.viewOnly ? null : renderMetaOptions(props, state, setState)}
+            {props.viewOnly ? null : renderMetaOptions(props, state, setState, falcorCache)}
 
             {renderTable(state, falcorCache)}
         </div>)
