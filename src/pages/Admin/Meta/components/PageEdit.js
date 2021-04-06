@@ -85,7 +85,7 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                     </div>
                     <div className='border-l border-gray-200 py-8 max-w-6xl flex-1'>
                         <div className='font-sm font-light text-md'>
-                           <Sections.Input
+                            <Sections.Input
                                 className={`p-4 border-none active:border-none focus:outline-none custom-bg h-full ${theme.text}`}
                                 value={Sections.value}
                                 onChange={Sections.onChange}

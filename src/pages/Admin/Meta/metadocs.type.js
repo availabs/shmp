@@ -28,10 +28,16 @@ const pageSection = {
         key: 'section',
         type: "text"
       },
-      {
-        key: 'element',
-        type: "dms-format",
-        format: "meta+page-element"
+      { key: "element",
+        type: "type-select",
+        attributes: [
+          { key: "WSYWIG",
+            type: "richtext"
+          },
+          { key: "Simple Text",
+            type: "text"
+          }
+        ]
       }
 
   ]
@@ -79,7 +85,8 @@ const metaDoc = {
       type: "dms-format",
       format: "meta+page-section",
       isArray: true,
-      editInPlace: true,
+      useOrdered: true,
+      showControls: false
     }
   ]
 }

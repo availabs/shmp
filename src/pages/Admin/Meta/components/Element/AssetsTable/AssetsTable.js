@@ -267,8 +267,8 @@ function AssetsTable(props) {
             pageSize: values.pageSize || null
         })
     const childGeo = nameMapping[state.geo];
-    const activeGeo = '36',
-        activePlan = '63';
+    const activeGeo = '36'
+        //activePlan = '63';
     useEffect(() => {
         if (!state.groupBy.length || !childGeo) return Promise.resolve();
 

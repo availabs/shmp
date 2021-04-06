@@ -27,7 +27,9 @@ let Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBlur
   let Section = get(Sections, '[0].attributes',[]).filter(a => a.key === 'section').pop()
   let Element = get(Sections, '[0].attributes',[]).filter(a => a.key === 'element').pop()
  
-  
+  console.log('type-select Element', Element)
+
+
   return (
     <div className='w-full'>
         <div className='relative px-4 sm:px-6 lg:px-12'>
@@ -67,10 +69,10 @@ let Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBlur
                 <Element.Input
                     ref={ ref }
                     autoFocus={true}
-                    value={ get(value, `[${Element.key}]`, createEmpty()) }
+                    value={ Element.value }
                     placeholder={'Section Content'}
                     onChange={Element.onChange}
-                    EditComp={ElementSelectorComp.Edit}
+                    
                 /> : ''}
             </div>
         </div>
