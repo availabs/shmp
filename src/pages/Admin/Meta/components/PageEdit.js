@@ -52,36 +52,36 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
     let ShowSidebar = createState.sections[0].attributes.filter(a => a.key === 'showSidebar').pop()
     let Sections = createState.sections[0].attributes.filter(a => a.key === 'sections').pop()
 
-    
+
     return (
         <div className={`flex items-start flex-col min-h-screen`}>
             <div className='w-full fixed bg-white z-10'>
-                <TopNav 
-                    menuItems={navItems} 
+                <TopNav
+                    menuItems={navItems}
                     logo={logo('SHMP')}
                     rightMenu={<AuthMenu />}
                 />
-                {subNav.length ? 
-                	<TopNav 
-                		menuItems={subNav} 
+                {subNav.length ?
+                	<TopNav
+                		menuItems={subNav}
                 		customTheme={{
                             sidebarBg: 'bg-white',
                             topNavHeight: '12' ,
                             navitemTop: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-gray-800 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
                             navitemTopActive: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-blue-500 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out'
-                        }} /> 
+                        }} />
                 	: null
                	}
             </div>
-            
+
             <div className={`w-full hasValue flex-1 ${subNav.length ? 'mt-24' : 'mt-12'}`}>
-                { ShowSidebar.value ? 
+                { ShowSidebar.value ?
                     <SectionSideNav sections={ get(data, `sections`, []) } /> : ''
                 }
                 <div className={`h-full ${ShowSidebar.value ? 'sm:ml-64' : ''} p-1 md:p-6`}>
                     <div className={'bg-white shadow h-full flex justify-between flex-col lg:flex-row'}>
-                    <div className='hidden xl:block xl:w-64 p-4'> 
-                        
+                    <div className='hidden xl:block xl:w-64 p-4'>
+
                     </div>
                     <div className='border-l border-gray-200 py-8 max-w-6xl flex-1'>
                         <div className='font-sm font-light text-md'>
@@ -95,7 +95,7 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                         </div>
                     </div>
                     <div className={`p-2 font-thin overflow-hidden`} />
-                    
+
                     <div className='w-full xl:block lg:w-64 order-first lg:order-last border-b lg:border-none'>
                         <div className="p-4 border-l">
                             <h4 className='font-bold '> Page Settings </h4>
@@ -129,16 +129,16 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                                 />
                             </div>
                              <div className="mt-2 mb-4 max-w-2xl">
-                                <DmsButton 
-                                    className="w-full" 
-                                    large 
+                                <DmsButton
+                                    className="w-full"
+                                    large
                                     type="submit"
                                     label='Save'
-                                    action={createState.dmsAction} 
-                                    item={item} 
+                                    action={createState.dmsAction}
+                                    item={item}
                                     props={props}/>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -149,5 +149,3 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
 }
 
 export default Create
-
-

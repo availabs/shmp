@@ -1,3 +1,5 @@
+import React from "react"
+
 import { metaDoc } from './metadocs.type'
 import PageManager from './components/PageManager'
 import PageEdit from './components/PageEdit'
@@ -16,7 +18,7 @@ const AssetTableComp = {
 
 
 const DmsFormatOverwrite = {
-    getArrayProps: (att, props) => ({ showControls: false }), // <== NEW PROP    
+    getArrayProps: (att, props) => ({ showControls: false }), // <== NEW PROP
 }
 
 addInput("asset-table", AssetTableComp);
@@ -25,7 +27,7 @@ addInput("dms-format", DmsFormatOverwrite)
 
 
 let config = {
-    type: 'div',
+    type: ({ children }) => <div>{ children }</div>,
     wrappers: [
         "dms-manager",
         {
@@ -76,7 +78,7 @@ export default {
         nav: 'side',
         maxWidth: '',
         headerBar: false,
-        
+
     },
     component: config
 }
