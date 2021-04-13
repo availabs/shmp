@@ -1,4 +1,4 @@
-// import {composeTheme} from "@availabs/avl-components/dist/Themes/utils";
+import {composeTheme} from "@availabs/avl-components/dist/Themes/utils";
 
 const light_base = {
     shadow: 'shadow',
@@ -91,16 +91,16 @@ const light_base = {
     width: '',
 
     transition: "transition ease-in-out duration-150",
-    button: `
-		inline-flex items-center
-		px-4 py-2 border border-gray-300
-		text-sm leading-5 font-medium
-		rounded-md text-gray-700 bg-white
-		hover:text-gray-500
-		focus:outline-none focus:shadow-outline-blue focus:border-blue-300
-		active:text-gray-800 active:bg-gray-50 transition duration-150 ease-in-out
-		disabled:cursor-not-allowed`,
-    buttonPrimary: 'inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-700 transition duration-150 ease-in-out disabled:cursor-not-allowed',
+    // button: `
+		// inline-flex items-center
+		// px-4 py-2 border border-gray-300
+		// text-sm leading-5 font-medium
+		// rounded-md text-gray-700 bg-white
+		// hover:text-gray-500
+		// focus:outline-none focus:shadow-outline-blue focus:border-blue-300
+		// active:text-gray-800 active:bg-gray-50 transition duration-150 ease-in-out
+		// disabled:cursor-not-allowed`,
+    // buttonPrimary: 'inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-700 transition duration-150 ease-in-out disabled:cursor-not-allowed',
 
     tableRow: 'bg-gray-100 hover:bg-gray-200 transition ease-in-out duration-150',
     tableRowStriped: 'bg-gray-100 even:bg-gray-200 hover:bg-gray-300 transition ease-in-out duration-150',
@@ -111,19 +111,41 @@ const light_base = {
 }
 
 const button = [
-    { $default: "rounded inline-flex items-center justify-center @transition disabled:cursor-not-allowed disabled:bg-transparent disabled:opacity-50 focus:outline-none border" }, // <-- applied to all buttons
-    { $default: "$button", // <-- this is pulled from the theme during composeDefaults and overwritten
-        Primary: "$buttonPrimary", // <-- this is pulled from the theme during composeDefaults and overwritten
-        Success: "$buttonSuccess",
-        Danger: "$buttonDanger",
-        Info: "$buttonInfo"
-    },
-    { $default: "px-4 py-1 @textBase", // <<-- padding based on size
-        Large: "px-6 py-2 @textLarge",
-        Small: "px-2 py-0 @textSmall"
-    },
-    { Block: "w-full" }
+// add base styles
+	{ $default: "rounded inline-flex items-center justify-center @transition disabled:cursor-not-allowed disabled:bg-transparent disabled:opacity-50 focus:outline-none",
+		Text: "inline-flex items-center justify-center @transition disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none"
+ 	},
+// add text colors
+	{ $default: "text-gray-400 disabled:text-gray-300",
+		Primary: "text-blue-400 disabled:text-blue-300",
+		Success: "text-green-400 disabled:text-green-300",
+		Danger: "text-red-400 disabled:text-red-300",
+		Info: "text-teal-400 disabled:text-teal-300"
+	},
+// add borders
+	// { $default: "border-gray-400",
+	// 	Primary: "border-blue-400",
+	// 	Success: "border-green-400",
+	// 	Danger: "border-red-400",
+	// 	Info: "border-teal-400",
+	// 	Text: "border-none"
+	// },
+// add hover
+	{ $default: "hover:bg-gray-400 hover:text-white",
+		Primary: "hover:bg-blue-400 hover:text-white",
+		Success: "hover:bg-green-400 hover:text-white",
+		Danger: "hover:bg-red-400 hover:text-white",
+		Info: "hover:bg-teal-400 hover:text-white",
+		Text: ""
+	},
+// add padding
+	{ $default: "px-4 py-1 @textBase",
+		Large: "px-6 py-2 @textLarge",
+		Small: "px-2 py-0 @textSmall",
+	},
+	{ Block: "w-full" }
 ]
+
 const input = [
     { $default: "w-full block rounded cursor-pointer disabled:cursor-not-allowed @transition @text @placeholder @inputBg @inputBorder" },
     { $default: "@paddingBase @textBase", // <<-- padding based on size
@@ -139,19 +161,19 @@ const navitem = [
     { $default: "@menuBg @menuBgHover @menuText @menuTextHover",
         Active: "@menuBgActive @menuBgActiveHover @menuTextActive @menuTextActiveHover" }
 ]
-const textbutton = [
-    { $default: "@transition inline-flex px-2 hover:font-bold disabled:font-normal disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none" },
-    { $default: "$textbutton",
-        Info: "text-blue-400 hover:text-blue-500 disabled:text-blue-400"
-    },
-    { $default: "text-base",
-        Large: "text-lg",
-        Small: "text-sm"
-    },
-    { $default: "font-normal cursor-pointer",
-        Active: "font-bold cursor-default"
-    }
-]
+// const textbutton = [
+//     { $default: "@transition inline-flex px-2 hover:font-bold disabled:font-normal disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none" },
+//     { $default: "$textbutton",
+//         Info: "text-blue-400 hover:text-blue-500 disabled:text-blue-400"
+//     },
+//     { $default: "text-base",
+//         Large: "text-lg",
+//         Small: "text-sm"
+//     },
+//     { $default: "font-normal cursor-pointer",
+//         Active: "font-bold cursor-default"
+//     }
+// ]
 const list = [
     { $default: "@transition rounded"
     },
@@ -162,17 +184,10 @@ const list = [
     }
 ]
 const $compositions = {
-    $defaults: [
-        "input",
-        "navitemTop",
-        "navitemTopActive",
-        "navitemSide",
-        "navitemSideActive"
-    ], // <-- these are generated in theme during composeDefaults
     button,
-    input,
-    navitem,
-    textbutton,
+    // input,
+    // navitem,
+    // textbutton,
     list
 }
 const TEST_THEME_BASE = {
@@ -182,45 +197,45 @@ const TEST_THEME_BASE = {
     tableRow: 'bg-white hover:bg-gray-200 @transition',
     tableRowStriped: 'bg-white even:bg-gray-100 hover:bg-gray-200 @transition',
 
-    button: "text-gray-400 border-gray-400 hover:bg-gray-400 hover:text-white disabled:text-gray-400",
-    buttonPrimary: "text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white disabled:text-blue-400",
-    buttonSuccess: "text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white disabled:text-blue-400",
-    buttonDanger: "text-red-400 border-red-400 hover:bg-red-400 hover:text-white disabled:text-red-400",
-    buttonInfo: "text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white disabled:text-blue-400",
+    // button: "text-gray-400 border-gray-400 hover:bg-gray-400 hover:text-white disabled:text-gray-400",
+    // buttonPrimary: "text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white disabled:text-blue-400",
+    // buttonSuccess: "text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white disabled:text-blue-400",
+    // buttonDanger: "text-red-400 border-red-400 hover:bg-red-400 hover:text-white disabled:text-red-400",
+    // buttonInfo: "text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white disabled:text-blue-400",
 
     textbutton: "text-gray-400 hover:text-gray-500 disabled:text-gray-400",
 
     $compositions
 }
 
-const compose = (themeType, theme) => {
-    const [base, ...rest] = themeType.split(/(?<!^)(?=[A-Z])/);
-    if (!theme.$compositions) return theme[base] || "";
-    if (!theme.$compositions[base]) return theme[base] || "";
+// const compose = (themeType, theme) => {
+//     const [base, ...rest] = themeType.split(/(?<!^)(?=[A-Z])/);
+//     if (!theme.$compositions) return theme[base] || "";
+//     if (!theme.$compositions[base]) return theme[base] || "";
+//
+//     return theme.$compositions[base].reduce((a, c) => {
+//         let option = c.$default || "";
+//         for (const opt of rest) {
+//             if (opt in c) {
+//                 option = c[opt];
+//             }
+//         }
+//         a.push(option);
+//         return a;
+//     }, []).filter(Boolean).join(" ");
+// }
+//
+//
+//
+// const handler = {
+//     get: (theme, definition, receiver) => {
+//         if (!(definition in theme)) {
+//             theme[definition] = compose(definition, theme);
+//         }
+//         return theme[definition];
+//     }
+// }
+//
+// export default new Proxy(TEST_THEME_BASE, handler);
 
-    return theme.$compositions[base].reduce((a, c) => {
-        let option = c.$default || "";
-        for (const opt of rest) {
-            if (opt in c) {
-                option = c[opt];
-            }
-        }
-        a.push(option);
-        return a;
-    }, []).filter(Boolean).join(" ");
-}
-
-
-
-const handler = {
-    get: (theme, definition, receiver) => {
-        if (!(definition in theme)) {
-            theme[definition] = compose(definition, theme);
-        }
-        return theme[definition];
-    }
-}
-
-export default new Proxy(TEST_THEME_BASE, handler);
-
-//export default composeTheme(TEST_THEME_BASE)
+export default composeTheme(TEST_THEME_BASE)

@@ -21,10 +21,14 @@ import logo from './Logo.js'
 export const Create = ({createState, setValues, item, dataItems, ...props}) => {
     const theme = useTheme();
     dataItems = dataItems.sort((a, b) => a.data.index - b.data.index)
+
     if (!item) {
-        item = dataItems.filter(d => d.data.sectionLanding && d.data.index === 0).pop()
+        item = dataItems.filter(d => d.data.sectionLanding && d.data.section === props.section).pop()
     }
     if (!item || !item.data) return null
+
+
+// console.log("<PageEdit>", item, dataItems, props)
 
     const {data} = item
     let navItems = dataItems
@@ -89,8 +93,8 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                                 className={`p-4 border-none active:border-none focus:outline-none custom-bg h-full ${theme.text}`}
                                 value={Sections.value}
                                 onChange={Sections.onChange}
-                                DisplayComp={SectionView}
-                                EditComp={SectionEdit}
+                                // DisplayComp={SectionView}
+                                // EditComp={SectionEdit}
                             />
                         </div>
                     </div>
