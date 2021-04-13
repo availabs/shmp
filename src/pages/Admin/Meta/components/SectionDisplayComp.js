@@ -25,6 +25,6 @@ export default DisplayComp;
 
 const DefaultDisplayComp = ({ value }) => (
   <div className="whitespace-pre-wrap">
-    { JSON.stringify(value, null, 3) }
+    { typeof value !== "string" ? JSON.stringify(value, null, 3) : value }
   </div>
 )
