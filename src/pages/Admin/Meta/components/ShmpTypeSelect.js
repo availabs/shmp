@@ -2,7 +2,7 @@ import React from "react"
 
 import get from "lodash.get"
 
-import { Select, useTheme } from "@availabs/avl-components"
+import { Select, /*useTheme*/ } from "@availabs/avl-components"
 
 const TypeSelect = ({ Attribute, onChange, value }) => {
   value = value || {};
@@ -26,7 +26,7 @@ const TypeSelect = ({ Attribute, onChange, value }) => {
 
 // console.log("<type-select> Selected:", Selected, value);
 
-  const theme = useTheme();
+  // const theme = useTheme();
 
   return (
     <div>

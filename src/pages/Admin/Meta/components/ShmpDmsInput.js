@@ -2,7 +2,7 @@ import React from "react"
 
 // import { useDms } from "../contexts/dms-context"
 // import { useAuth } from "../contexts/auth-context"
-import { useTheme } from "@availabs/avl-components"
+// import { useTheme } from "@availabs/avl-components"
 
 // import { useSetSections } from "../wrappers/dms-create"
 
@@ -15,7 +15,7 @@ const DmsInput = dmsInputWrapper(({ Sections, hasFocus, id, autoFocus = false, o
       { Sections.map(section =>
           <div key={ section.index }>
             { !section.title ? null :
-              <div className="text-lg font-bold">{ section.title }</div>
+              <div className="text-lg font-bold">{ section.title }<span className='text-sm text-blue-500'>{section}</span></div>
             }
             { section.attributes.map(({ Input, key, ...att }, i) =>
                 <div key={ key }>

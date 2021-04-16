@@ -5,16 +5,16 @@ import get from "lodash.get"
 import { getInputData } from "components/dms/wrappers/utils/get-dms-input"
 
 const DisplayComp = props => {
-  const { title, section, element } = get(props, "value", {}),
-    { key, name, type, value } = element;
+  const { /*title, section,*/ element } = get(props, "value", {}),
+    { /*key, name,*/ type, value } = element;
 
   const DisplayComp = React.useMemo(() => {
     return getInputData(type).getDisplayComp() || DefaultDisplayComp;
-  }, [type, value]);
+  }, [type, /*value*/]);
 
   return (
     <div>
-      <div className="border border-dashed rounded p-2">
+      <div className="rounded p-2">
         <DisplayComp value={ value } isRaw={ false }/>
       </div>
     </div>

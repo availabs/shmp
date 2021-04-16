@@ -35,6 +35,9 @@ const pageSection = {
           },
           { key: "Simple Text",
             type: "text"
+          },
+          { key: "Asset Table",
+            type: "asset-table"
           }
         ]
       }

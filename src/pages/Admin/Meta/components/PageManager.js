@@ -63,7 +63,7 @@ export default ({ dataItems=[], interact, ...props }) => {
   const nextIndex = dataItems
     .filter(d => d.data.sectionLanding)
     .reduce((a, c) => {
-      Math.max(a, +get(c, ["data", "index"], 0))
+      return Math.max(a, +get(c, ["data", "index"], 0))
     }, -1) + 1;
 
   return (

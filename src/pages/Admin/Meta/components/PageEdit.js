@@ -8,8 +8,8 @@ import {DmsButton} from "components/dms/components/dms-button"
 
 
 // import SectionManager from './SectionManager'
-import SectionView from './SectionView'
-import SectionEdit from './SectionEdit'
+// import SectionView from './SectionView'
+// import SectionEdit from './SectionEdit'
 import SectionSideNav from './SideNav'
 import AuthMenu from 'pages/Auth/AuthMenu'
 
@@ -93,8 +93,6 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                                 className={`p-4 border-none active:border-none focus:outline-none custom-bg h-full ${theme.text}`}
                                 value={Sections.value}
                                 onChange={Sections.onChange}
-                                // DisplayComp={SectionView}
-                                // EditComp={SectionEdit}
                             />
                         </div>
                     </div>

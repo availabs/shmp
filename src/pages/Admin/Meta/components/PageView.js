@@ -3,7 +3,6 @@ import get from 'lodash.get'
 
 import {TopNav} from '@availabs/avl-components'
 import AuthMenu from 'pages/Auth/AuthMenu'
-// import SectionView from './SectionView'
 import SectionSideNav from './SideNav'
 
 import SectionView from "./SectionViewNew"

@@ -146,7 +146,7 @@ const button = [
 	{ Block: "w-full" }
 ]
 
-const input = [
+/*const input = [
     { $default: "w-full block rounded cursor-pointer disabled:cursor-not-allowed @transition @text @placeholder @inputBg @inputBorder" },
     { $default: "@paddingBase @textBase", // <<-- padding based on size
         Large: "@paddingLarge @textLarge",
@@ -160,7 +160,7 @@ const navitem = [
     },
     { $default: "@menuBg @menuBgHover @menuText @menuTextHover",
         Active: "@menuBgActive @menuBgActiveHover @menuTextActive @menuTextActiveHover" }
-]
+]*/
 // const textbutton = [
 //     { $default: "@transition inline-flex px-2 hover:font-bold disabled:font-normal disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none" },
 //     { $default: "$textbutton",

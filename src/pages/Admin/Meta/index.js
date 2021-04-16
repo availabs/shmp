@@ -37,7 +37,8 @@ const DisplayControls = ({ value, edit, remove, moveUp, canMoveUp, moveDown, can
   <div>
     <div className="flex w-full items-center px-2">
       <div className="flex-1 font-bold text-lg">
-        { get(value, "title", "Untitled Section") }
+        { get(value, "title", "Untitled Section") } 
+        <span className='text-sm text-blue-400'> { get(value, "section", "") } </span>
       </div>
       <div className="flex-0">
         <div className={ `
@@ -89,7 +90,6 @@ const DisplayControls = ({ value, edit, remove, moveUp, canMoveUp, moveDown, can
 const EditComponent = React.forwardRef(({ Input, children, controls = {}, ...props }, ref) => {
   const {
     addToArray,
-    createNewItem,
     buttonDisabled,
     cancelEdit
   } = controls;
@@ -98,7 +98,6 @@ const EditComponent = React.forwardRef(({ Input, children, controls = {}, ...pro
       <div className="mb-2">
         <Input { ...props } ref={ ref }/>
       </div>
-
       <div className="flex">
         <div className="flex-1">
           <Button onClick={ addToArray }

@@ -34,9 +34,9 @@ const Edit = React.forwardRef(({ Attribute, id, autoFocus = false, onFocus, onBl
     value = value || {};
 
 
-    const Props = { ...props, ...useDms(), user: useAuth().user };
-    const sections = [],//useSetSections(Attribute.Format),
-        Sections = [];//useDmsSections(sections, value, onChange, Props);
+    // const Props = { ...props, ...useDms(), user: useAuth().user };
+    // const sections = [],//useSetSections(Attribute.Format),
+     const    Sections = [];//useDmsSections(sections, value, onChange, Props);
 
     let ElementType = get(Sections, '[0].attributes',[]).filter(a => a.key === 'element-type').pop()
     let ElementData = get(Sections, '[0].attributes',[]).filter(a => a.key === 'element-data').pop()
