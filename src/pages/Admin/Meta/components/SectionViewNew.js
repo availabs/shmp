@@ -11,10 +11,10 @@ const SectionView = ({ title, section, element, isRaw = true }) => {
 
   return (
     <div>
-      <div className="text-xl font-bold">
+      <div className="text-3xl font-bold">
         { title } <span className='text-sm text-blue-500'>{section}</span>
       </div>
-      <div className="border border-dashed rounded p-2">
+      <div className="rounded py-4">
         <DisplayComp value={ value } isRaw={ isRaw }/>
       </div>
     </div>

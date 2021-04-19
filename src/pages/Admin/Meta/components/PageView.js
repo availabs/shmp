@@ -62,19 +62,23 @@ console.log('PageView item, dataItems', item,dataItems,props)
                	}
             </div>
             <div className={`w-full hasValue flex-1 ${subNav.length ? 'mt-24' : 'mt-12'}`}>
-                {   data.showSidebar ?
-                    <SectionSideNav sections={ get(data, `sections`, []) } /> : ''
-                }
-                <div className={`h-full ${data.showSidebar ? 'sm:ml-56' : ''} p-1 md:p-6`}>
-
-                    <div className={'bg-white'}>
-                    	<div className='py-8 max-w-6xl mx-auto grid grid-cols-1 gap-y-2'>
-                        { get(data, `sections`, [])
-                            .map((section, i) =>
-                              <SectionView key={ i } { ...section }/>
-                            )
-                        }
-                      </div>
+                <div className={`h-full`}>
+                    <div className={'bg-white h-full flex justify-justify flex-col lg:flex-row'}>
+                        <div className='hidden xl:block xl:w-56'>
+                            { data.showSidebar?
+                                <SectionSideNav sections={ get(data, `sections`, []) } /> : ''
+                            }
+                        </div>
+                        <div className='py-8 flex-1 '>
+                            <div className='font-sm font-light text-xl leading-9  max-w-4xl mx-auto p-4 md:p-6'>
+                                { get(data, `sections`, [])
+                                    .map((section, i) =>
+                                      <SectionView key={ i } { ...section }/>
+                                    )
+                                }
+                            </div>
+                        </div>
+                        <div className='w-full xl:block lg:w-64 order-first lg:order-last' />
                     </div>
                 </div>
             </div>

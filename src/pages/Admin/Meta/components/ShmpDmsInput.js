@@ -15,7 +15,7 @@ const DmsInput = dmsInputWrapper(({ Sections, hasFocus, id, autoFocus = false, o
       { Sections.map(section =>
           <div key={ section.index }>
             { !section.title ? null :
-              <div className="text-lg font-bold">{ section.title }<span className='text-sm text-blue-500'>{section}</span></div>
+              <div className="text-2xl font-bold">{ section.title }<span className='text-sm text-blue-500'>{section}</span></div>
             }
             { section.attributes.map(({ Input, key, ...att }, i) =>
                 <div key={ key }>

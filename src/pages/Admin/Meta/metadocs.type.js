@@ -30,7 +30,7 @@ const pageSection = {
       { key: "element",
         type: "type-select",
         attributes: [
-          { key: "WSYWIG",
+          { key: "Draft Editor",
             type: "richtext"
           },
           { key: "Simple Text",
