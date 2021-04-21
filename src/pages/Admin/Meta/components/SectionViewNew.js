@@ -3,8 +3,10 @@ import React from "react"
 import { getInputData } from "components/dms/wrappers/utils/get-dms-input"
 
 const SectionView = ({ title, section, element, isRaw = true }) => {
-  const { /* key, name, */ type, value } = element;
+  const { key, /* name, */ type, value } = element;
 
+
+console.log(key, type, value);
   const DisplayComp = React.useMemo(() => {
     return getInputData(type).getDisplayComp() || DefaultDisplayComp;
   }, [type, /*value*/]);
@@ -15,7 +17,7 @@ const SectionView = ({ title, section, element, isRaw = true }) => {
         { title } <span className='text-sm text-blue-500'>{section}</span>
       </div>
       <div className="rounded py-4">
-        <DisplayComp value={ value } isRaw={ isRaw }/>
+        <DisplayComp key={ key } value={ value } isRaw={ isRaw }/>
       </div>
     </div>
   )
