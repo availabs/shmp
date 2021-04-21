@@ -22,15 +22,15 @@ Edit.settings = {
 }
 
 const View = ({value}) => {
+// console.log("VALUE:", value)
     if (!value) return false
-    let data = value['element-data']
+    // let data = value['element-data']
 
     return (
         <pre className='relative w-full border border-dashed p-1'>
-            {data}
             <AssetsTable
                 viewOnly={true}
-                value={ data }
+                value={ value }
             />
         </pre>
     )
