@@ -38,6 +38,9 @@ const pageSection = {
           },
           { key: "Asset Table",
             type: "asset-table"
+          },
+          { key: "NFIP Table",
+            type: "nfip-table"
           }
         ]
       }

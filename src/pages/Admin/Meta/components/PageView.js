@@ -73,7 +73,7 @@ console.log('PageView item, dataItems', item,dataItems,props)
                             <div className='font-sm font-light text-xl leading-9  max-w-4xl mx-auto p-4 md:p-6'>
                                 { get(data, `sections`, [])
                                     .map((section, i) =>
-                                      <SectionView key={ i } { ...section }/>
+                                      <SectionView  key={ `${ item.id }-${ i }` } { ...section }/>
                                     )
                                 }
                             </div>

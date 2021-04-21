@@ -23,13 +23,13 @@ Edit.settings = {
 
 const View = ({value}) => {
     if (!value) return false
-    let data = value['element-data']
+    // let data = value['element-data']
 
     return (
         <pre className='relative w-full'>
             <NFIPTable
                 viewOnly={true}
-                value={ data }
+                value={ value }
             />
         </pre>
     )
