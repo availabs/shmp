@@ -3,9 +3,7 @@ import {SideNav, useTheme} from '@availabs/avl-components'
 import AuthMenu from 'pages/Auth/AuthMenu'
 import Logo from './Logo.js'
 
-const AdminTheme = {
-  sidebarBg: 'bg-white'
-}
+
 
 const AdminLayout = ({children}) => {
 	const theme = useTheme()

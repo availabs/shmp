@@ -4,12 +4,19 @@ import {useTheme, SideNav} from '@availabs/avl-components'
 import AuthMenu from 'pages/Auth/AuthMenu'
 import logo from './Logo.js'
 
+const AdminTheme = {
+  // sidebarBg: 'bg-gray-100',
+  // navitemSide: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-blue-800 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
+  // navitemSideActive: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-blue-500 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out'
+}
+
 const AdminLayout = ({children}) => {
 	const theme = useTheme()
 	return (
 	  	<div className="w-full">
 	  		<div className="flex min-h-screen">
 		  		<SideNav  
+		  			customTheme={AdminTheme}
 		  			logo={<div className='border-b border-gray-200'>{logo('SHMP')}</div>}
 		  			topMenu={<div className='border-b border-gray-200 pb-3'><AuthMenu /></div>}
 		    		menuItems={[
@@ -23,7 +30,7 @@ const AdminLayout = ({children}) => {
 			            },
 		    			{
 			                name: 'Plan',
-			                path: `/cms/`,
+			                path: `/meta/`,
 			                //icon: 'fa fa-edit',
 			                className: 'font-medium text-lg'
 			            },
