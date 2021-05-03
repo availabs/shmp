@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useMemo} from 'react'
 import {Input, Select, Table, useFalcor} from '@availabs/avl-components'
 import _ from 'lodash'
 import get from 'lodash.get'
@@ -56,25 +56,36 @@ function renderMetaOptions(props, state, setState, cache) {
     )
 }
 
-function processData(state, cache) {
+function geoReverseLookupTable(cache){
+    let lookupTable = {};
+    _.keys(get(cache, ['geo'], {}))
+        .forEach(county => {
+            get(cache, ['geo', county, 'municipalities', 'value'], [])
+                .forEach(municipality => {
+                    lookupTable[municipality] = county
+                })
+        })
+    return lookupTable
+}
+
+function ProcessData(state, cache) {
     const childGeo = nameMapping[state.geo];
-    const geoGraph = get(cache, ['geo', '36', childGeo, 'value'], []),
-        allGeoids = _.keys(get(cache, ['geo'], {}));
+    const geoGraph = get(cache, ['geo', '36', childGeo, 'value'], []);
     let data = [],
         columns = [];
-
+    let lookupTable = useMemo(() => geoReverseLookupTable(cache), [cache]);
     if (!geoGraph || !geoGraph.length) return {data, columns};
 
     geoGraph
         .filter(geoId => childGeo === 'counties' ? geoId.length === 5 : geoId.length > 5)
         .filter(geoId => {
             if (childGeo === 'counties') {
-                return get(state, ['filterBy'], get(cache, ['geo', '36', 'counties', 'value'], [])).includes(geoId)
+                return !get(state, ['filterBy']).length || get(state, ['filterBy'], get(cache, ['geo', '36', 'counties', 'value'], [])).includes(geoId);
             } else if (childGeo === 'municipalities') {
-                let countyGeo = allGeoids.filter(countyGeo => get(cache, ['geo', countyGeo, 'municipalities', 'value'], []).includes(geoId))
+                let countyGeo = lookupTable[geoId];
                 return !state.filterBy.length || (state.filterBy.length && _.intersection(state.filterBy, countyGeo).length);
             } else {
-                return true
+                return true;
             }
         })
         .forEach(geoId => {
@@ -107,7 +118,7 @@ function processData(state, cache) {
 
 function renderTable(state, cache) {
     if (!state.cols || !state.geo) return null;
-    return <Table {...processData(state, cache)} initialPageSize={Math.min(100, state.pageSize || 10)}/>
+    return <Table {...ProcessData(state, cache)} initialPageSize={Math.min(100, state.pageSize || 10)}/>
 }
 
 function NFIPTable(props) {
