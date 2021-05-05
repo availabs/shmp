@@ -17,7 +17,7 @@ const View = ({item, dataItems, ...props}) => {
     }
     if (!item || !item.data) return null //<div> <h4>Data Configuration Error</h4> We cannot find the driods you are looking for. </div>
 
-console.log('PageView item, dataItems', item,dataItems,props)
+    console.log('PageView item, dataItems', item, dataItems, props)
 
     const {data} = item
     let navItems = dataItems
@@ -31,7 +31,7 @@ console.log('PageView item, dataItems', item,dataItems,props)
                 itemClass: 'font-bold',
                 children: dataItems
                     .filter(({data}) => !data.sectionLanding && (data.section === d.data.section))
-                    .map(p => ({name: p.data.title, id:p.id, path: `/p/view/${p.id}`, itemClass: 'font-thin -mt-2'})),
+                    .map(p => ({name: p.data.title, id: p.id, path: `/p/view/${p.id}`, itemClass: 'font-thin -mt-2'})),
                 rest: props
             }
         })
@@ -46,39 +46,39 @@ console.log('PageView item, dataItems', item,dataItems,props)
                     menuItems={navItems}
                     open={false}
                     logo={logo('SHMP')}
-                    rightMenu={<AuthMenu />}
+                    rightMenu={<AuthMenu/>}
                 />
                 {subNav.length ?
-                	<TopNav
-                		menuItems={subNav}
-                		open={false}
-                		customTheme={{
-                			sidebarBg: 'bg-white',
-                			topNavHeight: '12' ,
-                			navitemTop: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-gray-800 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
+                    <TopNav
+                        menuItems={subNav}
+                        open={false}
+                        customTheme={{
+                            sidebarBg: 'bg-white',
+                            topNavHeight: '12',
+                            navitemTop: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-gray-800 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
                             navitemTopActive: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-blue-500 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out'
-                		}} />
-                	: null
-               	}
+                        }}/>
+                    : null
+                }
             </div>
             <div className={`w-full hasValue flex-1 ${subNav.length ? 'mt-24' : 'mt-12'}`}>
                 <div className={`h-full`}>
                     <div className={'bg-white h-full flex justify-justify flex-col lg:flex-row'}>
                         <div className='hidden xl:block xl:w-56'>
-                            { data.showSidebar?
-                                <SectionSideNav sections={ get(data, `sections`, []) } /> : ''
+                            {data.showSidebar ?
+                                <SectionSideNav sections={get(data, `sections`, [])}/> : ''
                             }
                         </div>
                         <div className='py-8 flex-1 '>
                             <div className='font-sm font-light text-xl leading-9  max-w-4xl mx-auto p-4 md:p-6'>
-                                { get(data, `sections`, [])
+                                {get(data, `sections`, [])
                                     .map((section, i) =>
-                                      <SectionView key={ `${ item.id }-${ i }` } { ...section }/>
+                                        <SectionView key={`${item.id}-${i}`} {...section}/>
                                     )
                                 }
                             </div>
                         </div>
-                        <div className='w-full xl:block lg:w-64 order-first lg:order-last' />
+                        <div className='w-full xl:block lg:w-64 order-first lg:order-last'/>
                     </div>
                 </div>
             </div>

@@ -11,8 +11,6 @@ import AuthMenu from 'pages/Auth/AuthMenu'
 import logo from './Logo.js'
 
 
-
-
 export const Create = ({createState, setValues, item, dataItems, ...props}) => {
     const theme = useTheme();
     dataItems = dataItems.sort((a, b) => a.data.index - b.data.index)
@@ -37,7 +35,12 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                 itemClass: 'font-bold',
                 children: dataItems
                     .filter(({data}) => !data.sectionLanding && (data.section === d.data.section))
-                    .map(p => ({name: p.data.title, id:p.id, path: `/cms/edit/${p.id}`, itemClass: 'font-thin -mt-2'})),
+                    .map(p => ({
+                        name: p.data.title,
+                        id: p.id,
+                        path: `/cms/edit/${p.id}`,
+                        itemClass: 'font-thin -mt-2'
+                    })),
                 rest: props
             }
         })
@@ -57,28 +60,28 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                 <TopNav
                     menuItems={navItems}
                     logo={logo('SHMP')}
-                    rightMenu={<AuthMenu />}
+                    rightMenu={<AuthMenu/>}
                 />
                 {subNav.length ?
-                	<TopNav
-                		menuItems={subNav}
-                		customTheme={{
+                    <TopNav
+                        menuItems={subNav}
+                        customTheme={{
                             sidebarBg: 'bg-white',
-                            topNavHeight: '12' ,
+                            topNavHeight: '12',
                             navitemTop: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-gray-800 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
                             navitemTopActive: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-blue-500 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out'
-                        }} />
-                	: null
-               	}
+                        }}/>
+                    : null
+                }
             </div>
 
             <div className={`w-full hasValue flex-1 ${subNav.length ? 'mt-24' : 'mt-12'}`}>
-                
+
                 <div className={`h-full`}>
                     <div className={'bg-white h-full flex justify-justify flex-col lg:flex-row'}>
                         <div className='hidden xl:block xl:w-56'>
-                            { ShowSidebar.value ?
-                                <SectionSideNav sections={ get(data, `sections`, []) } /> : ''
+                            {ShowSidebar.value ?
+                                <SectionSideNav sections={get(data, `sections`, [])}/> : ''
                             }
                         </div>
                         <div className='py-8 flex-1 '>
@@ -124,7 +127,7 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                                         onChange={ShowSidebar.onChange}
                                     />
                                 </div>
-                                 <div className="mt-2 mb-4 max-w-2xl">
+                                <div className="mt-2 mb-4 max-w-2xl">
                                     <DmsButton
                                         className="w-full bg-blue-100"
                                         buttonTheme='buttonPrimary'
