@@ -27,6 +27,7 @@ const reducer = (state, action) => {
 }
 
 export default ({dataItems = [], interact, ...props}) => {
+    console.log(props)
     const [newSectionTitle, setNewSectionTitle] = useState('');
 
     const droppedSection = React.useCallback((start, end) => {
@@ -75,7 +76,8 @@ export default ({dataItems = [], interact, ...props}) => {
                     <Input value={newSectionTitle} onChange={setNewSectionTitle}
                            className='w-full text-xl p-4 flex-1 rounded-lg shadow'
                            placeholder="Enter section name..." autoFocus/>
-                    <DmsButton large className="flex-0 text-xl ml-3"
+                    <DmsButton large className="flex-0 text-xl ml-3 bg-blue-100"
+                               buttonTheme='buttonPrimary'
                                action={{
                                    disabled: !Boolean(newSectionTitle),
                                    action: 'api:create',
@@ -106,7 +108,7 @@ export default ({dataItems = [], interact, ...props}) => {
                                                 <div style={{flexGrow: 1, display: "flex", alignItems: "center"}}>
                                                     <div style={{fontWeight: "bold", fontSize: "1.5rem", width: "30px"}}
                                                          onClick={
-                                                             e => dispatch({
+                                                             () => dispatch({
                                                                  type: state[d.id] === "opened" ? "close" : "open",
                                                                  id: d.id
                                                              })
@@ -151,6 +153,7 @@ export default ({dataItems = [], interact, ...props}) => {
                                                                     </Link>
                                                                 </div>
                                                                 <DmsButton item={d.id} action="edit"
+                                                                           buttonTheme='buttonPrimary'
                                                                            className="ml-3 flex-0"/>
                                                                 <DmsButton item={d.id} action="api:delete"
                                                                            className="ml-3 flex-0"/>

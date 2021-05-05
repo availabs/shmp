@@ -38,7 +38,7 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                     .map(p => ({
                         name: p.data.title,
                         id: p.id,
-                        path: `/cms/edit/${p.id}`,
+                        path: `/meta/edit/${p.id}`,
                         itemClass: 'font-thin -mt-2'
                     })),
                 rest: props
@@ -121,7 +121,7 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                                 <div>
                                     <label className='pr-5'>Sidebar</label>
                                     <ShowSidebar.Input
-                                        className={`ml-2 ${theme.text}`}
+                                        className={`ml-2 ${theme.text} w-0.5 inline-block`}
                                         autoFocus={true}
                                         value={ShowSidebar.value}
                                         onChange={ShowSidebar.onChange}
