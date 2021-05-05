@@ -109,8 +109,8 @@ const EditComponent = React.forwardRef(({ Input, children, controls = {}, ...pro
       <div className="mb-2">
         <Input { ...props } ref={ ref }/>
       </div>
-      <div className="flex">
-        <div className="flex-1">
+      <div className="flex float-right">
+        <div className="flex-0">
           <Button onClick={ addToArray }
             buttonTheme="buttonPrimary"
             disabled={ buttonDisabled }>

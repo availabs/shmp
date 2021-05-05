@@ -26,12 +26,12 @@ const View = ({value}) => {
     // let data = value['element-data']
 
     return (
-        <pre className='relative w-full'>
+        <div className='relative w-full p-1'>
             <NFIPTable
                 viewOnly={true}
                 value={ value }
             />
-        </pre>
+        </div>
     )
 }
 

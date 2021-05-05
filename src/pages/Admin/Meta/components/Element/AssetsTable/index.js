@@ -27,12 +27,12 @@ const View = ({value}) => {
     // let data = value['element-data']
 
     return (
-        <pre className='relative w-full border border-dashed p-1'>
+        <div className='relative w-full p-1'>
             <AssetsTable
                 viewOnly={true}
                 value={ value }
             />
-        </pre>
+        </div>
     )
 }
 

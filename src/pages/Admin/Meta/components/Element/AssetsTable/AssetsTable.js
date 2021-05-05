@@ -4,6 +4,7 @@ import _ from 'lodash'
 import get from 'lodash.get'
 import filterByTypes from './meta'
 import {fnum} from "utils/fnum";
+import divider from 'components/UI/divider'
 
 const nameMapping = {
     'Jurisdiction': 'jurisdiction',
@@ -53,7 +54,7 @@ function renderMetaOptions(props, state, setState, cache) {
     }
 
     return (
-        <React.Fragment>
+        <div className={'bg-blue-50 shadow sm:rounded-md px-4 py-5 sm:p-6'}>
             <label> Select Geography Level: </label>
             <Select
                 key={'geo'}
@@ -108,15 +109,17 @@ function renderMetaOptions(props, state, setState, cache) {
                 !state.cols ? null :
                     <React.Fragment>
                         <p>Select Properties</p>
-                        <List>
+                        <List className={'bg-blue-50 hover:bg-blue-50'}>
                             {Object.keys(state.cols)
                                 .map(column =>
                                     <ListItemRemovable
+                                        className={'bg-blue-50 hover:bg-blue-50'}
                                         item={
                                             <React.Fragment>
                                                 <p>{column}</p>
-                                                <List>
+                                                <List className={'bg-blue-50 hover:bg-blue-50'}>
                                                     <ListItemRemovable
+                                                        className={'bg-blue-50 hover:bg-blue-50'}
                                                         item={
                                                             <React.Fragment>
                                                                 <label>Sort</label>
@@ -160,15 +163,16 @@ function renderMetaOptions(props, state, setState, cache) {
                         </List>
                     </React.Fragment>
             }
-            <label>Page Size</label>
+            <label className={'pr-5'}>Page Size</label>
             <Input
+                className={'bg-blue-50'}
                 key={'pageSize'}
                 type={'number'}
                 placeholder={'10'}
                 value={state.pageSize}
                 onChange={e => handleChange(Object.assign({}, state, {pageSize: parseInt(e)}))}
             />
-        </React.Fragment>
+        </div>
     )
 }
 
@@ -244,7 +248,7 @@ function processData(state, cache) {
 
 function renderTable(state, cache) {
     if (!state.cols || !state.geo) return null;
-    return <Table {...processData(state, cache)} initialPageSize={Math.min(100, state.pageSize || 10)}/>
+    return <Table {...processData(state, cache)} initialPageSize={Math.min(100, state.pageSize || 10)} striped/>
 }
 
 function AssetsTable(props) {
@@ -301,7 +305,7 @@ function AssetsTable(props) {
     return (
         <div>
             {props.viewOnly ? null : renderMetaOptions(props, state, setState, falcorCache)}
-
+            {props.viewOnly ? null : divider}
             {renderTable(state, falcorCache)}
         </div>)
 }

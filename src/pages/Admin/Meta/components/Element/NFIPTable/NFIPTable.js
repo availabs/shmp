@@ -2,6 +2,7 @@ import React, {useEffect, useState, useMemo} from 'react'
 import {Input, Select, Table, useFalcor} from '@availabs/avl-components'
 import _ from 'lodash'
 import get from 'lodash.get'
+import divider from "../../../../../../components/UI/divider";
 
 const nameMapping = {
     'State': 'counties',
@@ -15,7 +16,7 @@ function renderMetaOptions(props, state, setState, cache) {
     }
 
     return (
-        <React.Fragment>
+        <div className={'bg-blue-50 shadow sm:rounded-md px-4 py-5 sm:p-6'}>
             <label> Select Geography Level: </label>
             <Select
                 key={'geo'}
@@ -44,15 +45,16 @@ function renderMetaOptions(props, state, setState, cache) {
                 value={_.uniqBy(['Jurisdiction', ...state.cols])}
                 onChange={e => handleChange(Object.assign(state, {cols: e}))}
             />
-            <label>Page Size</label>
+            <label className={'pr-5'}>Page Size</label>
             <Input
+                className={'bg-blue-50'}
                 key={'pageSize'}
                 type={'number'}
                 placeholder={'10'}
                 value={state.pageSize}
                 onChange={e => handleChange(Object.assign(state, {pageSize: parseInt(e)}))}
             />
-        </React.Fragment>
+        </div>
     )
 }
 
@@ -83,7 +85,7 @@ function ProcessData(state, cache) {
                 return !get(state, ['filterBy']).length || get(state, ['filterBy'], get(cache, ['geo', '36', 'counties', 'value'], [])).includes(geoId);
             } else if (childGeo === 'municipalities') {
                 let countyGeo = lookupTable[geoId];
-                return !state.filterBy.length || (state.filterBy.length && _.intersection(state.filterBy, countyGeo).length);
+                return !state.filterBy.length || (state.filterBy.length && _.intersection(state.filterBy, [countyGeo]).length);
             } else {
                 return true;
             }
@@ -108,7 +110,8 @@ function ProcessData(state, cache) {
             columns.push({
                 Header: column,
                 accessor: column,
-                align: 'center'
+                align: 'center',
+                disableFilters: column !== 'Jurisdiction'
             })
         }
     )
@@ -118,7 +121,7 @@ function ProcessData(state, cache) {
 
 function renderTable(state, cache) {
     if (!state.cols || !state.geo) return null;
-    return <Table {...ProcessData(state, cache)} initialPageSize={Math.min(100, state.pageSize || 10)}/>
+    return <Table {...ProcessData(state, cache)} initialPageSize={Math.min(100, state.pageSize || 10)} striped />
 }
 
 function NFIPTable(props) {
@@ -164,7 +167,7 @@ function NFIPTable(props) {
     return (
         <div>
             {props.viewOnly ? null : renderMetaOptions(props, state, setState, falcorCache)}
-
+            {props.viewOnly ? null : divider}
             {renderTable(state, falcorCache)}
         </div>)
 }

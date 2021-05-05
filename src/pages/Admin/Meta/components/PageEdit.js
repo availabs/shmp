@@ -51,7 +51,6 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
     let ShowSidebar = createState.sections[0].attributes.filter(a => a.key === 'showSidebar').pop()
     let Sections = createState.sections[0].attributes.filter(a => a.key === 'sections').pop()
 
-
     return (
         <div className={`flex items-start flex-col min-h-screen`}>
             <div className='w-full fixed bg-white z-10'>
@@ -91,14 +90,15 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                                 />
                             </div>
                         </div>
-                        
+
 
                         <div className='w-full xl:block lg:w-64 order-first lg:order-last border-b lg:border-none'>
-                            <div className="p-4 border-l fixed">
+                            <div className="p-4 border-l border-blue-300 fixed bg-blue-50">
                                 <h4 className='font-bold '> Page Settings </h4>
                                 <div>
-                                    Title
+                                    <label className='pr-5'>Title</label>
                                     <Title.Input
+                                        className={'bg-blue-50'}
                                         autoFocus={true}
                                         value={Title.value}
                                         placeholder={'Title'}
@@ -106,9 +106,9 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                                     />
                                 </div>
                                 <div>
-                                    url
+                                    <label className='pr-5'>URL</label>
                                     <URL.Input
-                                        className={`ml-2 ${theme.text}`}
+                                        className={`ml-2 ${theme.text} bg-blue-50`}
                                         autoFocus={true}
                                         value={URL.value}
                                         placeholder={'/url'}
@@ -116,18 +116,18 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                                     />
                                 </div>
                                 <div>
-                                    Show Sidebar
+                                    <label className='pr-5'>Sidebar</label>
                                     <ShowSidebar.Input
                                         className={`ml-2 ${theme.text}`}
                                         autoFocus={true}
                                         value={ShowSidebar.value}
-                                        placeholder={'/url'}
                                         onChange={ShowSidebar.onChange}
                                     />
                                 </div>
                                  <div className="mt-2 mb-4 max-w-2xl">
                                     <DmsButton
-                                        className="w-full"
+                                        className="w-full bg-blue-100"
+                                        buttonTheme='buttonPrimary'
                                         large
                                         type="submit"
                                         label='Save'

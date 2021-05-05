@@ -62,12 +62,12 @@ const light_base = {
     headerBg: 'bg-gray-200',
     headerBgHover: "hover:bg-gray-400",
 
-    inputBg: "bg-white disabled:bg-gray-200 cursor-pointer focus:outline-none",
+    inputBg: "bg-white bg-opacity-10 disabled:bg-gray-200 cursor-pointer focus:outline-none",
     inputBorder: "rounded border-0 border-transparent hover:border-gray-300 focus:border-gray-600 disabled:border-gray-200",
     inputBgDisabled: "bg-gray-200 cursor-not-allowed focus:outline-none",
     inputBorderDisabled: "rounded border-2 border-gray-200 hover:border-gray-200",
-    inputBgFocus: "bg-white cursor-pointer focus:outline-none",
-    inputBorderFocus: "rounded border-2 border-transparent hover:border-gray-600 focus:border-gray-600 border-gray-600",
+    inputBgFocus: "bg-white bg-opacity-10 cursor-pointer focus:outline-none",
+    inputBorderFocus: "rounded border-0 border-transparent hover:border-gray-600 focus:border-gray-600 border-gray-600",
 
     textBase: "text-base",
     textSmall: "text-sm",
@@ -92,22 +92,22 @@ const light_base = {
 
     transition: "transition ease-in-out duration-150",
     // button: `
-		// inline-flex items-center
-		// px-4 py-2 border border-gray-300
-		// text-sm leading-5 font-medium
-		// rounded-md text-gray-700 bg-white
-		// hover:text-gray-500
-		// focus:outline-none focus:shadow-outline-blue focus:border-blue-300
-		// active:text-gray-800 active:bg-gray-50 transition duration-150 ease-in-out
-		// disabled:cursor-not-allowed`,
+	// 	inline-flex items-center
+	// 	px-4 py-2 border border-gray-300
+	// 	text-sm leading-5 font-medium
+	// 	rounded-md text-gray-700 bg-white
+	// 	hover:text-gray-500
+	// 	focus:outline-none focus:shadow-outline-blue focus:border-blue-300
+	// 	active:text-gray-800 active:bg-gray-50 transition duration-150 ease-in-out
+	// 	disabled:cursor-not-allowed`,
     // buttonPrimary: 'inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-700 transition duration-150 ease-in-out disabled:cursor-not-allowed',
 
-    tableRow: 'bg-gray-100 hover:bg-gray-200 transition ease-in-out duration-150',
+    tableRow: 'px-6 py-4 whitespace-nowrap text-sm font-sans font-medium text-gray-900',
     tableRowStriped: 'bg-gray-100 even:bg-gray-200 hover:bg-gray-300 transition ease-in-out duration-150',
 
-    tableCell: 'px-4 py-1 whitespace-no-wrap',
+    tableCell: 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
 
-    tableHeader: "px-4 py-2 pb-1 border-b-2 border-gray-300 bg-gray-200 text-left font-medium text-gray-700 uppercase first:rounded-tl-md last:rounded-tr-md"
+    tableHeader: "px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
 }
 
 const button = [
@@ -193,14 +193,14 @@ const $compositions = {
 const TEST_THEME_BASE = {
     ...light_base,
 
-    tableInfoBar: "bg-white",
+    tableInfoBar: "bg-white text-xs font-medium",
     tableRow: 'bg-white hover:bg-gray-200 @transition',
     tableRowStriped: 'bg-white even:bg-gray-100 hover:bg-gray-200 @transition',
 
-    // button: "text-gray-400 border-gray-400 hover:bg-gray-400 hover:text-white disabled:text-gray-400",
-    // buttonPrimary: "text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white disabled:text-blue-400",
+    button: "text-gray-400 border-gray-400 hover:bg-gray-400 hover:text-white disabled:text-gray-400",
+    buttonPrimary: "rounded inline-flex items-center justify-center transition ease-in-out duration-150 disabled:cursor-not-allowed disabled:bg-transparent disabled:opacity-50 focus:outline-none bg-blue-100 text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white disabled:text-blue-400 px-4 py-1 ml-1 mr-1 text-base",
     // buttonSuccess: "text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white disabled:text-blue-400",
-    // buttonDanger: "text-red-400 border-red-400 hover:bg-red-400 hover:text-white disabled:text-red-400",
+    buttonDanger: "rounded inline-flex items-center justify-center transition ease-in-out duration-150 disabled:cursor-not-allowed disabled:bg-transparent disabled:opacity-50 focus:outline-none bg-red-100 text-red-400 border-red-400 hover:bg-red-400 hover:text-white disabled:text-red-400 px-4 py-1 ml-1 mr-1 text-base",
     // buttonInfo: "text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white disabled:text-blue-400",
 
     textbutton: "text-gray-400 hover:text-gray-500 disabled:text-gray-400",
