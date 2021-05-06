@@ -38,6 +38,20 @@
 
 }
 
+.scrollbar-xsm::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+    background-color: #bbb;
+}
+
+.scrollbar-xsm::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background-color: #888;
+}
+
+.scrollbar-xsm::-webkit-scrollbar-thumb:hover {
+}
+
 @font-face{
     font-family:'Proxima Nova W01';
     src:url(./fonts/ProximaNova-Light-webfont.eot);
