@@ -37,6 +37,7 @@ function renderMetaOptions(props, state, setState, cache) {
             }, {})
 
     const handleChange = (e) => {
+        e = Object.assign({}, e, {cachedData: null})
         setState(e)
         props.onChange(JSON.stringify(e))
     }
@@ -89,7 +90,7 @@ function renderMetaOptions(props, state, setState, cache) {
                 domain={keyCols}
                 value={state.groupBy}
                 onChange={e => {
-                    console.log('cols?', _.difference(_.keys(state.cols), keyCols))
+
                     handleChange(Object.assign({}, state, {
                         groupBy: e,
                         cols: _.uniqBy([e, ..._.difference(_.keys(state.cols), keyCols)])
@@ -246,9 +247,20 @@ function processData(state, cache) {
     return {data, columns}
 }
 
-function renderTable(state, cache) {
+function renderTable(props, state, setState, cache) {
     if (!state.cols || !state.geo) return null;
-    return <Table {...processData(state, cache)} initialPageSize={Math.min(100, state.pageSize || 10)} striped/>
+    let data;
+    if(!state.cachedData) {
+        data = processData(state, cache);
+        setState(Object.assign({}, state, {cachedData: data}));
+        props.onChange(JSON.stringify(Object.assign({}, state, {cachedData: data, cachedDate: Date.now()})))
+    }else{
+        data = state.cachedData;
+        data.columns = data.columns.map(c => Object.assign({}, c, {accessor: cc => formatMapping[c.format](cc[c.Header])}))
+    }
+
+    return <Table data={data.data} columns={data.columns} initialPageSize={Math.min(100, state.pageSize || 10)} striped/>
+
 }
 
 function AssetsTable(props) {
@@ -268,7 +280,8 @@ function AssetsTable(props) {
             filterBy: values.filterBy || null,
             filterByValue: values.filterByValue || [],
             groupBy: values.groupBy || null,
-            pageSize: values.pageSize || null
+            pageSize: values.pageSize || null,
+            cachedData: values.cachedData || null
         })
     const childGeo = nameMapping[state.geo];
     const activeGeo = '36'
@@ -301,12 +314,11 @@ function AssetsTable(props) {
 
         return fetchData();
     }, [childGeo, falcor, falcorCache, state]);
-
     return (
         <div>
             {props.viewOnly ? null : renderMetaOptions(props, state, setState, falcorCache)}
             {props.viewOnly ? null : divider}
-            {renderTable(state, falcorCache)}
+            {renderTable(props, state, setState, falcorCache)}
         </div>)
 }
 
