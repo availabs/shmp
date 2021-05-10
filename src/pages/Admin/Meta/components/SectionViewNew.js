@@ -13,7 +13,7 @@ console.log(key, type, value);
 
   return (
     <div>
-      <div className="text-3xl font-bold">
+      <div className="text-3xl font-bold pt-24" id={title}>
         { title } <span className='text-sm text-blue-500'>{section}</span>
       </div>
       <div className="rounded py-4">

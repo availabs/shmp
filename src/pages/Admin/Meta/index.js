@@ -47,14 +47,14 @@ const CreateButton = ({create, opened}) => (
 const DisplayControls = ({value, edit, remove, moveUp, canMoveUp, moveDown, canMoveDown, children}) => (
     <div>
         <div className="flex w-full items-center px-2">
-            <div className="flex-1 font-bold text-2xl text-gray-700">
+            <div className="flex-1 font-bold text-2xl text-gray-700 pt-24" id={value.title}>
                 {get(value, "title", "Untitled Section")}
                 <span className='text-sm text-blue-400'> {get(value, "section", "")} </span>
             </div>
             <div className="flex-0">
                 <div className={`
             text-blue-400 hover:text-blue-700
-            pt-2 pr-1 inline-block cursor-pointer
+            pt-2 pr-1 inline-block cursor-pointer pt-24
           `}
                      disabled={!canMoveUp}
                      onClick={moveUp}>
@@ -96,7 +96,7 @@ const DisplayControls = ({value, edit, remove, moveUp, canMoveUp, moveDown, canM
                 </div>
             </div>
         </div>
-        <div className="p-2">
+        <div className="p-2" id={`${value.title}-content`}>
             {children}
         </div>
     </div>

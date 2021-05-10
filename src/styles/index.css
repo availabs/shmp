@@ -52,6 +52,9 @@
 .scrollbar-xsm::-webkit-scrollbar-thumb:hover {
 }
 
+.h-9\/10 {
+    height: 90%;
+}
 @font-face{
     font-family:'Proxima Nova W01';
     src:url(./fonts/ProximaNova-Light-webfont.eot);

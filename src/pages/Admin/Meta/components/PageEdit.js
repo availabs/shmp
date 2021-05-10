@@ -78,10 +78,10 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
             <div className={`w-full hasValue flex-1 ${subNav.length ? 'mt-24' : 'mt-12'}`}>
 
                 <div className={`h-full`}>
-                    <div className={'bg-white h-full flex justify-justify flex-col lg:flex-row'}>
-                        <div className='hidden xl:block xl:w-56'>
+                    <div className={'bg-white h-full flex justify-justify flex-col lg:flex-row z-10'}>
+                        <div className='xl:block xl:w-56'>
                             {ShowSidebar.value ?
-                                <SectionSideNav sections={get(data, `sections`, [])}/> : ''
+                                <SectionSideNav sections={get(Sections, `value`, [])}/> : ''
                             }
                         </div>
                         <div className='py-8 flex-1 '>
@@ -134,9 +134,10 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                                         large
                                         type="submit"
                                         label='Save'
-                                        action={createState.dmsAction}
+                                        action={{...createState.dmsAction, goBackAfterApiAction: false}}
                                         item={item}
-                                        props={props}/>
+                                        props={props}
+                                    />
                                 </div>
 
                             </div>
