@@ -16,10 +16,12 @@
     "react-router-dom" "5.x"
 
 "@availabs/avl-components@^1.0.34", "@availabs/avl-components@^1.0.58":
-  "integrity" "sha512-a70V6iQj0dNPuDLxlHcuqExe37WxE4iOfx4IzGu8UjzgIb0AwnOFQ/2JmC2MYy2iWnVkAUccxzt5QQtzMHZhPA=="
-  "resolved" "https://registry.npmjs.org/@availabs/avl-components/-/avl-components-1.0.60.tgz"
-  "version" "1.0.60"
+  "integrity" "sha512-KxnkkZHxZMRzAgnqevornNsIiXgtXWz7cSycgVaLVe91pzsF4mWhRrUjhVTG/hQQSTpv2wghIT/mFwJMSCwZug=="
+  "resolved" "https://registry.npmjs.org/@availabs/avl-components/-/avl-components-1.0.61.tgz"
+  "version" "1.0.61"
   dependencies:
+    "bluebird" "^3.7.2"
+    "classnames" "^2.3.1"
     "colorbrewer" "^1.4.0"
     "d3-array" "^2.12.0"
     "d3-brush" "2.x"
@@ -2943,7 +2945,7 @@
   dependencies:
     "file-uri-to-path" "1.0.0"
 
-"bluebird@^3.5.5":
+"bluebird@^3.5.5", "bluebird@^3.7.2":
   "integrity" "sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg=="
   "resolved" "https://registry.npmjs.org/bluebird/-/bluebird-3.7.2.tgz"
   "version" "3.7.2"
@@ -3494,7 +3496,7 @@
     "isobject" "^3.0.0"
     "static-extend" "^0.1.1"
 
-"classnames@^2.2.5":
+"classnames@^2.2.5", "classnames@^2.3.1":
   "integrity" "sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA=="
   "resolved" "https://registry.npmjs.org/classnames/-/classnames-2.3.1.tgz"
   "version" "2.3.1"

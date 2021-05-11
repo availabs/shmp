@@ -1,11 +1,11 @@
 import React, {useState} from "react"
 import {Scrollspy} from "@availabs/avl-components";
-// import Scrollspy from "react-scrollspy";
+
 const SectionSideNav = ({sections}) => {
     const [activeId, setActiveId] = useState();
     console.log(activeId)
     return (<div className='bg-gray-50 shadow-lg w-56 h-screen fixed sm:block'>
-        <Scrollspy items={sections.map(s => s.title)} currentClassName="active" offset={-100}
+        <Scrollspy items={sections.map(s => s.title)} currentClassName="active"
                    onUpdate={e => !e || setActiveId(e.id)}>
             <ul className='py-6 px-6 pr-4 text-md fixed w-56 h-9/10 overflow-auto scrollbar-sm'>
                 {
