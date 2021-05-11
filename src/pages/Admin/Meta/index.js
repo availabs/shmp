@@ -47,7 +47,7 @@ const CreateButton = ({create, opened}) => (
 const DisplayControls = ({value, edit, remove, moveUp, canMoveUp, moveDown, canMoveDown, children}) => (
     <div>
         <div className="flex w-full items-center px-2">
-            <div className="flex-1 font-bold text-2xl text-gray-700 pt-24" id={value.title}>
+            <div className="flex-1 font-bold text-2xl text-gray-700 pt-24 -mt-24" id={value.title}>
                 {get(value, "title", "Untitled Section")}
                 <span className='text-sm text-blue-400'> {get(value, "section", "")} </span>
             </div>
