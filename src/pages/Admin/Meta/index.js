@@ -36,11 +36,17 @@ addInput("type-select", {InputComp: TypeSelect});
 addInput("dms-format", {InputComp: DmsInput});
 
 const CreateButton = ({create, opened}) => (
-    <div className="ml-2">
+    <div className="ml-2 flex">
         <Button className="p-2"
+                onClick={() => {window.location = '/meta'}}
+                buttonTheme={"buttonPrimary"}>
+            <i className="fas fa-arrow-left"></i>
+        </Button>
+
+        <Button className="p-2 flex-2"
                 onClick={create}
                 buttonTheme={opened ? "buttonDanger" : "buttonPrimary"}>
-            {opened ? 'cancel' : 'add new section'}
+            {opened ? <i className="fas fa-minus"></i> : <i className="fas fa-plus"></i>}
         </Button>
     </div>
 )
