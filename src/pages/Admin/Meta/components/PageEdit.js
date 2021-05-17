@@ -81,6 +81,7 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                     />
                     : null
                 }
+                <div className='block xl:hidden'>{pageSettings({Title, URL, ShowSidebar, theme, createState, item, props})}</div>
             </div>
 
             <div className={`w-full hasValue flex-1 ${subNav.length ? 'mt-24' : 'mt-12'}`}>
@@ -101,7 +102,9 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                                 />
                             </div>
                         </div>
-                        {pageSettings({Title, URL, ShowSidebar, theme, createState, item, props})}
+                        <div className='hidden xl:block'>
+                            {pageSettings({Title, URL, ShowSidebar, theme, createState, item, props})}
+                        </div>
                     </div>
                 </div>
             </div>
