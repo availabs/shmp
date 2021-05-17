@@ -47,7 +47,8 @@ module.exports = {
       opacity: ['disabled'],
       fontWeight: ['disabled'],
       backgroundColor: ['disabled', 'active', 'first', 'last', 'odd', 'even'],
-      textColor: ['disabled']
+      textColor: ['disabled'],
+        overflow: ['hover', 'focus']
     }
   },
   plugins: [

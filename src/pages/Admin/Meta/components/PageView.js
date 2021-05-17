@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useState} from "react"
 import get from 'lodash.get'
 
 import {TopNav} from '@availabs/avl-components'
@@ -10,6 +10,8 @@ import SectionView from "./SectionViewNew"
 import logo from './Logo.js'
 
 const View = ({item, dataItems, ...props}) => {
+    const [topMenuOpen, setTopMenuOpen] = useState(false);
+    const [topSubMenuOpen, setTopSubMenuOpen] = useState(false);
 
     dataItems = dataItems.sort((a, b) => a.data.index - b.data.index)
     if (!item) {
@@ -44,20 +46,22 @@ const View = ({item, dataItems, ...props}) => {
             <div className='w-full fixed bg-white z-10'>
                 <TopNav
                     menuItems={navItems}
-                    open={false}
                     logo={logo('SHMP')}
                     rightMenu={<AuthMenu/>}
+                    toggle={() => {setTopMenuOpen(!topMenuOpen)}}
+                    open={topMenuOpen}
                 />
                 {subNav.length ?
                     <TopNav
                         menuItems={subNav}
-                        open={false}
                         customTheme={{
                             sidebarBg: 'bg-white',
                             topNavHeight: '12',
                             navitemTop: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-gray-800 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
                             navitemTopActive: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-blue-500 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out'
-                        }}/>
+                        }}
+                        toggle={() => setTopSubMenuOpen(!topSubMenuOpen)}
+                        open={topSubMenuOpen}/>
                     : null
                 }
             </div>

@@ -15,8 +15,8 @@ const SectionView = ({title, section, element, isRaw = true}) => {
     }, [type, /*value*/]);
 
     return (
-        <div>
-            <div className="text-3xl font-bold pt-24 -mt-24" id={title}>
+        <div className='pt-24 -mt-24' id={title}>
+            <div className="text-2xl font-bold border-t border-b border-gray-200 pt-2 pb-2">
                 {title} <span className='text-sm text-blue-500'>{section}</span>
             </div>
             <div className="rounded py-4">

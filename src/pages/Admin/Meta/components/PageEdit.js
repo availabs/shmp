@@ -1,17 +1,19 @@
-import React from "react"
+import React, {useState} from "react"
 import get from 'lodash.get'
 
 import {TopNav, useTheme} from '@availabs/avl-components'
-
-import {DmsButton} from "components/dms/components/dms-button"
+// import {TopNav, useTheme} from 'components/avl-components/src'
 
 import SectionSideNav from './SideNav'
 import AuthMenu from 'pages/Auth/AuthMenu'
 
 import logo from './Logo.js'
-
+import {pageSettings} from "./pageSettings";
+import Theme from 'Theme'
 
 export const Create = ({createState, setValues, item, dataItems, ...props}) => {
+    const [topMenuOpen, setTopMenuOpen] = useState(false);
+    const [topSubMenuOpen, setTopSubMenuOpen] = useState(false);
     const theme = useTheme();
     dataItems = dataItems.sort((a, b) => a.data.index - b.data.index)
 
@@ -61,16 +63,22 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                     menuItems={navItems}
                     logo={logo('SHMP')}
                     rightMenu={<AuthMenu/>}
+                    toggle={() => {setTopMenuOpen(!topMenuOpen)}}
+                    open={topMenuOpen}
                 />
                 {subNav.length ?
                     <TopNav
                         menuItems={subNav}
                         customTheme={{
+                            menuBg: 'bg-gray-200',
                             sidebarBg: 'bg-white',
                             topNavHeight: '12',
                             navitemTop: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-gray-800 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
                             navitemTopActive: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-blue-500 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out'
-                        }}/>
+                        }}
+                        toggle={() => setTopSubMenuOpen(!topSubMenuOpen)}
+                        open={topSubMenuOpen}
+                    />
                     : null
                 }
             </div>
@@ -78,7 +86,7 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
             <div className={`w-full hasValue flex-1 ${subNav.length ? 'mt-24' : 'mt-12'}`}>
 
                 <div className={`h-full`}>
-                    <div className={'bg-white h-full flex justify-justify flex-col lg:flex-row z-10'}>
+                    <div className={'bg-white h-full flex justify-justify flex-col xl:flex-row z-10'}>
                         <div className='xl:block xl:w-56'>
                             {ShowSidebar.value ?
                                 <SectionSideNav sections={get(Sections, `value`, [])}/> : ''
@@ -93,55 +101,7 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                                 />
                             </div>
                         </div>
-
-
-                        <div className='w-full xl:block lg:w-64 order-first lg:order-last border-b lg:border-none'>
-                            <div className="p-4 border-l border-blue-300 fixed bg-blue-50">
-                                <h4 className='font-bold '> Page Settings </h4>
-                                <div>
-                                    <label className='pr-5'>Title</label>
-                                    <Title.Input
-                                        className={'bg-blue-50'}
-                                        autoFocus={true}
-                                        value={Title.value}
-                                        placeholder={'Title'}
-                                        onChange={Title.onChange}
-                                    />
-                                </div>
-                                <div>
-                                    <label className='pr-5'>URL</label>
-                                    <URL.Input
-                                        className={`ml-2 ${theme.text} bg-blue-50`}
-                                        autoFocus={true}
-                                        value={URL.value}
-                                        placeholder={'/url'}
-                                        onChange={URL.onChange}
-                                    />
-                                </div>
-                                <div>
-                                    <label className='pr-5'>Sidebar</label>
-                                    <ShowSidebar.Input
-                                        className={`ml-2 ${theme.text} w-0.5 inline-block`}
-                                        autoFocus={true}
-                                        value={ShowSidebar.value}
-                                        onChange={ShowSidebar.onChange}
-                                    />
-                                </div>
-                                <div className="mt-2 mb-4 max-w-2xl">
-                                    <DmsButton
-                                        className="w-full bg-blue-100"
-                                        buttonTheme='buttonPrimary'
-                                        large
-                                        type="submit"
-                                        label='Save'
-                                        action={{...createState.dmsAction, goBackAfterApiAction: false}}
-                                        item={item}
-                                        props={props}
-                                    />
-                                </div>
-
-                            </div>
-                        </div>
+                        {pageSettings({Title, URL, ShowSidebar, theme, createState, item, props})}
                     </div>
                 </div>
             </div>

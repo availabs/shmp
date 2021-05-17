@@ -40,19 +40,19 @@ const CreateButton = ({create, opened}) => (
         <Button className="p-2"
                 onClick={() => {window.location = '/meta'}}
                 buttonTheme={"buttonPrimary"}>
-            <i className="fas fa-arrow-left"></i>
+            <i className="fas fa-arrow-left"> back </i>
         </Button>
 
         <Button className="p-2 flex-2"
                 onClick={create}
                 buttonTheme={opened ? "buttonDanger" : "buttonPrimary"}>
-            {opened ? <i className="fas fa-minus"></i> : <i className="fas fa-plus"></i>}
+            {opened ? <i className="fas fa-minus"> cancel </i> : <i className="fas fa-plus"> add new section</i>}
         </Button>
     </div>
 )
 const DisplayControls = ({value, edit, remove, moveUp, canMoveUp, moveDown, canMoveDown, children}) => (
-    <div className='pt-24 -mt-20' id={value.title}>
-        <div className="flex w-full items-center px-2">
+    <div className='pt-24 -mt-24' id={value.title}>
+        <div className="flex w-full items-center px-2 border-t border-b border-gray-200 pt-2 pb-2">
             <div className="flex-1 font-bold text-2xl text-gray-700">
                 {get(value, "title", "Untitled Section")}
                 <span className='text-sm text-blue-400'> {get(value, "section", "")} </span>

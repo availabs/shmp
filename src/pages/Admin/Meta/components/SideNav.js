@@ -4,10 +4,10 @@ import {Scrollspy} from "@availabs/avl-components";
 const SectionSideNav = ({sections}) => {
     const [activeId, setActiveId] = useState();
     console.log(activeId)
-    return (<div className='bg-gray-50 shadow-lg w-56 h-screen fixed sm:block'>
+    return (<div className='hidden xl:block md:hidden sm:hidden bg-gray-50 shadow-lg w-56 h-screen fixed'>
         <Scrollspy items={sections.map(s => s.title)} currentClassName="active"
                    onUpdate={e => !e || setActiveId(e.id)} offset={-100}>
-            <ul className='py-6 px-6 pr-4 text-md fixed w-56 h-9/10 overflow-auto scrollbar-sm'>
+            <ul className='py-6 px-6 pr-4 text-md fixed w-56 h-9/10 overflow-hidden hover:overflow-auto scrollbar-xsm'>
                 {
                     sections.map((section, i) => {
                         return (
