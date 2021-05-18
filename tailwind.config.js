@@ -34,7 +34,14 @@ module.exports = {
         '14': 'repeat(14, minmax(0, 1fr))',
         '15': 'repeat(15, minmax(0, 1fr))'
       }
-    }
+    },
+      minWidth: {
+          '0': '0',
+          '1/4': '25%',
+          '1/2': '50%',
+          '3/4': '75%',
+          'full': '100%',
+      }
   },
   variants: {
     extend: {

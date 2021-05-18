@@ -43,6 +43,14 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                         path: `/meta/edit/${p.id}`,
                         itemClass: 'font-thin -mt-2'
                     })),
+                subMenus: dataItems
+                    .filter(({data}) => !data.sectionLanding && (data.section === d.data.section))
+                    .map(p => ({
+                        name: p.data.title,
+                        id: p.id,
+                        path: `/meta/edit/${p.id}`,
+                        itemClass: 'font-thin -mt-2'
+                    })),
                 rest: props
             }
         })
@@ -58,23 +66,27 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
 
     return (
         <div className={`flex items-start flex-col min-h-screen`}>
-            <div className='w-full fixed bg-white z-10'>
+            <div className={`w-full fixed bg-white ${topMenuOpen || topSubMenuOpen ? `z-20` : `z-10`}`}>
                 <TopNav
                     menuItems={navItems}
                     logo={logo('SHMP')}
                     rightMenu={<AuthMenu/>}
                     toggle={() => {setTopMenuOpen(!topMenuOpen)}}
                     open={topMenuOpen}
+                    customTheme={Theme}
                 />
                 {subNav.length ?
                     <TopNav
                         menuItems={subNav}
                         customTheme={{
+                            textContrast: 'gray-50',
                             menuBg: 'bg-gray-200',
                             sidebarBg: 'bg-white',
                             topNavHeight: '12',
                             navitemTop: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-gray-800 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
-                            navitemTopActive: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-blue-500 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out'
+                            navitemSide: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-gray-800 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
+                            navitemTopActive: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-blue-500 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
+                            navitemSideActive: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-blue-500 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out'
                         }}
                         toggle={() => setTopSubMenuOpen(!topSubMenuOpen)}
                         open={topSubMenuOpen}
@@ -88,12 +100,12 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
 
                 <div className={`h-full`}>
                     <div className={'bg-white h-full flex justify-justify flex-col xl:flex-row z-10'}>
-                        <div className='xl:block xl:w-56'>
+                        <div className='w-56 flex-shrink'>
                             {ShowSidebar.value ?
                                 <SectionSideNav sections={get(Sections, `value`, [])}/> : ''
                             }
                         </div>
-                        <div className='py-8 flex-1 '>
+                        <div className='py-8 flex-1 flex-grow'>
                             <div className='font-sm font-light text-xl leading-9 max-w-4xl mx-auto p-4 md:p-6'>
                                 <Sections.Input
                                     className={`p-4 border-none active:border-none focus:outline-none custom-bg h-full ${theme.text}`}
