@@ -11,6 +11,7 @@ const nameMapping = {
 
 function renderMetaOptions(props, state, setState, cache) {
     const handleChange = (e) => {
+        e = Object.assign({}, e, {cachedData: null})
         setState(e)
         props.onChange(JSON.stringify(e))
     }
@@ -119,11 +120,23 @@ function ProcessData(state, cache) {
     return {data, columns}
 }
 
-function renderTable(state, cache) {
+function renderTable(props, state, setState, cache) {
     if (!state.cols || !state.geo) return null;
-    return <Table {...ProcessData(state, cache)} initialPageSize={Math.min(100, state.pageSize || 10)} striped />
-}
+    let data;
+    if(!state.cachedData) {
+        data = ProcessData(state, cache);
+        setState(Object.assign({}, state, {cachedData: data}));
+        if(props.onChange){
+            props.onChange(JSON.stringify(Object.assign({}, state, {cachedData: data, cachedDate: Date.now()})))
+        }
+    }else{
+        ProcessData(state, cache)
+        data = state.cachedData;
+    }
 
+    return <Table {...data} initialPageSize={Math.min(100, state.pageSize || 10)} striped/>
+
+}
 function NFIPTable(props) {
     const {falcor, falcorCache} = useFalcor();
     const values = props.value ? JSON.parse(props.value) : {geo: 'State', cols: [], pageSize: null, filterBy: []}
@@ -131,7 +144,8 @@ function NFIPTable(props) {
         'geo': values.geo || null,
         'cols': values.cols || [],
         'pageSize': values.pageSize || null,
-        'filterBy': values.filterBy || []
+        'filterBy': values.filterBy || [],
+        cachedData: values.cachedData || null
     })
     const childGeo = nameMapping[state.geo];
 
@@ -168,7 +182,7 @@ function NFIPTable(props) {
         <div>
             {props.viewOnly ? null : renderMetaOptions(props, state, setState, falcorCache)}
             {props.viewOnly ? null : divider}
-            {renderTable(state, falcorCache)}
+            {renderTable(props, state, setState, falcorCache)}
         </div>)
 }
 

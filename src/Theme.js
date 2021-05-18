@@ -50,7 +50,7 @@ const light_base = {
     navitemSideActive: 'group flex pl-8 pr-4 py-2 bg-white text-base font-medium text-darkblue-500 focus:outline-none hover:text-indigo-800 focus:text-indigo-800 focus:bg-blue-200 focus:border-indigo-700 transition duration-150 ease-in-out',
 
 
-    menuBg: 'bg-white z-50',
+    menuBg: 'bg-darkblue-500 z-50',
     menuBgHover: '',
     menuBgActive: 'bg-blue-200',
     menuBgActiveHover: 'hover:bg-blue-300',
@@ -77,6 +77,7 @@ const light_base = {
     paddingLarge: "py-2 px-4",
 
     contentBg: 'bg-white',
+    contentWidth: 'max-w-7xl',
 
     accent1: 'bg-blue-100',
     accent2: 'bg-gray-300',

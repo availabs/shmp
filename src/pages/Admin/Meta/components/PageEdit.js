@@ -1,17 +1,19 @@
-import React from "react"
+import React, {useState} from "react"
 import get from 'lodash.get'
 
 import {TopNav, useTheme} from '@availabs/avl-components'
-
-import {DmsButton} from "components/dms/components/dms-button"
+// import {TopNav, useTheme} from 'components/avl-components/src'
 
 import SectionSideNav from './SideNav'
 import AuthMenu from 'pages/Auth/AuthMenu'
 
 import logo from './Logo.js'
-
+import {pageSettings} from "./pageSettings";
+import Theme from 'Theme'
 
 export const Create = ({createState, setValues, item, dataItems, ...props}) => {
+    const [topMenuOpen, setTopMenuOpen] = useState(false);
+    const [topSubMenuOpen, setTopSubMenuOpen] = useState(false);
     const theme = useTheme();
     dataItems = dataItems.sort((a, b) => a.data.index - b.data.index)
 
@@ -41,6 +43,14 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                         path: `/meta/edit/${p.id}`,
                         itemClass: 'font-thin -mt-2'
                     })),
+                subMenus: dataItems
+                    .filter(({data}) => !data.sectionLanding && (data.section === d.data.section))
+                    .map(p => ({
+                        name: p.data.title,
+                        id: p.id,
+                        path: `/meta/edit/${p.id}`,
+                        itemClass: 'font-thin -mt-2'
+                    })),
                 rest: props
             }
         })
@@ -56,35 +66,46 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
 
     return (
         <div className={`flex items-start flex-col min-h-screen`}>
-            <div className='w-full fixed bg-white z-10'>
+            <div className={`w-full fixed bg-white ${topMenuOpen || topSubMenuOpen ? `z-20` : `z-10`}`}>
                 <TopNav
                     menuItems={navItems}
                     logo={logo('SHMP')}
                     rightMenu={<AuthMenu/>}
+                    toggle={() => {setTopMenuOpen(!topMenuOpen)}}
+                    open={topMenuOpen}
+                    customTheme={Theme}
                 />
                 {subNav.length ?
                     <TopNav
                         menuItems={subNav}
                         customTheme={{
+                            textContrast: 'gray-50',
+                            menuBg: 'bg-gray-200',
                             sidebarBg: 'bg-white',
                             topNavHeight: '12',
                             navitemTop: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-gray-800 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
-                            navitemTopActive: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-blue-500 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out'
-                        }}/>
+                            navitemSide: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-gray-800 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
+                            navitemTopActive: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-blue-500 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
+                            navitemSideActive: 'px-8 inline-flex items-center border-b border-r border-gray-200 text-base font-normal text-blue-500 hover:pb-4 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out'
+                        }}
+                        toggle={() => setTopSubMenuOpen(!topSubMenuOpen)}
+                        open={topSubMenuOpen}
+                    />
                     : null
                 }
+                <div className='block xl:hidden'>{pageSettings({Title, URL, ShowSidebar, theme, createState, item, props})}</div>
             </div>
 
             <div className={`w-full hasValue flex-1 ${subNav.length ? 'mt-24' : 'mt-12'}`}>
 
                 <div className={`h-full`}>
-                    <div className={'bg-white h-full flex justify-justify flex-col lg:flex-row'}>
-                        <div className='hidden xl:block xl:w-56'>
+                    <div className={'bg-white h-full flex justify-justify flex-col xl:flex-row z-10'}>
+                        <div className='w-56 flex-shrink'>
                             {ShowSidebar.value ?
-                                <SectionSideNav sections={get(data, `sections`, [])}/> : ''
+                                <SectionSideNav sections={get(Sections, `value`, [])}/> : ''
                             }
                         </div>
-                        <div className='py-8 flex-1 '>
+                        <div className='py-8 flex-1 flex-grow'>
                             <div className='font-sm font-light text-xl leading-9 max-w-4xl mx-auto p-4 md:p-6'>
                                 <Sections.Input
                                     className={`p-4 border-none active:border-none focus:outline-none custom-bg h-full ${theme.text}`}
@@ -93,53 +114,8 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                                 />
                             </div>
                         </div>
-
-
-                        <div className='w-full xl:block lg:w-64 order-first lg:order-last border-b lg:border-none'>
-                            <div className="p-4 border-l border-blue-300 fixed bg-blue-50">
-                                <h4 className='font-bold '> Page Settings </h4>
-                                <div>
-                                    <label className='pr-5'>Title</label>
-                                    <Title.Input
-                                        className={'bg-blue-50'}
-                                        autoFocus={true}
-                                        value={Title.value}
-                                        placeholder={'Title'}
-                                        onChange={Title.onChange}
-                                    />
-                                </div>
-                                <div>
-                                    <label className='pr-5'>URL</label>
-                                    <URL.Input
-                                        className={`ml-2 ${theme.text} bg-blue-50`}
-                                        autoFocus={true}
-                                        value={URL.value}
-                                        placeholder={'/url'}
-                                        onChange={URL.onChange}
-                                    />
-                                </div>
-                                <div>
-                                    <label className='pr-5'>Sidebar</label>
-                                    <ShowSidebar.Input
-                                        className={`ml-2 ${theme.text} w-0.5 inline-block`}
-                                        autoFocus={true}
-                                        value={ShowSidebar.value}
-                                        onChange={ShowSidebar.onChange}
-                                    />
-                                </div>
-                                <div className="mt-2 mb-4 max-w-2xl">
-                                    <DmsButton
-                                        className="w-full bg-blue-100"
-                                        buttonTheme='buttonPrimary'
-                                        large
-                                        type="submit"
-                                        label='Save'
-                                        action={createState.dmsAction}
-                                        item={item}
-                                        props={props}/>
-                                </div>
-
-                            </div>
+                        <div className='hidden xl:block'>
+                            {pageSettings({Title, URL, ShowSidebar, theme, createState, item, props})}
                         </div>
                     </div>
                 </div>

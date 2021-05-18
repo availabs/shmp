@@ -36,17 +36,23 @@ addInput("type-select", {InputComp: TypeSelect});
 addInput("dms-format", {InputComp: DmsInput});
 
 const CreateButton = ({create, opened}) => (
-    <div className="ml-2">
+    <div className="ml-2 flex">
         <Button className="p-2"
+                onClick={() => {window.location = '/meta'}}
+                buttonTheme={"buttonPrimary"}>
+            <i className="fas fa-arrow-left"> back </i>
+        </Button>
+
+        <Button className="p-2 flex-2"
                 onClick={create}
                 buttonTheme={opened ? "buttonDanger" : "buttonPrimary"}>
-            {opened ? 'cancel' : 'add new section'}
+            {opened ? <i className="fas fa-minus"> cancel </i> : <i className="fas fa-plus"> add new section</i>}
         </Button>
     </div>
 )
 const DisplayControls = ({value, edit, remove, moveUp, canMoveUp, moveDown, canMoveDown, children}) => (
-    <div>
-        <div className="flex w-full items-center px-2">
+    <div className='pt-24 -mt-24' id={value.title}>
+        <div className="flex w-full items-center px-2 border-t border-b border-gray-200 pt-2 pb-2">
             <div className="flex-1 font-bold text-2xl text-gray-700">
                 {get(value, "title", "Untitled Section")}
                 <span className='text-sm text-blue-400'> {get(value, "section", "")} </span>
@@ -96,7 +102,7 @@ const DisplayControls = ({value, edit, remove, moveUp, canMoveUp, moveDown, canM
                 </div>
             </div>
         </div>
-        <div className="p-2">
+        <div className="p-2" id={`${value.title}-content`}>
             {children}
         </div>
     </div>
