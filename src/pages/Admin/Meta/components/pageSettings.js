@@ -61,9 +61,9 @@ const SmallView = ({Title, URL, ShowSidebar, theme, createState, item, props, ..
 
     return (
         <React.Fragment>
-            <div className={`fas ${open ? `fa-times` : `fa-save`} block xl:hidden p-4 mr-4 float-right cursor-pointer fixed z-10`} onClick={() => setOpen(!open)}>
+            <div className={`fas ${open ? `fa-times` : `fa-save`} block xl:hidden p-4 pl-20 mr-4 cursor-pointer`} onClick={() => setOpen(!open)}>
             </div>
-            <div className={`${open ? `block` : `hidden`} h-full max-w-4xl mx-auto p-4 z-20 flex flex-col shadow-lg`}>
+            <div className={`${open ? `block` : `hidden`} h-full max-w-4xl mx-auto p-4 mt-10 flex flex-col shadow-lg`}>
                 {items({Title, URL, ShowSidebar, theme, createState, item, props, ...rest})}
             </div>
         </React.Fragment>

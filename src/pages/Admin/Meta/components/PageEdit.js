@@ -102,7 +102,7 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                     <div className={'bg-white h-full flex justify-justify flex-col xl:flex-row z-10'}>
                         <div className='w-56 flex-shrink'>
                             {ShowSidebar.value ?
-                                <SectionSideNav sections={get(Sections, `value`, [])}/> : ''
+                                <SectionSideNav sections={get(Sections, `value`, [])} additionalComps={pageSettings({Title, URL, ShowSidebar, theme, createState, item, props})}/> : ''
                             }
                         </div>
                         <div className='py-8 flex-1 flex-grow'>
