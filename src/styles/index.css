@@ -38,18 +38,32 @@
 
 }
 
-.scrollbar-xsm::-webkit-scrollbar {
+.scrollbarXsm::-webkit-scrollbar {
     height: 4px;
     width: 4px;
     background-color: #bbb;
 }
 
-.scrollbar-xsm::-webkit-scrollbar-thumb {
+.scrollbarXsm::-webkit-scrollbar-thumb {
     border-radius: 2px;
     background-color: #888;
 }
 
-.scrollbar-xsm::-webkit-scrollbar-thumb:hover {
+.scrollbarXsm::-webkit-scrollbar-thumb:hover {
+}
+
+.scrollbarXsmTransparent::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+    background-color: rgba(187, 187, 187, 0);
+}
+
+.scrollbarXsmTransparent::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background-color: rgba(136, 136, 136, 0);
+}
+
+.scrollbarXsmTransparent::-webkit-scrollbar-thumb:hover {
 }
 
 .h-9\/10 {

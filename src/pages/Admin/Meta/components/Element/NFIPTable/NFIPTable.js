@@ -1,8 +1,9 @@
-import React, {useEffect, useState, useMemo} from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 import {Input, Select, Table, useFalcor} from '@availabs/avl-components'
 import _ from 'lodash'
 import get from 'lodash.get'
-import divider from "../../../../../../components/UI/divider";
+import divider from "components/UI/divider";
+import {colProperties, columnsForMeta, columnsForTable, formatMapping} from "utils/tableColProperties";
 
 const nameMapping = {
     'State': 'counties',
@@ -10,6 +11,8 @@ const nameMapping = {
 }
 
 function renderMetaOptions(props, state, setState, cache) {
+    const columns = columnsForMeta(['Jurisdiction', 'total losses', 'closed losses', 'open losses', 'cwop losses', 'total payments'], state)
+
     const handleChange = (e) => {
         e = Object.assign({}, e, {cachedData: null})
         setState(e)
@@ -42,10 +45,13 @@ function renderMetaOptions(props, state, setState, cache) {
             <label> Select Columns: </label>
             <Select
                 key={'cols'}
-                domain={['Jurisdiction', 'total losses', 'closed losses', 'open losses', 'cwop losses', 'total payments']}
-                value={_.uniqBy(['Jurisdiction', ...state.cols])}
-                onChange={e => handleChange(Object.assign(state, {cols: e}))}
+                domain={_.keys(columns)}
+                value={_.uniqBy(['Jurisdiction', ..._.keys(state.cols)])}
+                onChange={e => handleChange(Object.assign({}, state, {cols: e.reduce((acc, tmpCol) => Object.assign(acc, {[tmpCol]: columns[tmpCol]}), {})}))}
             />
+            {
+                !state.cols ? null : colProperties(state, handleChange)
+            }
             <label className={'pr-5'}>Page Size</label>
             <Input
                 className={'bg-blue-50'}
@@ -59,7 +65,7 @@ function renderMetaOptions(props, state, setState, cache) {
     )
 }
 
-function geoReverseLookupTable(cache){
+function geoReverseLookupTable(cache) {
     let lookupTable = {};
     _.keys(get(cache, ['geo'], {}))
         .forEach(county => {
@@ -74,8 +80,7 @@ function geoReverseLookupTable(cache){
 function ProcessData(state, cache) {
     const childGeo = nameMapping[state.geo];
     const geoGraph = get(cache, ['geo', '36', childGeo, 'value'], []);
-    let data = [],
-        columns = [];
+    let data = [], columns = columnsForTable(state);
     let lookupTable = useMemo(() => geoReverseLookupTable(cache), [cache]);
     if (!geoGraph || !geoGraph.length) return {data, columns};
 
@@ -107,15 +112,6 @@ function ProcessData(state, cache) {
             })
         })
 
-    state.cols.forEach(column => {
-            columns.push({
-                Header: column,
-                accessor: column,
-                align: 'center',
-                disableFilters: column !== 'Jurisdiction'
-            })
-        }
-    )
 
     return {data, columns}
 }
@@ -123,26 +119,28 @@ function ProcessData(state, cache) {
 function renderTable(props, state, setState, cache) {
     if (!state.cols || !state.geo) return null;
     let data;
-    if(!state.cachedData) {
+    if (!state.cachedData) {
         data = ProcessData(state, cache);
         setState(Object.assign({}, state, {cachedData: data}));
-        if(props.onChange){
+        if (props.onChange) {
             props.onChange(JSON.stringify(Object.assign({}, state, {cachedData: data, cachedDate: Date.now()})))
         }
-    }else{
+    } else {
         ProcessData(state, cache)
         data = state.cachedData;
+        data.columns = data.columns.map(c => Object.assign({}, c, {accessor: cc => formatMapping[c.format](cc[c.Header])}))
     }
 
     return <Table {...data} initialPageSize={Math.min(100, state.pageSize || 10)} striped/>
 
 }
+
 function NFIPTable(props) {
     const {falcor, falcorCache} = useFalcor();
-    const values = props.value ? JSON.parse(props.value) : {geo: 'State', cols: [], pageSize: null, filterBy: []}
+    const values = props.value ? JSON.parse(props.value) : {geo: 'State', cols: {}, pageSize: null, filterBy: []}
     const [state, setState] = useState({
         'geo': values.geo || null,
-        'cols': values.cols || [],
+        'cols': values.cols || {},
         'pageSize': values.pageSize || null,
         'filterBy': values.filterBy || [],
         cachedData: values.cachedData || null

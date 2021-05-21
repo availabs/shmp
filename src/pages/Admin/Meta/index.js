@@ -37,12 +37,6 @@ addInput("dms-format", {InputComp: DmsInput});
 
 const CreateButton = ({create, opened}) => (
     <div className="ml-2 flex">
-        <Button className="p-2"
-                onClick={() => {window.location = '/meta'}}
-                buttonTheme={"buttonPrimary"}>
-            <i className="fas fa-arrow-left"> back </i>
-        </Button>
-
         <Button className="p-2 flex-2"
                 onClick={create}
                 buttonTheme={opened ? "buttonDanger" : "buttonPrimary"}>

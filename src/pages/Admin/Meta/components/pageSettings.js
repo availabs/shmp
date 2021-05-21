@@ -1,9 +1,17 @@
 import React, {useState} from 'react'
 import {DmsButton} from "../../../../components/dms/components/dms-button";
+import {Button} from "@availabs/avl-components";
 
 const items = ({Title, URL, ShowSidebar, theme, createState, item, props, ...rest}) => {
     return (
         <React.Fragment>
+            <div>
+                <Button className="p-2 w-full"
+                        onClick={() => {window.location = '/meta'}}
+                        buttonTheme={"buttonPrimary"}>
+                    Go to CMS
+                </Button>
+            </div>
             <div>
                 <label className='pr-5'>Title</label>
                 <Title.Input
@@ -53,7 +61,7 @@ const SmallView = ({Title, URL, ShowSidebar, theme, createState, item, props, ..
 
     return (
         <React.Fragment>
-            <div className={`fas ${open ? `fa-times` : `fa-save`} block xl:hidden p-4 mr-4 float-right cursor-pointer`} onClick={() => setOpen(!open)}>
+            <div className={`fas ${open ? `fa-times` : `fa-save`} block xl:hidden p-4 mr-4 float-right cursor-pointer fixed z-10`} onClick={() => setOpen(!open)}>
             </div>
             <div className={`${open ? `block` : `hidden`} h-full max-w-4xl mx-auto p-4 z-20 flex flex-col shadow-lg`}>
                 {items({Title, URL, ShowSidebar, theme, createState, item, props, ...rest})}

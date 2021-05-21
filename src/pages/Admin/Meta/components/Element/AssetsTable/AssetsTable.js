@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react'
-import {BooleanInput, Input, List, ListItemRemovable, Select, Table, useFalcor} from '@availabs/avl-components'
+import {Input, Select, Table, useFalcor} from '@availabs/avl-components'
 import _ from 'lodash'
 import get from 'lodash.get'
 import filterByTypes from './meta'
-import {fnum} from "utils/fnum";
+import {colProperties, columnsForMeta, columnsForTable, formatMapping} from "utils/tableColProperties"
 import divider from 'components/UI/divider'
 
 const nameMapping = {
@@ -16,25 +16,10 @@ const nameMapping = {
     'Annual 0.2%': '500 yr',
 }
 
-const formatMapping = {
-    null: (d) => d,
-    'None': (d) => d,
-    'Number': d => fnum(d, false),
-    '$ Amount': d => fnum(d, true)
-}
 const keyCols = ['Jurisdiction', 'Owner Type', 'Land Use Type'];
 
 function renderMetaOptions(props, state, setState, cache) {
-    const columns =
-        [state.groupBy, 'Number of Assets', 'Value of Assets', '# in 100 yr', '$ in 100 yr', '# in 500 yr', '$ in 500 yr']
-            .reduce((acc, col) => {
-                acc[col] = {
-                    disableFilters: true,
-                    disableSortBy: false,
-                    format: 'None'
-                };
-                return acc;
-            }, {})
+    const columns = columnsForMeta([state.groupBy, 'Number of Assets', 'Value of Assets', '# in 100 yr', '$ in 100 yr', '# in 500 yr', '$ in 500 yr'], state)
 
     const handleChange = (e) => {
         e = Object.assign({}, e, {cachedData: null})
@@ -107,62 +92,7 @@ function renderMetaOptions(props, state, setState, cache) {
                 onChange={e => handleChange(Object.assign({}, state, {cols: e.reduce((acc, tmpCol) => Object.assign(acc, {[tmpCol]: columns[tmpCol]}), {})}))}
             />
             {
-                !state.cols ? null :
-                    <React.Fragment>
-                        <p>Select Properties</p>
-                        <List className={'bg-blue-50 hover:bg-blue-50'}>
-                            {Object.keys(state.cols)
-                                .map(column =>
-                                    <ListItemRemovable
-                                        className={'bg-blue-50 hover:bg-blue-50'}
-                                        item={
-                                            <React.Fragment>
-                                                <p>{column}</p>
-                                                <List className={'bg-blue-50 hover:bg-blue-50'}>
-                                                    <ListItemRemovable
-                                                        className={'bg-blue-50 hover:bg-blue-50'}
-                                                        item={
-                                                            <React.Fragment>
-                                                                <label>Sort</label>
-                                                                <BooleanInput
-                                                                    value={!(!!get(state, ['cols', column, 'disableSortBy'], false))}
-                                                                    onChange={d => {
-                                                                        state.cols[column].disableSortBy = !d;
-                                                                        handleChange(
-                                                                            state
-                                                                        )
-                                                                    }
-                                                                    }/>
-                                                                <label>Filter</label>
-                                                                <BooleanInput
-                                                                    value={!(!!get(state, ['cols', column, 'disableFilters'], false))}
-                                                                    onChange={d => {
-                                                                        state.cols[column].disableFilters = !d;
-                                                                        handleChange(
-                                                                            state
-                                                                        )
-                                                                    }
-                                                                    }/>
-                                                                <label>Format</label>
-                                                                <Select
-                                                                    domain={['None', 'Number', '$ Amount']}
-                                                                    value={get(state, ['cols', column, 'format'], null)}
-                                                                    onChange={e => {
-                                                                        state.cols[column].format = e
-                                                                        handleChange(state)
-                                                                    }}
-                                                                    multi={false}
-                                                                />
-                                                            </React.Fragment>
-                                                        }
-                                                    />
-                                                </List>
-                                            </React.Fragment>
-                                        }
-                                    />
-                                )}
-                        </List>
-                    </React.Fragment>
+                !state.cols ? null : colProperties(state, handleChange)
             }
             <label className={'pr-5'}>Page Size</label>
             <Input
@@ -182,7 +112,7 @@ function processData(state, cache) {
     const geoGraph = get(cache, ['geo', '36', childGeo, 'value'], []);
     const activeGeo = '36'
     let data = [],
-        columns = [];
+        columns = columnsForTable(state);
 
     if (!geoGraph || !geoGraph.length) return {data, columns};
 
@@ -234,32 +164,23 @@ function processData(state, cache) {
         }, {[state.groupBy]: 'Total'})
     )
 
-    _.keys(get(state, `cols`, {})).forEach(column => {
-            columns.push({
-                Header: column,
-                accessor: c => formatMapping[get(state, ['cols', column, 'format'], 'None')](c[column]), //fnum(c[column], get(state, ['cols', column, 'format'], null) === '$ Amount'),
-                align: 'center',
-                ...state.cols[column],
-            })
-        }
-    )
-
     return {data, columns}
 }
 
 function renderTable(props, state, setState, cache) {
     if (!state.cols || !state.geo) return null;
     let data;
-    if(!state.cachedData) {
+    if (!state.cachedData) {
         data = processData(state, cache);
         setState(Object.assign({}, state, {cachedData: data}));
         props.onChange(JSON.stringify(Object.assign({}, state, {cachedData: data, cachedDate: Date.now()})))
-    }else{
+    } else {
         data = state.cachedData;
         data.columns = data.columns.map(c => Object.assign({}, c, {accessor: cc => formatMapping[c.format](cc[c.Header])}))
     }
 
-    return <Table data={data.data} columns={data.columns} initialPageSize={Math.min(100, state.pageSize || 10)} striped/>
+    return <Table data={data.data} columns={data.columns} initialPageSize={Math.min(100, state.pageSize || 10)}
+                  striped/>
 
 }
 
@@ -285,7 +206,7 @@ function AssetsTable(props) {
         })
     const childGeo = nameMapping[state.geo];
     const activeGeo = '36'
-        //activePlan = '63';
+    //activePlan = '63';
     useEffect(() => {
         if (!state.groupBy.length || !childGeo) return Promise.resolve();
 
