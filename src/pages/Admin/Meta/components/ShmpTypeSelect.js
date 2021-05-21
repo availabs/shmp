@@ -4,6 +4,8 @@ import get from "lodash.get"
 
 import { Select, /*useTheme*/ } from "@availabs/avl-components"
 
+const valueAccessor = att => att.key;
+
 const TypeSelect = ({ Attribute, onChange, value }) => {
   value = value || {};
 
@@ -33,7 +35,7 @@ const TypeSelect = ({ Attribute, onChange, value }) => {
 
       <Select options={ get(Attribute, "Attributes", []) }
         value={ value.key }
-        valueAccessor={ att => att.key }
+        valueAccessor={ valueAccessor }
         onChange={ handleTypeChange }
         multi={ false }
         searchable={ false }

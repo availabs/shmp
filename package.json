@@ -6,7 +6,7 @@
     "@availabs/ams": "^1.0.9",
     "@availabs/avl-components": "^1.0.66",
     "@draft-js-plugins/editor": "^4.1.0",
-    "@testing-library/jest-dom": "^5.11.10",
+    "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
     "d3-format": "^2.0.0",
@@ -19,14 +19,14 @@
     "lodash.get": "^4.4.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-redux": "^7.2.3",
+    "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0",
     "react-scrollspy": "^3.4.3",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "styled-components": "^5.2.3",
-    "tlds": "^1.220.0",
+    "styled-components": "^5.3.0",
+    "tlds": "^1.221.1",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
@@ -61,7 +61,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.2.5",
-    "postcss": "^8.2.10",
-    "tailwindcss": "^2.1.1"
+    "postcss": "^8.2.14",
+    "tailwindcss": "^2.1.2"
   }
 }
