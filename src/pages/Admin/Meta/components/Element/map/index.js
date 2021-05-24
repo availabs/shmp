@@ -7,7 +7,7 @@ const Edit = ({value, onChange}) => {
     let data = value;
     let mapOptions = {}
     return (
-        <div className='h-96 flex-1 flex flex-col text-white'>
+        <div className='h-96 flex-1 flex flex-col'>
             <AvlMap
                 accessToken={ MAPBOX_TOKEN }
                 mapOptions={ mapOptions }
