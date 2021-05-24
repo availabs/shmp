@@ -10,3 +10,6 @@
 [submodule "src/componenets/avl-components"]
 	path = src/componenets/avl-components
 	url = https://github.com/availabs/avl-components.git
+[submodule "src/components/avl-map"]
+	path = src/components/avl-map
+	url = https://github.com/availabs/avl-map.git

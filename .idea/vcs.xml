@@ -4,6 +4,7 @@
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/components/avl-components" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/components/avl-components/src/react-scrollspy" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/components/avl-map" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/components/dms" vcs="Git" />
   </component>
 </project>

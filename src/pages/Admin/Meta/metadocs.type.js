@@ -41,6 +41,9 @@ const pageSection = {
           },
           { key: "NFIP Table",
             type: "nfip-table"
+          },
+          { key: "Map",
+            type: "map"
           }
         ]
       }

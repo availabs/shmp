@@ -11,6 +11,7 @@ import {API_HOST} from 'config'
 import {addInput, setDefaultArrayProps} from "components/dms/wrappers/utils/get-dms-input"
 import AssetTable from './components/Element/AssetsTable'
 import NFIPTable from './components/Element/NFIPTable'
+import map from './components/Element/map'
 import TypeSelect from "./components/ShmpTypeSelect"
 import DmsInput from "./components/ShmpDmsInput"
 
@@ -30,8 +31,17 @@ const NFIPTableComp = {
     getEmptyValueFunc: (att, props) => () => ''
 }
 
+const MapComp = {
+    InputComp: map.edit,
+    getInputProps: (att, props) => ({Attribute: att}),
+    getArrayProps: (att, props) => ({showControls: false}), // <== NEW PROP
+    getDisplayComp: (att, props) => map.view,
+    getEmptyValueFunc: (att, props) => () => ''
+}
+
 addInput("asset-table", AssetTableComp);
-addInput("nfip-table", NFIPTableComp)
+addInput("nfip-table", NFIPTableComp);
+addInput("map", MapComp);
 addInput("type-select", {InputComp: TypeSelect});
 addInput("dms-format", {InputComp: DmsInput});
 
