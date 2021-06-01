@@ -119,7 +119,7 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
                 {name: "Tracts", value: "tracts"},
                 {name: "Block Groups", value: "blockgroup"}
             ],
-            value: ['cousubs'],
+            value: ['counties'],
             listAccessor: d => d.name,
             accessor: d => d.name,
             valueAccessor: d => d.value,
@@ -310,28 +310,31 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             'id': 'counties',
             'source': 'counties',
             'source-layer': 'counties',
-            'type': 'fill-extrusion',
-            filter: ['in', 'geoid', 'none']
+            'type': 'fill',
+            // filter: ['in', 'geoid', 'none'],
+            paint: {
+                'fill-color': '#ccc'
+            }
         },
         {
             'id': 'cousubs',
             'source': 'cousubs',
             'source-layer': 'cousubs',
-            'type': 'fill-extrusion',
+            'type': 'fill',
             filter: ['in', 'geoid', 'none']
         },
         {
             'id': 'tracts',
             'source': 'tracts',
             'source-layer': 'tracts',
-            'type': 'fill-extrusion',
+            'type': 'fill',
             filter: ['in', 'geoid', 'none']
         },
         {
             id: "blockgroup",
             source: "blockgroup",
             'source-layer': "blockgroups",
-            'type': 'fill-extrusion',
+            'type': 'fill',
             filter: ['in', 'geoid', 'none']
         },
 
