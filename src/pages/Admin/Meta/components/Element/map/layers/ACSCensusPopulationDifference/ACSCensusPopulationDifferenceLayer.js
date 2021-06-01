@@ -3,10 +3,11 @@ import {LayerContainer} from "components/avl-map/src"
 import {Link} from "react-router-dom"
 import styled from "styled-components"
 import get from "lodash.get"
+import _ from "lodash"
 import {extent} from "d3-array";
 import {scaleQuantile, scaleQuantize} from "d3-scale"
 import {fnum} from "utils/fnum"
-
+import {format} from 'd3-format'
 import OptionsBox from "./infoBoxes/OptionsBox"
 import OptionsModal from "./modals/OptionsModal"
 import {getColorRange} from "@availabs/avl-components";
@@ -119,10 +120,11 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
                 {name: "Tracts", value: "tracts"},
                 {name: "Block Groups", value: "blockgroup"}
             ],
-            value: ['counties'],
+            value: 'counties',
             listAccessor: d => d.name,
             accessor: d => d.name,
             valueAccessor: d => d.value,
+            onChange: (e) => {},
             multi: false
         },
         year: {
@@ -170,13 +172,6 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
         show: true,
     }
 
-    onHover = {
-        layers: ['counties', 'cousubs', 'tracts', 'blockgroup'],
-        // dataFunc: function(features, point, lngLat, layerName) {
-        // 	// DO SOME STUFF
-        // }
-    }
-
     onClick = {
         layers: ["counties", "cousubs", "tracts", "blockgroup"],
         dataFunc: function (features, point, lngLat, layer, e) {
@@ -186,44 +181,33 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
         }
     }
 
-    // popover = {
-    //     layers: ["counties", "cousubs", "tracts", "blockgroup"],
-    //     setPinnedState: true,
-    //     onPinned: function (features, lngLat, point) {
-    //         const geoid = get(features, [0, "properties", "geoid"], null);
-    //         geoid && this.map && this.map.setFilter(`${this.filters.geolevel.value}-line`, ["in", "geoid", geoid]);
-    //     },
-    //     onUnPinned: function () {
-    //         this.map && this.map.setFilter(`${this.filters.geolevel.value}-line`, ["in", "geoid", "none"]);
-    //     },
-    //     callback:  (topFeature, features) => {
-    //         let geoid = get(topFeature, ["properties", "geoid"], "");
-    //
-    //         const data = [];
-    //
-    //         let name = "";
-    //         if (geoid.length < 11) {
-    //             name = get(this.falcorCache, ["geo", geoid, "name"], geoid);
-    //         } else if (geoid.length === 11) {
-    //             const county = get(this.falcorCache, ["geo", geoid.slice(0, 5), "name"], "County");
-    //             name = county + " Tract " + geoid.slice(5);
-    //         } else if (geoid.length === 12) {
-    //             const county = get(this.falcorCache, ["geo", geoid.slice(0, 5), "name"], "County");
-    //             name = county + " Block Group " + geoid.slice(5);
-    //         }
-    //         if (name) data.push(name);
-    //
-    //         const value = get(this.geoData, [geoid], null);
-    //         if (value !== null) {
-    //             const format = (typeof this.legend.format === "function") ? this.legend.format : d3format(this.legend.format);
-    //             data.push([this.filters.census.value[0], format(value)])
-    //         }
-    //         // data.push([<Link to={ `/profile/${ geoid }` }>View Profile</Link>]);
-    //         data.push(["Click to view in profile."]);
-    //
-    //         return data;
-    //     }
-    // }
+    onHover = {
+        layers: ["counties", "cousubs", "tracts", "blockgroup"],
+        callback:  (layerId, features, lngLat) => {
+            let geoid = get(features[0], ["properties", "geoid"], "");
+            const data = [];
+            let name = "";
+
+            if (geoid.length < 11) {
+                name = get(this.falcorCache, ["geo", geoid, "name"], geoid);
+            } else if (geoid.length === 11) {
+                const county = get(this.falcorCache, ["geo", geoid.slice(0, 5), "name"], "County");
+                name = county + " Tract " + geoid.slice(5);
+            } else if (geoid.length === 12) {
+                const county = get(this.falcorCache, ["geo", geoid.slice(0, 5), "name"], "County");
+                name = county + " Block Group " + geoid.slice(5);
+            }
+            if (name) data.push([name]);
+
+            const value = get(this.valueMap, [geoid], null);
+            if (value !== null) {
+                const format = (typeof this.legend.format === "function") ? this.legend.format : format(this.legend.format);
+                data.push([this.filters.census.value[0], format(value)])
+            }
+            // data.push([<Link to={ `/profile/${ geoid }` }>View Profile</Link>]);
+            return data;
+        }
+    }
 
     baseMapSettings = {
         zoom: 7.8,
@@ -311,10 +295,7 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             'source': 'counties',
             'source-layer': 'counties',
             'type': 'fill',
-            // filter: ['in', 'geoid', 'none'],
-            paint: {
-                'fill-color': '#ccc'
-            }
+            filter: ['in', 'geoid', 'none'],
         },
         {
             'id': 'cousubs',
@@ -432,7 +413,7 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             console.log('no map or falcor', map, falcor)
             return Promise.resolve();
         }
-        console.log('map??', map.setPaintProperty)
+
         this.falcorCache = falcor.getCache();
 
         return falcor.get(["geo", COUNTIES, ["cousubs", "name"]])
@@ -467,10 +448,6 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
                     })
             })
             .then(() => this.fetchData(falcor))
-            //.then(() => this.render(map, falcor))
-            .then(() => {
-                this.threeD && map.easeTo({pitch: 65, bearing: 45, duration: 3000});
-            })
     }
 
     receiveProps(oldProps, newProps) {
@@ -488,11 +465,10 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
         return geoids;
     }
 
-    getGeoids() {
+    getGeoids(falcor) {
         const geolevel = this.filters.geolevel.value;
-
         return this.getBaseGeoids().reduce((a, c) => {
-            a.push(...get(this.falcorCache, ["geo", c, geolevel, "value"], []));
+            a.push(...get(falcor.getCache(), ["geo", c, geolevel, "value"], []));
             return a;
         }, []);
     }
@@ -580,16 +556,16 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
 
     render(map, falcor) {
         if(!map || !falcor) return Promise.resolve();
+        this.falcorCache = falcor.getCache();
 
         const cache = falcor.getCache(),
-            geoids = this.getGeoids(),
-            geolevel = this.filters.geolevel.value[0],
+            geoids = this.getGeoids(falcor),
+            geolevel = this.filters.geolevel.value,
             year = this.filters.year.value[0],
             censusFilter = this.filters.census,
             censusValue = censusFilter.value[0],
             censusKeys = censusFilter.domain.reduce((a, c) => c.value === censusValue ? c.censusKeys : a, []),
             divisorKeys = censusFilter.domain.reduce((a, c) => c.value === censusValue ? c.divisorKeys : a, []);
-
         this.legend.format = censusFilter.domain.reduce((a, c) => c.value === censusValue ? c.format : a, ",d");
 
         const valueMap = geoids.reduce((a, c) => {
@@ -613,20 +589,22 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             a[c] = value;
             return a;
         }, {})
+        this.valueMap = valueMap
         const values = Object.values(valueMap);
         const colorScale = this.getColorScale(values),
             colors = {};
-        for (const key in valueMap) {
-            colors[key] = colorScale(valueMap[key]);
-        }
-        geoids.forEach(geoid => {
-            colors[geoid] = get(colors, geoid, "#000")
-        })
 
-        console.log('map?', map.setPaintProperty)
+        _.keys(valueMap).forEach(key => {
+            colors[key] = colorScale(valueMap[key]);
+        })
+        // geoids.forEach(geoid => {
+        //     colors[geoid] = get(colors, geoid, null)
+        // })
+
         try{
-            // map.setFilter(geolevel, ["in", "geoid", ...geoids]);
-            map.setPaintProperty(geolevel, "fill-color", '#bb1616')
+            map.setFilter(geolevel, ["in", "geoid", ...geoids]);
+            map.setPaintProperty(geolevel, "fill-color",
+                ["get", ["get", "geoid"], ["literal", colors]])
         }catch (e){
             console.log('apparently no map', map, map.setPaintProperty)
         }
