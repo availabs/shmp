@@ -11,7 +11,7 @@ const Edit = ({value, onChange}) => {
             <AvlMap
                 accessToken={ MAPBOX_TOKEN }
                 mapOptions={ mapOptions }
-                layers={ [layers.ACS_Census()] }
+                layers={ [layers.ACS_Census(), layers.ACS_Population_Difference()] }
                 sidebar={{
                     title: "Map",
                     tabs: ["layers", "styles"],

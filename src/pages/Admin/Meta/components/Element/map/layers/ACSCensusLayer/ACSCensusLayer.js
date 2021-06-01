@@ -274,8 +274,8 @@ class ACSCensusLayer extends LayerContainer {
     }
 
     render(map) {
-
-        if (this.data_tracts.length) {
+        if(!map) return Promise.resolve();
+        if (this.data_tracts && this.data_tracts.length) {
             map.setFilter("tracts", ["in", ["get", "GEOID"], ["literal", this.data_tracts.map(d => d.geoid)]]);
         }
         else {
