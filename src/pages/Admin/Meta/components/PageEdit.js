@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useState, useEffect} from "react"
 import get from 'lodash.get'
 
 import {TopNav, useTheme} from '@availabs/avl-components'
@@ -8,22 +8,25 @@ import SectionSideNav from './SideNav'
 import AuthMenu from 'pages/Auth/AuthMenu'
 
 import logo from './Logo.js'
-import {pageSettings} from "./pageSettings";
+import {LargeView, SmallView} from "./pageSettings";
 import Theme from 'Theme'
 
 export const Create = ({createState, setValues, item, dataItems, ...props}) => {
     const [topMenuOpen, setTopMenuOpen] = useState(false);
     const [topSubMenuOpen, setTopSubMenuOpen] = useState(false);
+    const [pageSettingsView, setPageSettingsView] = useState(window.innerWidth < 1280 ? 'sm' : 'lg')
     const theme = useTheme();
+
+    useEffect(() => {
+        setPageSettingsView(window.innerWidth < 1280 ? 'sm' : 'lg')
+    }, [window.innerWidth]);
+    console.log('view?', pageSettingsView)
     dataItems = dataItems.sort((a, b) => a.data.index - b.data.index)
 
     if (!item) {
         item = dataItems.filter(d => d.data.sectionLanding && d.data.section === props.section).pop()
     }
     if (!item || !item.data) return null
-
-
-// console.log("<PageEdit>", item, dataItems, props)
 
     const {data} = item
     let navItems = dataItems
@@ -93,7 +96,10 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                     />
                     : null
                 }
-                <div className='block xl:hidden'>{pageSettings({Title, URL, ShowSidebar, theme, createState, item, props})}</div>
+                {
+                    pageSettingsView === 'sm' ?
+                        <div className='block lg:hidden'>{SmallView({Title, URL, ShowSidebar, theme, createState, item, props})}</div> : null
+                }
             </div>
 
             <div className={`w-full hasValue flex-1 ${subNav.length ? 'mt-24' : 'mt-12'}`}>
@@ -101,9 +107,7 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                 <div className={`h-full`}>
                     <div className={'bg-white h-full flex justify-justify flex-col xl:flex-row z-10'}>
                         <div className='w-56 flex-shrink'>
-                            {ShowSidebar.value ?
-                                <SectionSideNav sections={get(Sections, `value`, [])} additionalComps={pageSettings({Title, URL, ShowSidebar, theme, createState, item, props})}/> : ''
-                            }
+                                <SectionSideNav sections={get(Sections, `value`, [])} visible={ShowSidebar.value}/>
                         </div>
                         <div className='py-8 flex-1 flex-grow'>
                             <div className='font-sm font-light text-xl leading-9 max-w-4xl mx-auto p-4 md:p-6'>
@@ -114,9 +118,12 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
                                 />
                             </div>
                         </div>
-                        <div className='hidden xl:block'>
-                            {pageSettings({Title, URL, ShowSidebar, theme, createState, item, props})}
-                        </div>
+                        {
+                            pageSettingsView === 'lg' ?
+                                <div className='hidden xl:block'>
+                                    {LargeView({Title, URL, ShowSidebar, theme, createState, item, props})}
+                                </div> : null
+                        }
                     </div>
                 </div>
             </div>

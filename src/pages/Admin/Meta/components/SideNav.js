@@ -1,16 +1,15 @@
 import React, {useState} from "react"
 import {Scrollspy} from "@availabs/avl-components";
 
-const SectionSideNav = ({sections, additionalComp}) => {
+const SectionSideNav = ({sections, visible}) => {
     const [activeId, setActiveId] = useState();
     const [open, setOpen] = useState(false);
     const [hovering, setHovering] = useState(false);
-    console.log(activeId)
+
     return (
-        <React.Fragment>
+        <div className={visible ? `` : `hidden`}>
             <div className={`block xl:hidden fas ${open ? `fa-times` : `fa-bars`} fixed p-3 m-1 z-10 flex-shrink-0`} onClick={() => setOpen(!open)}></div>
-            <div className={`flex-grow`}>{additionalComp}</div>
-            <div class={`${open ? `block xl:hidden` : `hidden`} fixed inset-0 bg-gray-600 bg-opacity-75`}
+            <div className={`${open ? `block xl:hidden` : `hidden`} fixed inset-0 bg-gray-600 bg-opacity-75`}
             onClick={() => setOpen(!open)}></div>
             <div className={`${open ? `block` : `hidden`} xl:block mt-10 xl:mt-0 pt-5 xl:pt-0 bg-white xl:bg-gray-50 bg-opacity-100 shadow-lg w-56 min-w-1/2 xl:min-w-0 h-screen fixed z-10`}
             onMouseEnter={() => setHovering(true)}
@@ -42,7 +41,7 @@ const SectionSideNav = ({sections, additionalComp}) => {
                     </ul>
                 </Scrollspy>
             </div>
-        </React.Fragment>
+        </div>
     )
 }
 

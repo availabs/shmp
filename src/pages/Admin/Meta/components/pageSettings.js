@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {DmsButton} from "../../../../components/dms/components/dms-button";
+import {DmsButton} from "components/dms/components/dms-button";
 import {Button} from "@availabs/avl-components";
 
 const items = ({Title, URL, ShowSidebar, theme, createState, item, props, ...rest}) => {
@@ -56,36 +56,28 @@ const items = ({Title, URL, ShowSidebar, theme, createState, item, props, ...res
         </React.Fragment>
     )
 }
-const SmallView = ({Title, URL, ShowSidebar, theme, createState, item, props, ...rest}) => {
-    const [open, setOpen] = useState(false);
+export const SmallView = ({Title, URL, ShowSidebar, theme, createState, item, props, ...rest}) => {
+    const [psOpen, psSetOpen] = useState(false);
 
     return (
-        <React.Fragment>
-            <div className={`fas ${open ? `fa-times` : `fa-save`} block xl:hidden p-4 pl-20 mr-4 cursor-pointer`} onClick={() => setOpen(!open)}>
+        <div>
+            <div className={`fas ${psOpen ? `fa-times` : `fa-save`} p-4 pl-20 mr-4 cursor-pointer`} onClick={() => psSetOpen(!psOpen)}>
             </div>
-            <div className={`${open ? `block` : `hidden`} h-full max-w-4xl mx-auto p-4 mt-10 flex flex-col shadow-lg`}>
-                {items({Title, URL, ShowSidebar, theme, createState, item, props, ...rest})}
-            </div>
-        </React.Fragment>
-    )
-}
-
-const LargeView = ({Title, URL, ShowSidebar, theme, createState, item, props, ...rest}) => {
-
-    return (
-        <div className='w-full xl:w-64 order-first xl:order-last border-b xl:border-none'>
-            <div className={`hidden xl:block p-4 border-l border-blue-300 fixed bg-blue-50`}>
-                <h4 className='font-bold '> Page Settings </h4>
+            <div className={`${psOpen ? `block` : `hidden`} h-full max-w-4xl mx-auto p-4 mt-10 flex flex-col shadow-lg`}>
                 {items({Title, URL, ShowSidebar, theme, createState, item, props, ...rest})}
             </div>
         </div>
     )
 }
-export const pageSettings = (props) => {
+
+export const LargeView = ({Title, URL, ShowSidebar, theme, createState, item, props, ...rest}) => {
+
     return (
-        <React.Fragment>
-            {LargeView(props)}
-            {SmallView(props)}
-        </React.Fragment>
+        <div className='w-full xl:w-64 order-first xl:order-last border-b xl:border-none'>
+            <div className={`p-4 border-l border-blue-300 fixed bg-blue-50`}>
+                <h4 className='font-bold '> Page Settings </h4>
+                {items({Title, URL, ShowSidebar, theme, createState, item, props, ...rest})}
+            </div>
+        </div>
     )
 }

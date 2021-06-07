@@ -105,14 +105,15 @@ export default ({dataItems = [], interact, ...props}) => {
                                     return (
                                         <div key={i} className='border-b py-4'>
                                             <div style={{display: "flex", alignItems: "center"}}>
-                                                <div style={{flexGrow: 1, display: "flex", alignItems: "center"}}>
-                                                    <div style={{fontWeight: "bold", fontSize: "1.5rem", width: "30px"}}
-                                                         onClick={
-                                                             () => dispatch({
-                                                                 type: state[d.id] === "opened" ? "close" : "open",
-                                                                 id: d.id
-                                                             })
-                                                         }>
+                                                <div className={subSections.length ? `cursor-pointer`: ``} style={{flexGrow: 1, display: "flex", alignItems: "center"}}
+                                                     onClick={
+                                                         () => dispatch({
+                                                             type: state[d.id] === "opened" ? "close" : "open",
+                                                             id: d.id
+                                                         })
+                                                     }
+                                                >
+                                                    <div style={{fontWeight: "bold", fontSize: "1.5rem", width: "30px"}}>
                                                         {!subSections.length ? null : state[d.id] === "opened" ? "-" : "+"}
                                                     </div>
                                                     {d.data.section}
@@ -148,7 +149,7 @@ export default ({dataItems = [], interact, ...props}) => {
                                                             <div key={d.id} className="flex border-2 rounded-lg"
                                                                  style={{padding: "1rem", alignItems: "center"}}>
                                                                 <div className="flex-1">
-                                                                    <Link to={`/docs/view/${d.id}`}>
+                                                                    <Link to={`/p/view/${d.id}`}>
                                                                         <h4 style={{margin: "0px"}}>{d.data.title}</h4>
                                                                     </Link>
                                                                 </div>
