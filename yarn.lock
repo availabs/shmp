@@ -15,10 +15,10 @@
     "react-redux" "^7.2.2"
     "react-router-dom" "5.x"
 
-"@availabs/avl-components@^1.0.34", "@availabs/avl-components@^1.0.38", "@availabs/avl-components@^1.0.66":
-  "integrity" "sha512-g5k5kG/59QSAPGzmCvrzbQ46ofKCFenCDMO7OESKiUh4s4EcjNy5lP4lmFoNYEeGA6mAgFUmFCJA9FaIa2ujYg=="
-  "resolved" "https://registry.npmjs.org/@availabs/avl-components/-/avl-components-1.0.66.tgz"
-  "version" "1.0.66"
+"@availabs/avl-components@^1.0.34", "@availabs/avl-components@^1.0.38", "@availabs/avl-components@^1.0.68":
+  "integrity" "sha512-N/xMEBN01ZiyHl1CFz+OyCsRpfHMS1Osp9z0dLmS2MZgEg2YMbjc0oTz+k1AiSqncixbZzgNxWonJMqut8Dwew=="
+  "resolved" "https://registry.npmjs.org/@availabs/avl-components/-/avl-components-1.0.68.tgz"
+  "version" "1.0.68"
   dependencies:
     "bluebird" "^3.7.2"
     "classnames" "^2.3.1"

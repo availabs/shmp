@@ -36,9 +36,9 @@ const light_base = {
     topNavHeight: '12',
     scrollBar: 'overflow-auto scrollbar-xsm scrollbar-sm',
     navMenu: 'h-full relative',
-    navMenuOpen: 'bg-darkblue-500 text-white shadow-lg w-56 rounded-t-lg',
-    navMenuBg: 'bg-darkblue-500 bb-rounded-10 shadow-lg text-white rounded-b-lg',
-    navMenuItem: 'hover:font-medium cursor-pointer px-2 py-1 text-lg font-semibold',
+    navMenuOpen: 'bg-darkblue-500 text-white shadow-lg w-56 rounded-lg',
+    navMenuBg: 'bg-darkblue-500 shadow-lg text-white rounded-lg',
+    navMenuItem: 'text-sm hover:text-lg cursor-pointer px-2 py-1 text-white hover:text-gray-500',
 
 
     bg: 'bg-white',

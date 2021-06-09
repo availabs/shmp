@@ -23,9 +23,6 @@ const Home = ({children}) => {
 						tabs: ["layers", "styles"],
 						open: true
 					}}
-					onChange={(e) => {
-						onChange(JSON.stringify(e))
-					}}
 				/>
 	  		</div>
 		</AdminLayout>

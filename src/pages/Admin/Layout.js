@@ -1,6 +1,6 @@
 import React  from "react"
 import {useTheme, SideNav} from '@availabs/avl-components'
-//import { SideNav } from 'components/avl-components/src/components'
+// import { useTheme, SideNav } from 'components/avl-components/src/'
 import AuthMenu from 'pages/Auth/AuthMenu'
 import logo from './Logo.js'
 
@@ -18,7 +18,7 @@ const AdminLayout = ({children}) => {
 		  		<SideNav  
 		  			customTheme={AdminTheme}
 		  			logo={<div className='border-b border-gray-200'>{logo('SHMP')}</div>}
-		  			topMenu={<div className='border-b border-gray-200 pb-3'><AuthMenu /></div>}
+		  			topMenu={<div className='border-b border-gray-200 p-4'><AuthMenu /></div>}
 		    		menuItems={[
 		    			
 		    			{
