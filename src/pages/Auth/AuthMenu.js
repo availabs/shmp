@@ -5,7 +5,7 @@ import { NavMenu, NavMenuItem, NavMenuSeparator, NavItem, withAuth } from '@avai
 import user from "@availabs/ams/dist/reducers/user";
 
 const userMenu = (user) => (
-    <div className={`text-sm text-white font-normal tracking-widest flex justify-column align-middle`}>
+    <div className={`text-sm text-white font-normal tracking-widest flex justify-column align-middle pb-5 pt-5`}>
         <i className="fas fa-user text-md pr-1 pt-1"></i>
         <span>
             <div className='text-s -my-1 text-left text-white'>{user.email ? user.email : ''}</div>
@@ -37,7 +37,7 @@ export default withAuth(({title, shadowed = true, user, children}) => {
 
                     {Item('/admin', 'fas fa-arrow-right pr-1', 'Home' )}
                     {Item('/meta', 'fas fa-arrow-right pr-1', 'Admin Panel', user.authLevel >= 5 )}
-                    {Item('/auth/logout', 'fas fa-sign-out-alt pr-1', 'Logout')}
+                    {Item('/auth/logout', 'fas fa-sign-out-alt pb-2 pr-1 pt-2', 'Logout')}
 
                 </NavMenu>
             }

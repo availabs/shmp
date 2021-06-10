@@ -1,26 +1,35 @@
 import React from "react"
-import {AvlMap} from 'components/avl-map/src'
+import {AvlMap} from "../../../../../../components/avl-map/src";
 import {layers} from './layers'
 import {MAPBOX_TOKEN} from 'mapboxConfig'
 
-const Edit = ({value, onChange}) => {
+const Edit = ({value, onChange, ...props}) => {
     let data = value;
+    console.log('data?', data)
     let mapOptions = {}
     return (
-        <div className='h-96 flex-1 flex flex-col'>
-            <AvlMap
-                accessToken={ MAPBOX_TOKEN }
-                mapOptions={ mapOptions }
-                layers={ [layers.ACS_Census(), layers.ACS_Population_Difference()] }
-                sidebar={{
-                    title: "Map",
-                    tabs: ["layers", "styles"],
-                    open: true
-                }}
-                onChange={(e) => {
-                    onChange(JSON.stringify(e))
-                }}
-            />
+        <div className='h-screen flex-1 flex flex-col'>
+                <AvlMap
+                    accessToken={ MAPBOX_TOKEN }
+                    mapOptions={ mapOptions }
+                    layers={ [layers.ACS_Census(), layers.ACS_Population_Difference()] }
+                    sidebar={{
+                        title: "Map",
+                        tabs: ["layers", "styles"],
+                        open: true
+                    }}
+                    layerProps={
+                        {
+                            'ACS Census Population Difference Layer': {
+                                change: (e) => {
+                                    console.log('e?', e)
+                                    onChange(JSON.stringify(e))
+                                }
+                            }
+                        }
+                    }
+
+                />
         </div>
     )
 }

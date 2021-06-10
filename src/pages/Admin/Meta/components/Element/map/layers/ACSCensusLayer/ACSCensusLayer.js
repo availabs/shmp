@@ -275,12 +275,6 @@ class ACSCensusLayer extends LayerContainer {
 
     render(map) {
         if(!map) return Promise.resolve();
-        if (this.data_tracts && this.data_tracts.length) {
-            map.setFilter("tracts", ["in", ["get", "GEOID"], ["literal", this.data_tracts.map(d => d.geoid)]]);
-        }
-        else {
-            map.setFilter("tracts", false);
-        }
         //
         this.processedData = this.data.data.reduce((acc,curr) =>{
             this.data_tracts.forEach(data_tract =>{
@@ -300,12 +294,22 @@ class ACSCensusLayer extends LayerContainer {
                 return a
             },{});
 
-        map.setPaintProperty("tracts", "fill-color", [
-            "case",
-            ["boolean", ["feature-state", "hover"], false],
-            "#090",
-            ["get", ["get", "GEOID"], ["literal", colors]]
-        ])
+        try{
+            if (this.data_tracts && this.data_tracts.length) {
+                map.setFilter("tracts", ["in", ["get", "GEOID"], ["literal", this.data_tracts.map(d => d.geoid)]]);
+            } else {
+                map.setFilter("tracts", false);
+            }
+
+            map.setPaintProperty("tracts", "fill-color", [
+                "case",
+                ["boolean", ["feature-state", "hover"], false],
+                "#090",
+                ["get", ["get", "GEOID"], ["literal", colors]]
+            ])
+        }catch (e){
+
+        }
     }
 
 }

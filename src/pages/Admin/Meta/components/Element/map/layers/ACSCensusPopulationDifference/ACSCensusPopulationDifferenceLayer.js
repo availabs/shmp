@@ -95,6 +95,7 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
 
     setActive = !!this.viewId
     name = 'ACS Census Population Difference Layer'
+    id = 'ACS Census Population Difference Layer'
     selectedGeoids = []
     falcorCache = {}
     geoData = {}
@@ -113,7 +114,8 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
         },
         geolevel: {
             name: 'Geography Level',
-            type: 'single',
+            id: 'Geography Level',
+            type: 'dropdown',
             domain: [
                 {name: "Counties", value: "counties"},
                 {name: "Municipalities", value: "cousubs"},
@@ -124,8 +126,6 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             listAccessor: d => d.name,
             accessor: d => d.name,
             valueAccessor: d => d.value,
-            onChange: (e) => {
-            },
             multi: false
         },
         year: {
@@ -138,31 +138,20 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
 
         compareYear: {
             name: "Compare Year",
-            type: "single",
+            type: "dropdown",
             domain: YEARS,
             value: YEARS[1],
             multi: false
         },
         census: {
             name: "Census Labels",
-            type: "single",
+            type: "dropdown",
             domain: CENSUS_FILTER_CONFIG,
             value: CENSUS_FILTER_CONFIG[DEFAULT_CONFIG_INDEX].value,
             listAccessor: d => d.name,
             accessor: d => d.name,
             valueAccessor: d => d.value,
             multi: false,
-            groups: CENSUS_FILTER_CONFIG.reduce((a, c) => {
-                if (c.group !== currentGroup) {
-                    currentGroup = c.group;
-                    a.push({
-                        name: currentGroup,
-                        options: []
-                    });
-                }
-                a[a.length - 1].options.push(c);
-                return a;
-            }, [])
         },
     }
 
@@ -461,10 +450,10 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             }))
     }
 
-    receiveProps(oldProps, newProps) {
-        this.history = newProps.history;
+    receiveProps(props, map, falcor, MapActions) {
+        this.change = props.change;
+        console.log('onChange?', this.change);
     }
-
     getBaseGeoids() {
         let geoids = COUNTIES;
 
@@ -548,6 +537,48 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             })
     }
 
+    onFilterChange(filterName,value,preValue){
+        // this.fetchData()
+        // switch (filterName){
+        //     case "year" : {
+        //         this.legend.Title = `${this.filters.dataset.value}-${value}`
+        //         this.legend.domain = this.processedData.map(d => d.value).filter(d => d).sort()
+        //         break;
+        //     }
+        //     case "compareYear" : {
+        //         this.legend.Title = `${this.filters.dataset.value}-${value}`
+        //         this.legend.domain = this.processedData.map(d => d.value).filter(d => d).sort()
+        //         break;
+        //     }
+        //     case "area":{
+        //         this.legend.Title = `${value}-${this.filters.year.value}`
+        //         this.legend.domain = this.processedData.map(d => d.value).filter(d => d).sort()
+        //         break;
+        //     }
+        //
+        //     case "census":{
+        //         this.legend.Title = `${value}-${this.filters.year.value}`
+        //         this.legend.domain = this.processedData.map(d => d.value).filter(d => d).sort()
+        //         break;
+        //     }
+        //     case "geolevel": {
+        //
+        //         this.legend.Title = `${this.filters.dataset.value} in %-${this.filters.year.value}`
+        //         this.legend.domain = this.processedData.map(d => d.value).filter(d => d).sort()
+        //         if(value === 'percent'){
+        //             this.legend.format = ',f'
+        //         }else{
+        //             this.legend.format = ',d'
+        //         }
+        //         break;
+        //     }
+        //     default:{
+        //         //do nothing
+        //     }
+        // }
+
+    }
+
     toggle3D() {
         this.threeD = !this.threeD;
         const mapPitch = this.map.getPitch(),
@@ -571,6 +602,8 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
         if (!map || !falcor) return Promise.resolve();
 
         this.falcorCache = falcor.getCache();
+        console.log('in render', this.change)
+        if(this.change) this.change('hi');
 
         let cache = falcor.getCache(),
             geoids = this.getGeoids(falcor),
@@ -655,7 +688,7 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             map.setPaintProperty(geolevel, "fill-color",
                 ["get", ["get", "geoid"], ["literal", colors]]);
         } catch (e) {
-            console.log('apparently no map', map, map.setPaintProperty)
+            console.log('apparently no map', map)
         }
     }
 
