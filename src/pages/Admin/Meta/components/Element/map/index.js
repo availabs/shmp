@@ -5,10 +5,9 @@ import {MAPBOX_TOKEN} from 'mapboxConfig'
 
 const Edit = ({value, onChange, ...props}) => {
     let data = value;
-    console.log('data?', data)
     let mapOptions = {}
     return (
-        <div className='h-screen flex-1 flex flex-col'>
+        <div className='h-80vh flex-1 flex flex-col'>
                 <AvlMap
                     accessToken={ MAPBOX_TOKEN }
                     mapOptions={ mapOptions }

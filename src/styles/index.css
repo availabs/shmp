@@ -69,6 +69,9 @@
 .h-9\/10 {
     height: 90%;
 }
+.h-80vh {
+    height: 80vh;
+}
 @font-face{
     font-family:'Proxima Nova W01';
     src:url(./fonts/ProximaNova-Light-webfont.eot);

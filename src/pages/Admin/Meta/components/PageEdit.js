@@ -20,7 +20,7 @@ export const Create = ({createState, setValues, item, dataItems, ...props}) => {
     useEffect(() => {
         setPageSettingsView(window.innerWidth < 1280 ? 'sm' : 'lg')
     }, [window.innerWidth]);
-    console.log('view?', pageSettingsView)
+
     dataItems = dataItems.sort((a, b) => a.data.index - b.data.index)
 
     if (!item) {
