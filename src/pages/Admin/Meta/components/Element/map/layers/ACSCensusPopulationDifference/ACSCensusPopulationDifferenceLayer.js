@@ -279,8 +279,22 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
     }
 
     receiveProps(props, map, falcor, MapActions) {
-        console.log('rp', props)
+        this.change = props.change;
+        if(props.data){
+            Object.keys(props.data)
+                .forEach(filter => {
+                    if(!_.isEqual(this.filters[filter].value, props.data[filter].value)){
+                        this.filters[filter].value = props.data[filter].value
+                    }
+                })
+        }
     }
+
+    // onRemove(mapboxMap) {
+    //     super.onRemove(mapboxMap);
+    //     this.change(this.filters)
+    //     console.log('removing')
+    // }
 
     getBaseGeoids() {
         let geoids = COUNTIES;
@@ -302,7 +316,6 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
     }
 
     fetchData(falcor) {
-        console.log('in ffd')
 
         if (!falcor) {
             console.log('no  falcor')
@@ -369,11 +382,10 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
     }
 
     render(map, falcor) {
-        console.log('in render')
 
         if (!map || !falcor) return Promise.resolve();
         this.falcorCache = falcor.getCache();
-
+        if(this.change) this.change(this.filters)
         let cache = falcor.getCache(),
             geoids = this.getGeoids(falcor),
             geolevel = this.filters.geolevel.value,

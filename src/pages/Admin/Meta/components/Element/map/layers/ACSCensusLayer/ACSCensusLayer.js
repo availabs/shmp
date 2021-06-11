@@ -18,6 +18,7 @@ class ACSCensusLayer extends LayerContainer {
 
     setActive = !!this.viewId
     name = 'ACS Census Layer'
+    id = 'ACS Census Layer'
     filters = {
         dataset: {
             name: 'Dataset',
