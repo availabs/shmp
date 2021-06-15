@@ -22,14 +22,13 @@ const YEARS = [2017, 2016, 2015, 2014];
 class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
     constructor(props) {
         super(props);
-        this.change = props.change;
+        this.data = props['ACS Census Population Difference Layer']
+        console.log(props)
     }
     // setActive = !!this.viewId
     name = 'ACS Census Population Difference Layer'
     id = 'ACS Census Population Difference Layer'
-    selectedGeoids = []
     geoData = {}
-
     filters = {
         area: {
             name: "Area",
@@ -289,18 +288,22 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
 
 
     init(map, falcor) {
+        if(this.data){
+            Object.keys(this.data)
+                .forEach(filter => {
+                    if (this.filters[filter]) this.filters[filter].value = this.data[filter].value
+                })
+        }
         return Promise.resolve();
     }
 
     receiveProps(props, map, falcor, MapActions) {
-        // MapActions.saveMapAsImage();
         this.change = props.change;
         if(props.data && props.data.filters){
             this.data = props.data.filters;
             Object.keys(props.data.filters)
                 .forEach(filter => {
                     if(!_.isEqual(this.filters[filter].value, props.data.filters[filter].value)){
-                        console.log('changing for ', filter, props.data.filters[filter].value)
                         this.filters[filter].value = props.data.filters[filter].value
                     }
                 })

@@ -89,8 +89,8 @@ export default ({ layer }, setImg) => {
     }, [layer.filters.census.value]);
 
     return (
-        <Button onClick={saveImage}>
-            Save Settings
+        <Button className='w-full' onClick={getImageUrl}>
+            <i className={'fas fa-save pr-1'} /><span>Save Settings</span>
         </Button>
     )
 }

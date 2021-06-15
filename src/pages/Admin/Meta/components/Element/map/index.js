@@ -1,5 +1,6 @@
 import React from "react"
 import _ from "lodash"
+import get from "lodash.get"
 import {AvlMap} from "../../../../../../components/avl-map/src";
 import {layers} from './layers'
 import {MAPBOX_TOKEN} from 'mapboxConfig'
@@ -17,7 +18,7 @@ const parseJSON = (value) => {
 
 const Edit = ({value, onChange, ...props}) => {
     const Layers = React.useRef(
-        [layers.ACS_Census(), layers.ACS_Population_Difference()]
+        [layers.ACS_Census(), layers.ACS_Population_Difference(parseJSON(value))]
     );
     console.log('props?', parseJSON(value))
     return (
@@ -61,7 +62,7 @@ const View = ({value}) => {
 
     return (
         <div className='h-80vh flex-1 flex flex-col'>
-           <img src={_.values(value).filter(layer => layer.img)[0].img} />
+           <img src={get(_.values(value).filter(layer => layer.img), [0, 'img'])} />
         </div>
     )
 }
