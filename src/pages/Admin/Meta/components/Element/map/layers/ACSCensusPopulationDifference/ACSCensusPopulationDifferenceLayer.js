@@ -7,6 +7,8 @@ import {scaleQuantile, scaleQuantize} from "d3-scale"
 import {format} from 'd3-format'
 import {getColorRange} from "@availabs/avl-components";
 import {CENSUS_FILTER_CONFIG} from './config/censusFilterConfig'
+import OptionsBox from "./infoBoxes/OptionsBox"
+import OptionsModal from "./modals/OptionsModal"
 
 const HOVER_COLOR = "#f16913";
 
@@ -33,7 +35,7 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             name: "Area",
             type: "dropdown",
             multi: true,
-            value: [],
+            value: get(this.data, 'area', []),
             domain: [],
             listAccessor: d => d.name,
             accessor: d => d.name,
@@ -49,7 +51,7 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
                 {name: "Tracts", value: "tracts"},
                 {name: "Block Groups", value: "blockgroup"}
             ],
-            value: 'counties',
+            value: get(this.data, 'geolevel', 'counties'),
             listAccessor: d => d.name,
             accessor: d => d.name,
             valueAccessor: d => d.value,
@@ -59,7 +61,7 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             name: "Year",
             type: "dropdown",
             domain: YEARS,
-            value: YEARS[0],
+            value: get(this.data, 'year', YEARS[0]),
             multi: false
         },
 
@@ -67,14 +69,14 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             name: "Compare Year",
             type: "dropdown",
             domain: YEARS,
-            value: YEARS[1],
+            value: get(this.data, 'compareYear', YEARS[1]),
             multi: false
         },
         census: {
             name: "Census Labels",
             type: "dropdown",
             domain: CENSUS_FILTER_CONFIG,
-            value: CENSUS_FILTER_CONFIG[DEFAULT_CONFIG_INDEX].value,
+            value: get(this.data, 'census', CENSUS_FILTER_CONFIG[DEFAULT_CONFIG_INDEX].value),
             listAccessor: d => d.name,
             accessor: d => d.name,
             valueAccessor: d => d.value,
@@ -90,6 +92,17 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
         range: getColorRange(5, "YlOrRd", true),
         show: true,
     }
+
+    infoBoxes =
+        [{
+        Title: () => 'Save',
+        Component: e => OptionsBox(e, (img) => {
+            console.log(e)
+            e.layer.img = img;
+            e.layer.change({filters: e.layer.filters, ...{img}})
+        }),
+        show: true
+    }]
 
     onHover = {
         layers: ["counties", "cousubs", "tracts", "blockgroup"],
@@ -111,15 +124,15 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
 
             const value = get(this.valueMap, [geoid], null);
             const compareValue = get(this.compareValueMap, [geoid], null);
-            // if (value !== null) {
-            //     const formatVal = (typeof this.legend.format === "function") ? this.legend.format : format(this.legend.format);
-            //     data.push([`${this.filters.census.value} ${this.filters.year.value}`, formatVal(value)])
-            // }
-            // if (compareValue !== null) {
-            //     const formatVal = (typeof this.legend.format === "function") ? this.legend.format : format(this.legend.format);
-            //     data.push([`${this.filters.census.value} ${this.filters.compareYear.value}`, formatVal(compareValue)])
-            //     data.push([`% change`, `${((value-compareValue)/compareValue)*100}%`])
-            // }
+            if (value !== null) {
+                const formatVal = (typeof this.legend.format === "function") ? this.legend.format : format(this.legend.format);
+                data.push([`${this.filters.census.value} ${this.filters.year.value}`, formatVal(value)])
+            }
+            if (compareValue !== null) {
+                const formatVal = (typeof this.legend.format === "function") ? this.legend.format : format(this.legend.format);
+                data.push([`${this.filters.census.value} ${this.filters.compareYear.value}`, formatVal(compareValue)])
+                data.push([`% change`, `${((value-compareValue)/compareValue)*100}%`])
+            }
             return data;
         }
     }
@@ -274,17 +287,21 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
         }
     ]
 
+
     init(map, falcor) {
         return Promise.resolve();
     }
 
     receiveProps(props, map, falcor, MapActions) {
+        // MapActions.saveMapAsImage();
         this.change = props.change;
-        if(props.data){
-            Object.keys(props.data)
+        if(props.data && props.data.filters){
+            this.data = props.data.filters;
+            Object.keys(props.data.filters)
                 .forEach(filter => {
-                    if(!_.isEqual(this.filters[filter].value, props.data[filter].value)){
-                        this.filters[filter].value = props.data[filter].value
+                    if(!_.isEqual(this.filters[filter].value, props.data.filters[filter].value)){
+                        console.log('changing for ', filter, props.data.filters[filter].value)
+                        this.filters[filter].value = props.data.filters[filter].value
                     }
                 })
         }
@@ -313,6 +330,11 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             a.push(...get(falcor.getCache(), ["geo", c, geolevel, "value"], []));
             return a;
         }, []);
+    }
+
+    onFilterChange(filterName, newValue, prevValue) {
+        super.onFilterChange(filterName, newValue, prevValue);
+        if(this.change) this.change({filters: this.filters, img: this.img})
     }
 
     fetchData(falcor) {
@@ -385,7 +407,7 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
 
         if (!map || !falcor) return Promise.resolve();
         this.falcorCache = falcor.getCache();
-        if(this.change) this.change(this.filters)
+        if(this.change) this.change({filters: this.filters, ...{img:this.img}})
         let cache = falcor.getCache(),
             geoids = this.getGeoids(falcor),
             geolevel = this.filters.geolevel.value,
