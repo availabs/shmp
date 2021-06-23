@@ -17,10 +17,13 @@ const parseJSON = (value) => {
 }
 
 const Edit = ({value, onChange, ...props}) => {
+    let options = {data: parseJSON(value), change: (e) => {
+            onChange(JSON.stringify(e))
+        }}
     const Layers = React.useRef(
-        [layers.ACS_Census(), layers.ACS_Population_Difference(parseJSON(value))]
+        [layers.ACS_Census(options), layers.ACS_Population_Difference(options)]
     );
-    console.log('props?', parseJSON(value))
+
     return (
         <div className='h-80vh flex-1 flex flex-col'>
             <AvlMap
@@ -31,19 +34,6 @@ const Edit = ({value, onChange, ...props}) => {
                     tabs: ["layers", "styles"],
                     open: true
                 }}
-                MapActions={[(e) => {console.log('saving map', e)}]}
-                layerProps={
-                    Layers.current
-                        .reduce((acc, layer) => {
-                            acc[layer.id] = {
-                                data: parseJSON(value)[layer.id],
-                                change: (e) => {
-                                    onChange(JSON.stringify({[layer.id]: e}))
-                                }
-                            }
-                            return acc
-                        }, {})
-                }
             />
         </div>
     )

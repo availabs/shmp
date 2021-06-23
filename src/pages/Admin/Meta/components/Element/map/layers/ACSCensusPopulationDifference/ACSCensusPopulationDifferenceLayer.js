@@ -7,34 +7,34 @@ import {scaleQuantile, scaleQuantize} from "d3-scale"
 import {format} from 'd3-format'
 import {getColorRange} from "@availabs/avl-components";
 import {CENSUS_FILTER_CONFIG} from './config/censusFilterConfig'
-import OptionsBox from "./infoBoxes/OptionsBox"
+import OptionsBox, {drawLegend} from "./infoBoxes/OptionsBox"
 import OptionsModal from "./modals/OptionsModal"
 
 const HOVER_COLOR = "#f16913";
-
-const COUNTIES = [
-    '36001', '36083', '36093', '36091',
-    '36039', '36021', '36115', '36113'
-].sort((a, b) => +a - +b);
 
 const YEARS = [2017, 2016, 2015, 2014];
 
 class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
     constructor(props) {
         super(props);
-        this.data = props['ACS Census Population Difference Layer']
-        console.log(props)
+        this.data = get(props, ['data', 'ACS Census Population Difference Layer'], {});
+        this.props = props;
+        this.bounds = this.data.bounds;
+        if(props.change){
+            this.change = e => props.change({['ACS Census Population Difference Layer']: e})
+        }
     }
     // setActive = !!this.viewId
     name = 'ACS Census Population Difference Layer'
     id = 'ACS Census Population Difference Layer'
     geoData = {}
+    COUNTIES = []
     filters = {
         area: {
             name: "Area",
             type: "dropdown",
             multi: true,
-            value: get(this.data, 'area', []),
+            value: get(this.data, 'area', ['NY State']),
             domain: [],
             listAccessor: d => d.name,
             accessor: d => d.name,
@@ -68,7 +68,7 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             name: "Compare Year",
             type: "dropdown",
             domain: YEARS,
-            value: get(this.data, 'compareYear', YEARS[1]),
+            value: get(this.data, 'compareYear', []),
             multi: false
         },
         census: {
@@ -84,7 +84,12 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
     }
 
     legend = {
-        Title: ({layer}) => <>{get(layer.filters.census, 'value')}</>,
+        Title: ({layer}) => {
+            let mainText = get(layer.filters.census, 'value'),
+                years = typeof get(layer.filters.compareYear, 'value') === 'number' ?
+                       `${get(layer.filters.year, 'value')} vs ${get(layer.filters.compareYear, 'value')}` : ``
+            return `${mainText} ${years}`
+        },
         type: "quantile",
         domain: [],
         format: CENSUS_FILTER_CONFIG[DEFAULT_CONFIG_INDEX].format,
@@ -92,16 +97,16 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
         show: true,
     }
 
-    infoBoxes =
-        [{
-        Title: () => 'Save',
-        Component: e => OptionsBox(e, (img) => {
-            console.log(e)
-            e.layer.img = img;
-            e.layer.change({filters: e.layer.filters, ...{img}})
-        }),
-        show: true
-    }]
+    // infoBoxes =
+    //     [{
+    //     Title: () => 'Save',
+    //     Component: e => OptionsBox(e, (img) => {
+    //         console.log(e)
+    //         e.layer.img = img;
+    //         e.layer.change({filters: e.layer.filters, ...{img}})
+    //     }),
+    //     show: true
+    // }]
 
     onHover = {
         layers: ["counties", "cousubs", "tracts", "blockgroup"],
@@ -288,26 +293,28 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
 
 
     init(map, falcor) {
-        if(this.data){
-            Object.keys(this.data)
-                .forEach(filter => {
-                    if (this.filters[filter]) this.filters[filter].value = this.data[filter].value
-                })
+        if(this.data.bounds){
+            map.fitBounds([[this.data.bounds._sw.lng, this.data.bounds._sw.lat], [this.data.bounds._ne.lng, this.data.bounds._ne.lat]]);
+        }else {
+            // fly to and zoom to ny
+            map.fitBounds([
+                [
+                    -79.8046875,
+                    40.538851525354666
+                ],
+                [
+                    -71.7626953125,
+                    45.042478050891546
+                ]])
         }
-        return Promise.resolve();
+
+        Object.keys(this.data.filters || {})
+            .forEach(filter => {
+                if (this.filters[filter]) this.filters[filter].value = this.data.filters[filter].value
+            })
     }
 
     receiveProps(props, map, falcor, MapActions) {
-        this.change = props.change;
-        if(props.data && props.data.filters){
-            this.data = props.data.filters;
-            Object.keys(props.data.filters)
-                .forEach(filter => {
-                    if(!_.isEqual(this.filters[filter].value, props.data.filters[filter].value)){
-                        this.filters[filter].value = props.data.filters[filter].value
-                    }
-                })
-        }
     }
 
     // onRemove(mapboxMap) {
@@ -317,12 +324,12 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
     // }
 
     getBaseGeoids() {
-        let geoids = COUNTIES;
+        let geoids = this.COUNTIES;
 
         const area = this.filters.area.value;
 
         if (area.length) {
-            geoids = area;
+            geoids = area[0] === 'NY State' ? geoids : area;
         }
         return geoids;
     }
@@ -336,20 +343,29 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
     }
 
     onFilterChange(filterName, newValue, prevValue) {
-        super.onFilterChange(filterName, newValue, prevValue);
-        if(this.change) this.change({filters: this.filters, img: this.img})
+        if(filterName === 'area' && newValue && newValue[0]){
+            if (newValue[0].length === 5 && this.filters.geolevel.value === 'counties') {
+                this.filters.geolevel.value = 'cousubs'
+            }else if (newValue[0].length === 10 && ['counties', 'cousubs'].includes(this.filters.geolevel.value)) {
+                this.filters.geolevel.value = 'tracts'
+            }
+        }
+        if(this.change) this.change({filters: this.filters, img: this.img, bounds: this.bounds})
     }
 
-    fetchData(falcor) {
+    async fetchData(falcor) {
 
         if (!falcor) {
             console.log('no  falcor')
             return Promise.resolve()
         }
         this.falcorCache = falcor.getCache();
-        return falcor.get(["geo", COUNTIES, ["cousubs", "name"]])
+
+        this.COUNTIES = await falcor.get(['geo', '36', 'counties']).then(({json:{geo:{'36':{counties}}}}) => counties);
+
+        return falcor.get(["geo", this.COUNTIES, ["cousubs", "name"]])
             .then(res => {
-                const cousubs = COUNTIES.reduce((a, c) => {
+                const cousubs = this.COUNTIES.reduce((a, c) => {
                     a.push(...get(res, ["json", "geo", c, "cousubs"], []));
                     return a;
                 }, [])
@@ -358,7 +374,8 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
                     .then(() => {
                         const cache = falcor.getCache();
                         this.filters.area.domain = [
-                            ...COUNTIES,
+                            'NY State',
+                            ...this.COUNTIES,
                             ...cousubs
                         ]
                             .sort((a, b) => {
@@ -394,14 +411,12 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
                     ["geo", geoids, geolevel]
                 )
                     .then(() => {
-                        const cache = falcor.getCache(),
-                            subGeoids = geoids.reduce((a, c) => {
-                                a.push(...get(cache, ["geo", c, geolevel, "value"], []))
-                                return a;
-                            }, []);
-                        return falcor.get(
-                            ["acs", subGeoids, compareYear ? [year, compareYear] : [year], census]
-                        )
+                        const cache = falcor.getCache();
+                        return geoids.reduce((a, c) => {
+                                return a.then(() => falcor.get(
+                                    ["acs", get(cache, ["geo", c, geolevel, "value"], []), compareYear ? [year, compareYear] : [year], census]
+                                ))
+                            }, Promise.resolve());
                     })
             })
     }
@@ -410,7 +425,33 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
 
         if (!map || !falcor) return Promise.resolve();
         this.falcorCache = falcor.getCache();
-        if(this.change) this.change({filters: this.filters, ...{img:this.img}})
+
+        if(this.change) this.change({filters: this.filters, ...{img:this.img}, bounds: map.getBounds()});
+        if(this.change){
+            map.on('resize', (e) => {
+                this.bounds = map.getBounds();
+                this.change({filters: this.filters, img: this.img, bounds:  this.bounds});
+            })
+            map.on('render', (e) => {
+                const canvas = document.querySelector("canvas.mapboxgl-canvas"),
+                    newCanvas = document.createElement("canvas");
+                let img;
+
+                newCanvas.width = canvas.width;
+                newCanvas.height = canvas.height;
+
+                const context = newCanvas.getContext("2d")
+                context.drawImage(canvas, 0, 0);
+
+                drawLegend({legend: this.legend, filters: this.filters}, newCanvas, canvas);
+                img = newCanvas.toDataURL();
+                this.img = img;
+                this.change({filters: this.filters, img, bounds: map.getBounds()})
+
+            })
+        }
+
+
         let cache = falcor.getCache(),
             geoids = this.getGeoids(falcor),
             geolevel = this.filters.geolevel.value,
@@ -422,7 +463,8 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             divisorKeys = censusFilter.domain.reduce((a, c) => c.value === censusValue ? c.divisorKeys : a, []);
         this.legend.format = censusFilter.domain.reduce((a, c) => c.value === censusValue ? c.format : a, ",d");
 
-        let compareValueMap = {}
+        let compareValueMap = {};
+        this.differanceValueMap = {}
         const valueMap = geoids.reduce((a, c) => {
             let value = censusKeys.reduce((aa, cc) => {
                 const v = get(cache, ["acs", c, year, cc], -666666666);
@@ -466,30 +508,32 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
                     compareValue /= compareDivisor;
                 }
                 compareValueMap[c] = compareValue;
+
+                this.differanceValueMap[c] = (value - compareValue)/compareValue;
             }
             return a;
         }, {})
         this.valueMap = valueMap
         this.compareValueMap = compareValueMap
 
-        const values = Object.values(valueMap);
+        const values = Object.values(typeof compareYear === 'number' ? this.differanceValueMap : valueMap);
         const colorScale = this.getColorScale(values),
             colors = {};
 
         _.keys(valueMap).forEach(key => {
-            colors[key] = colorScale(valueMap[key]);
+            colors[key] = colorScale(typeof compareYear === 'number' ? this.differanceValueMap[key] : valueMap[key]);
+            colors[key] = !colors[key] ? '#000000' : colors[key]
         })
 
         try {
             ['counties', 'cousubs', 'tracts', 'blockgroup']
-                .filter(l => l !== geolevel)
-                .forEach(l => {
-                    map.setFilter(l, ["in", "geoid", ...geoids]);
-                })
+            .forEach(l => {
+                map.setFilter(l, ["in", "geoid", ...geoids]);
+            })
 
-            map.setFilter(geolevel, ["in", "geoid", ...geoids]);
             map.setPaintProperty(geolevel, "fill-color",
                 ["get", ["get", "geoid"], ["literal", colors]]);
+
         } catch (e) {
             console.log('apparently no map', map)
         }

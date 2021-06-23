@@ -3,7 +3,7 @@ import * as d3scale from "d3-scale"
 import { format as d3format } from "d3-format"
 import {Button} from "@availabs/avl-components";
 
-const drawLegend = (newCanvas, mbCanvas, layer) => {
+export const drawLegend = (layer, newCanvas, mbCanvas) => {
     const context = newCanvas.getContext("2d")
     context.drawImage(mbCanvas, 0, 0);
 
@@ -19,6 +19,15 @@ const drawLegend = (newCanvas, mbCanvas, layer) => {
 
     x += 10;
     y += 10;
+
+    context.font = "12px 'Helvetica Neue', Arial, Helvetica, sans-serif";
+    context.fillStyle = '#ccc'
+    const text = layer.legend.Title({layer});
+    context.fillText(text, x + 10, y, 320);
+
+    x += 10
+    y += 10
+
     const w = 320 / layer.legend.range.length;
     layer.legend.range.forEach((c, i) => {
         context.fillStyle = c;
@@ -53,7 +62,7 @@ const drawLegend = (newCanvas, mbCanvas, layer) => {
         const text = format(scale.invertExtent(c)[1]);
         context.fillText(text, x + w + i * w, y);
     })
-
+    return 0;
 }
 
 export default ({ layer }, setImg) => {
