@@ -50,8 +50,7 @@ const processConfig = config => {
         divisorKeys: [],
         asDensity: false,
 
-        format: get(config, ["divisorKeys", "length"], 0) ? ",.1%" : fnum,
-
+        format: config.format || (get(config, ["divisorKeys", "length"], 0) ? ",.1%" : fnum),
 // override default values
         ...config,
 
@@ -71,6 +70,7 @@ export const CENSUS_FILTER_CONFIG = [
     {
         name: "Total Population",
         censusKeys: ["B01003_001E"],
+        format: d => fnum(d, false),
         group: "Overview"
     },
 

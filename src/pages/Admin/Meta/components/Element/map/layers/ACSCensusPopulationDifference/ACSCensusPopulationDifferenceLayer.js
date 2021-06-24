@@ -135,7 +135,7 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             if (compareValue !== null) {
                 const formatVal = (typeof this.legend.format === "function") ? this.legend.format : format(this.legend.format);
                 data.push([`${this.filters.census.value} ${this.filters.compareYear.value}`, formatVal(compareValue)])
-                data.push([`% change`, `${((value-compareValue)/compareValue)*100}%`])
+                data.push([`% change`, `${((value-compareValue)/value)*100}%`])
             }
             return data;
         }
@@ -350,6 +350,7 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
                 this.filters.geolevel.value = 'tracts'
             }
         }
+
         if(this.change) this.change({filters: this.filters, img: this.img, bounds: this.bounds})
     }
 
@@ -509,7 +510,7 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
                 }
                 compareValueMap[c] = compareValue;
 
-                this.differanceValueMap[c] = (value - compareValue)/compareValue;
+                this.differanceValueMap[c] = ((value - compareValue)/value);
             }
             return a;
         }, {})
@@ -543,6 +544,9 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
         switch (this.legend.type) {
             case "quantile":
                 this.legend.domain = domain;
+                if(typeof this.filters.compareYear.value === 'number') {
+                    this.legend.format = ",.1%"; // doesn't work in onFilterChange
+                }
                 return scaleQuantile()
                     .domain(this.legend.domain)
                     .range(this.legend.range);
@@ -555,6 +559,6 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
     }
 }
 
-const DEFAULT_CONFIG_INDEX = 1;
+const DEFAULT_CONFIG_INDEX = 0;
 
 export const ACSCensusPopulationDifferenceLayerFactory = (options = {}) => new ACSCensusPopulationDifferenceLayeroptions(options)
