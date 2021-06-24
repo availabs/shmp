@@ -18,6 +18,7 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
     constructor(props) {
         super(props);
         this.data = get(props, ['data', 'ACS Census Population Difference Layer'], {});
+        console.log('v?', this.data.style)
         this.props = props;
         this.bounds = this.data.bounds;
         if(props.change){
@@ -25,6 +26,7 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
         }
     }
     // setActive = !!this.viewId
+    version = 1
     name = 'ACS Census Population Difference Layer'
     id = 'ACS Census Population Difference Layer'
     geoData = {}
@@ -312,16 +314,27 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             .forEach(filter => {
                 if (this.filters[filter]) this.filters[filter].value = this.data.filters[filter].value
             })
+
+        if(this.data.legend){
+            this.legend.range = this.data.legend.range
+        }
+
+        if(this.data.style){
+            return map.setStyle(this.data.style)
+        }else{
+            this.style = map.getStyle();
+        }
     }
 
     receiveProps(props, map, falcor, MapActions) {
     }
 
-    // onRemove(mapboxMap) {
-    //     super.onRemove(mapboxMap);
-    //     this.change(this.filters)
-    //     console.log('removing')
-    // }
+    onRemove(mapboxMap) {
+        // super.onRemove(mapboxMap);
+        if(this.change){
+            this.change({})
+        }
+    }
 
     getBaseGeoids() {
         let geoids = this.COUNTIES;
@@ -351,7 +364,7 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
             }
         }
 
-        if(this.change) this.change({filters: this.filters, img: this.img, bounds: this.bounds})
+        if(this.change) this.change({filters: this.filters, img: this.img, bounds: this.bounds, legend: this.legend, style: this.style})
     }
 
     async fetchData(falcor) {
@@ -426,16 +439,18 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
 
         if (!map || !falcor) return Promise.resolve();
         this.falcorCache = falcor.getCache();
-
-        if(this.change) this.change({filters: this.filters, ...{img:this.img}, bounds: map.getBounds()});
+        if(this.change) this.change({filters: this.filters, ...{img:this.img}, bounds: map.getBounds(), legend: this.legend, style: this.style});
         if(this.change){
+
             map.on('resize', (e) => {
                 this.bounds = map.getBounds();
-                this.change({filters: this.filters, img: this.img, bounds:  this.bounds});
+                this.change({filters: this.filters, img: this.img, bounds:  this.bounds, legend: this.legend, style: this.style});
             })
+
             map.on('render', (e) => {
                 const canvas = document.querySelector("canvas.mapboxgl-canvas"),
                     newCanvas = document.createElement("canvas");
+
                 let img;
 
                 newCanvas.width = canvas.width;
@@ -447,8 +462,13 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
                 drawLegend({legend: this.legend, filters: this.filters}, newCanvas, canvas);
                 img = newCanvas.toDataURL();
                 this.img = img;
-                this.change({filters: this.filters, img, bounds: map.getBounds()})
+                this.change({filters: this.filters, img, bounds: map.getBounds(), legend: this.legend, style: this.style})
 
+            })
+
+            map.on('styledata', (e) => {
+                this.style = map.getStyle();
+                this.change({filters: this.filters, img: this.img, bounds:  this.bounds, legend: this.legend, style: this.style});
             })
         }
 
