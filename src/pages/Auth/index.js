@@ -1,11 +1,19 @@
+import Login from "./components/login"
+
 const AuthConfig = {
   type: "ams-manager",
+  props: {
+    showHeaders: false,
+    className: null
+  },
   wrappers: [
     "ams-redux",
     "ams-router"
   ],
   children: [
-    { type: "ams-login" },
+    { type: Login,
+      wrappers: ["ams-login"]
+    },
     { type: "ams-reset-password" },
     { type: "ams-logout",
     // @props.redirectTo
@@ -38,6 +46,7 @@ const AuthConfig = {
 export default {
   path: "/auth",
   mainNav: false,
+  layout: 'Simple',
   layoutSettings: {
     fixed: true,
     nav: 'top',

@@ -4,6 +4,8 @@ const colors = require('tailwindcss/colors');
 
 module.exports = {
   theme: {
+    mode: "jit",
+    purge: ["./public/**/*.html", "./src/**/*.{js,jsx}"],
     borderColor: theme => ({
       ...theme('colors'),
       default: theme('currentColor')
@@ -29,11 +31,6 @@ module.exports = {
       fontFamily: {
         sans: ['Proxima Nova W01', 'Inter var', ...defaultTheme.fontFamily.sans],
       },
-      gridTemplateColumns: {
-        '13': 'repeat(13, minmax(0, 1fr))',
-        '14': 'repeat(14, minmax(0, 1fr))',
-        '15': 'repeat(15, minmax(0, 1fr))'
-      }
     },
       minWidth: {
           '0': '0',
@@ -44,19 +41,6 @@ module.exports = {
       }
   },
   variants: {
-    extend: {
-      ringColor: ['hover', 'active'],
-      borderRadius: ['first', 'last'],
-      borderColor: ['disabled'],
-      margin: ['first', 'last'],
-      padding: ['first', 'last'],
-      cursor: ['disabled'],
-      opacity: ['disabled'],
-      fontWeight: ['disabled'],
-      backgroundColor: ['disabled', 'active', 'first', 'last', 'odd', 'even'],
-      textColor: ['disabled'],
-        overflow: ['hover', 'focus']
-    }
   },
   plugins: [
   ]

@@ -2,7 +2,7 @@
 // --- Public Pages ------
 import Meta from 'pages/Admin/Meta'
 
-import CMS from 'pages/Admin/CMS/edit'
+//import CMS from 'pages/Admin/CMS/edit'
 import Public from 'pages/Admin/Meta/view'
 import AdminHome from 'pages/Admin/Home'
 import Map from 'pages/Admin/ScenarioMap'
@@ -18,7 +18,6 @@ export default [
 	AdminHome,
 	Map,
 	...DataSources,
-	CMS,
 	Meta,
 	Auth,
 

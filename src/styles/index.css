@@ -1,5 +1,7 @@
 @tailwind base;
 
+/*@import "os-icons.css";*/
+
 .hoverable .show-on-hover {
   display: none;
 }

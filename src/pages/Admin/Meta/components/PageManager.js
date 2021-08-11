@@ -1,7 +1,7 @@
 import React, {useState} from "react"
 import {Link} from 'react-router-dom'
 
-import {DndList, Input} from '@availabs/avl-components'
+import {DndList, Input, useTheme} from '@availabs/avl-components'
 import {DmsButton} from "components/dms/components/dms-button"
 
 import Layout from 'pages/Admin/Layout'
@@ -27,7 +27,8 @@ const reducer = (state, action) => {
 }
 
 export default ({dataItems = [], interact, ...props}) => {
-    console.log(props)
+    //console.log(props)
+    const theme = useTheme()
     const [newSectionTitle, setNewSectionTitle] = useState('');
 
     const droppedSection = React.useCallback((start, end) => {
@@ -74,7 +75,7 @@ export default ({dataItems = [], interact, ...props}) => {
                 </div>
                 <div className="flex mt-3">
                     <Input value={newSectionTitle} onChange={setNewSectionTitle}
-                           className='w-full text-xl p-4 flex-1 rounded-lg shadow'
+                           className='w-full text-xl p-4 flex-1 rounded-sm shadow p-2'
                            placeholder="Enter section name..." autoFocus/>
                     <DmsButton large className="flex-0 text-xl ml-3 bg-blue-100"
                                buttonTheme='buttonPrimary'
@@ -93,7 +94,7 @@ export default ({dataItems = [], interact, ...props}) => {
                 </div>
                 <div className='pt-4'>
                     {!dataItems.length ? null :
-                        <DndList onDrop={droppedSection}>
+                        <DndList onDrop={droppedSection} className='pb-1 shadow'>
                             {dataItems
                                 .filter(d => d.data.sectionLanding)
                                 .sort((a, b) => +a.data.index - +b.data.index)
@@ -103,7 +104,7 @@ export default ({dataItems = [], interact, ...props}) => {
                                         .sort((a, b) => +a.data.index - +b.data.index);
                                     const max = get(subSections, [subSections.length - 1, "data", "index"], -1);
                                     return (
-                                        <div key={i} className='border-b py-4'>
+                                        <div key={i} className='border-b border-gray-200 py-4'>
                                             <div style={{display: "flex", alignItems: "center"}}>
                                                 <div className={subSections.length ? `cursor-pointer`: ``} style={{flexGrow: 1, display: "flex", alignItems: "center"}}
                                                      onClick={
@@ -146,7 +147,7 @@ export default ({dataItems = [], interact, ...props}) => {
                                                     <DndList
                                                         onDrop={(start, end) => droppedSubsection(start, end, d.data.section)}>
                                                         {subSections.map(d =>
-                                                            <div key={d.id} className="flex border-2 rounded-lg"
+                                                            <div key={d.id} className="flex border-b border-gray-200 "
                                                                  style={{padding: "1rem", alignItems: "center"}}>
                                                                 <div className="flex-1">
                                                                     <Link to={`/p/view/${d.id}`}>
