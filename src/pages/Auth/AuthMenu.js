@@ -1,10 +1,10 @@
 import React from "react"
-import {useTheme, NavMenu, NavMenuItem, NavMenuSeparator, NavItem, withAuth } from '@availabs/avl-components'
+import {/*useTheme,*/ NavMenu, NavMenuItem, NavMenuSeparator, NavItem, withAuth } from '@availabs/avl-components'
 // import {NavItem, NavMenu, NavMenuItem, NavMenuSeparator, withAuth} from 'components/avl-components/src'
-import user from "@availabs/ams/dist/reducers/user";
+// import user from "@availabs/ams/dist/reducers/user";
 
 const UserMenu = ({user}) => {
-    const theme = useTheme()
+    // const theme = useTheme()
     return (
         <div className={`text-sm text-white font-normal tracking-widest flex justify-column align-middle pb-5 pt-5`}>
             <i className="fas fa-user text-md pr-1 pt-1"></i>
@@ -48,11 +48,11 @@ export default withAuth(({title, shadowed = true, user, children}) => {
 })
 
 // unused routes
-{ /* user.authLevel < 5 ? null :
+/* user.authLevel < 5 ? null :
                         <NavMenuItem to="/auth/project-management">
                         Manage Users
                         </NavMenuItem>
-                    */}
-{/*<NavMenuItem to="/auth/profile">
+                    */
+/*<NavMenuItem to="/auth/profile">
                       Profile
-                    </NavMenuItem>*/}
+                    </NavMenuItem>*/

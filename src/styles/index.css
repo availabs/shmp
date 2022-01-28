@@ -1,6 +1,4 @@
-@tailwind base;
-
-/*@import "os-icons.css";*/
+@import "os-icons.css";
 
 .hoverable .show-on-hover {
   display: none;
@@ -123,18 +121,3 @@
 }
 
 
-
-@tailwind components;
-
-@tailwind utilities;
-
-
-/*.section-header::before {
-    content: "";
-    background-color: #3f83f8;
-    width: 7px;
-    height: 7px;
-    left: -4px;
-    top: 21px;
-    position: absolute;
-}*/

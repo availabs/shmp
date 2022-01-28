@@ -72,9 +72,9 @@ export default ({ email, password, update, canSubmit, handleSubmit }) => {
               </div>
 
               <div className="text-sm">
-                <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+                <Link to='/auth/login' className="font-medium text-blue-600 hover:text-blue-500">
                   Forgot your password?
-                </a>
+                </Link>
               </div>
             </div>
 

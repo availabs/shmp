@@ -1,10 +1,10 @@
 import React from "react"
 import _ from "lodash"
 import get from "lodash.get"
-import {AvlMap} from "../../../../../../components/avl-map/src";
+import {AvlMap} from "components/avl-map/src";
 import {layers} from './layers'
 import {MAPBOX_TOKEN} from 'mapboxConfig'
-import {Button} from "@availabs/avl-components";
+// import {Button} from "@availabs/avl-components";
 
 const parseJSON = (value) => {
     if(!value) return {}
@@ -46,13 +46,9 @@ Edit.settings = {
 
 const View = ({value}) => {
     value = parseJSON(value)
-    const Layers = React.useRef(
-        [layers.ACS_Census(), layers.ACS_Population_Difference()]
-    );
-
     return (
         <div className='h-80vh flex-1 flex flex-col'>
-           <img src={get(_.values(value).filter(layer => layer.img), [0, 'img'])} />
+           <img alt='Census Choroplath Map' src={get(_.values(value).filter(layer => layer.img), [0, 'img'])} />
         </div>
     )
 }

@@ -11,13 +11,14 @@
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
     "d3-format": "^2.0.0",
+    "d3-selection": "^3.0.0",
     "d3-time-format": "^3.0.0",
     "draft-js": "^0.11.7",
     "html-to-draftjs": "^1.5.0",
     "linkify-it": "^3.0.2",
-    "lodash": "^4.17.21",
     "lodash.clonedeep": "^4.5.0",
     "lodash.get": "^4.4.2",
+    "mapbox-gl": "^2.4.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.4",
@@ -34,7 +35,7 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "npm run build:styles && react-scripts start",
     "build": "react-scripts build",
-    "build:styles": "tailwind build src/styles/index.css -o src/styles/tailwind.css",
+    "build:styles": "tailwind build src/styles/tailwind.css",
     "deploy": "react-scripts build && aws s3 sync build/ s3://shmp",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -63,7 +64,9 @@
   "devDependencies": {
     "autoprefixer": "^10.2.5",
     "postcss": "^8.3.6",
-    "tailwindcss": "^2.2.7"
+    "prettier": "2.3.2",
+    "tailwindcss": "^2.2.7",
+    "worker-loader": "^3.0.8"
   },
   "plugins": {
     "@babel/plugin-syntax-jsx": "^7.12.13"

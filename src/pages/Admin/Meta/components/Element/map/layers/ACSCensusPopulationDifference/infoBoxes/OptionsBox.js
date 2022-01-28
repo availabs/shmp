@@ -81,9 +81,9 @@ export default ({ layer }, setImg) => {
         drawLegend(newCanvas, canvas, layer);
         setImg(newCanvas.toDataURL());
         return newCanvas.toDataURL();
-    }, [layer]);
+    }, [layer,setImg]);
 
-    const saveImage = React.useCallback(e => {
+    /*const saveImage = */React.useCallback(e => {
         e.preventDefault();
         e.stopPropagation();
         const anchor = document.createElement("a");

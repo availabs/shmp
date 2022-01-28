@@ -1,4 +1,4 @@
-import React from "react"
+// import React from "react"
 import {LayerContainer} from "components/avl-map/src"
 import get from "lodash.get"
 import _ from "lodash"
@@ -7,11 +7,11 @@ import {scaleQuantile, scaleQuantize} from "d3-scale"
 import {format} from 'd3-format'
 import {getColorRange} from "@availabs/avl-components";
 import {CENSUS_FILTER_CONFIG} from './config/censusFilterConfig'
-import OptionsBox, {drawLegend} from "./infoBoxes/OptionsBox"
-import OptionsModal from "./modals/OptionsModal"
+import /*OptionsBox,*/ {drawLegend} from "./infoBoxes/OptionsBox"
+// import OptionsModal from "./modals/OptionsModal"
 
 const HOVER_COLOR = "#f16913";
-
+const DEFAULT_CONFIG_INDEX = 0;
 const YEARS = [2017, 2016, 2015, 2014];
 
 class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
@@ -21,9 +21,9 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
         console.log('v?', this.data.style)
         this.props = props;
         this.bounds = this.data.bounds;
-        if(props.change){
+       /* if(props.change){
             this.change = e => props.change({['ACS Census Population Difference Layer']: e})
-        }
+        }*/
     }
     // setActive = !!this.viewId
     version = 1
@@ -399,9 +399,9 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
                                 if (a.length < b.length) {
                                     return +a < +b.slice(0, 5);
                                 }
-                                if (a.length > b.length) {
+                                // if (a.length > b.length) {
                                     return +a.slice(0, 5) - +b;
-                                }
+                                //}
                             })
                             .map(geoid => ({
                                 value: geoid,
@@ -575,10 +575,14 @@ class ACSCensusPopulationDifferenceLayeroptions extends LayerContainer {
                 return scaleQuantize()
                     .domain(this.legend.domain)
                     .range(this.legend.range);
+            default:
+                this.legend.domain = extent(domain)
+                return scaleQuantize()
+                    .domain(this.legend.domain)
+                    .range(this.legend.range);
         }
     }
 }
 
-const DEFAULT_CONFIG_INDEX = 0;
 
 export const ACSCensusPopulationDifferenceLayerFactory = (options = {}) => new ACSCensusPopulationDifferenceLayeroptions(options)

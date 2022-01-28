@@ -46,7 +46,12 @@ const light_base = {
     sidebarW: '56',
     sidebarBorder: ' border-r border-gray-200',
     navitemSideChildContainer: 'pl-4',
-    navitemSide: 'font-sans group flex pl-8 pr-4 border-l-4 border-transparent text-base font-base text-gray-600 hover:text-blue-600 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out',
+    navitemSide: `
+    group font-sans 
+    flex mx-6 pr-4 py-2 text-sm font-light hover:pl-4 text-gray-600 border-gray-200 
+    hover:bg-blue-600 hover:text-white 
+    focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 
+    transition-all cursor-pointer`,
     navitemSideActive: 'group flex pl-8 pr-4 border-l-4 border-blue-500 text-base font-base text-gray-600 focus:outline-none hover:text-indigo-800 focus:text-indigo-800 focus:bg-blue-200 focus:border-indigo-700 transition duration-150 ease-in-out',
 
 

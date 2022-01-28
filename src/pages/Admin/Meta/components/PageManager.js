@@ -1,7 +1,7 @@
 import React, {useState} from "react"
 import {Link} from 'react-router-dom'
 
-import {DndList, Input, useTheme} from '@availabs/avl-components'
+import {DndList, Input, /*useTheme*/} from '@availabs/avl-components'
 import {DmsButton} from "components/dms/components/dms-button"
 
 import Layout from 'pages/Admin/Layout'
@@ -28,7 +28,7 @@ const reducer = (state, action) => {
 
 export default ({dataItems = [], interact, ...props}) => {
     //console.log(props)
-    const theme = useTheme()
+    // const theme = useTheme()
     const [newSectionTitle, setNewSectionTitle] = useState('');
 
     const droppedSection = React.useCallback((start, end) => {
