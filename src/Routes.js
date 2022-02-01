@@ -6,6 +6,7 @@ import Meta from 'pages/Admin/Meta'
 import Public from 'pages/Admin/Meta/view'
 import AdminHome from 'pages/Admin/Home'
 import Map from 'pages/Admin/ScenarioMap'
+import Assets from 'pages/Admin/StateAssets'
 import DataSources from 'pages/Admin/DataSources'
 
 import Auth from "pages/Auth"
@@ -17,6 +18,7 @@ export default [
 	// -- Authed -- //
 	AdminHome,
 	Map,
+	Assets,
 	...DataSources,
 	Meta,
 	Auth,

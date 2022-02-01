@@ -64,6 +64,11 @@ const AdminLayout = ({ children }) => {
 								path: "/scenariomap",
 								icon: "os-icon os-icon-map",
 							},
+							{
+								name: "State Assets Tables",
+								path: "/assets",
+								icon: "os-icon os-icon-grid-squares2",
+							},
 						]}
 						fixed={true}
 					/>
