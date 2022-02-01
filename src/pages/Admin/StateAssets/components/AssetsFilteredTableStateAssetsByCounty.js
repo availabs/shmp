@@ -44,7 +44,7 @@ function processData(state, cache) {
                         })
                         return rdA
                     }, {})
-            console.log('g?', graph, gbvKey)
+
             let tmp = {
                 [state.groupBy]:get(cache, ['geo', newKey, 'name']),
                 'Number of Assets': get(a, [newKey, 'Number of Assets'], 0) + parseInt(get(graph, [gbvKey, 'agency', 'sum', 'count', 'value'], 0)),
@@ -78,7 +78,7 @@ function renderTable(props, state, setState, cache) {
 
     data = processData(state, cache);
 
-    return <Table data={data.data} columns={data.columns} initialPageSize={Math.min(100, state.pageSize || 10)}
+    return <Table data={data.data.reverse()} columns={data.columns} initialPageSize={Math.min(100, state.pageSize || 10)}
                   striped/>
 
 }
@@ -119,7 +119,7 @@ function AssetsTable(props) {
                 ['building', 'statewide', 'byGeoid', response, nameMapping[state.groupBy], 'byRiskScenario', scenarios, 'byRiskZone', 'all']
             ];
 
-            console.log('reqs', reqs)
+
             if (response.length) {
                 await falcor.get(
                     ...reqs
@@ -130,10 +130,9 @@ function AssetsTable(props) {
 
         return fetchData();
     }, [childGeo, falcor, falcorCache, state]);
-    console.log('data?', falcorCache)
+
     return (
         <div>
-            {state.loading ? 'loading...' : ''}
             {renderTable(props, state, setState, falcorCache)}
         </div>)
 }

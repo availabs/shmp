@@ -48,7 +48,7 @@ function processData(state, cache) {
                         })
                         return rdA
                     }, {})
-            console.log('??', state.groupBy)
+
             let tmp = {
                 [state.groupBy]:
                     state.groupBy === 'Jurisdiction' ?
@@ -76,7 +76,7 @@ function processData(state, cache) {
             return total;
         }, {[state.groupBy]: 'Total'})
     )
-    console.log('c?', columns, data)
+
     return {data, columns}
 }
 
@@ -86,7 +86,7 @@ function renderTable(props, state, setState, cache) {
 
     data = processData(state, cache);
 
-    return <Table data={data.data} columns={data.columns} initialPageSize={Math.min(100, state.pageSize || 10)}
+    return <Table data={data.data.reverse()} columns={data.columns} initialPageSize={Math.min(100, state.pageSize || 10)}
                   striped/>
 
 }
@@ -130,7 +130,7 @@ function AssetsTable(props) {
                 ['building', 'byGeoid', activeGeo, nameMapping[state.groupBy], groupByValues, 'byRiskScenario', scenarios, 'byRiskZone', 'all']
             ];
 
-            console.log('reqs', reqs)
+
             if (response.length) {
                 await falcor.get(
                     ...reqs
@@ -141,10 +141,9 @@ function AssetsTable(props) {
 
         return fetchData();
     }, [childGeo, falcor, falcorCache, state]);
-    console.log('data?', falcorCache)
+
     return (
         <div>
-            {state.loading ? 'loading...' : ''}
           {/*  {props.viewOnly ? null : renderMetaOptions(props, state, setState, falcorCache)}
             {props.viewOnly ? null : divider}*/}
             {renderTable(props, state, setState, falcorCache)}
