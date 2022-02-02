@@ -39,12 +39,7 @@ const renderAssets = ({scenarioIds}) => {
     return (
         <>
             {tableComp({scenarioIds, title: 'Buildings By Owner Type', groupBy: 'Owner Type', filterBy: 'Owner Type'})}
-            {tableComp({
-                scenarioIds,
-                title: 'Buildings By Land Use',
-                groupBy: 'Land Use Type',
-                filterBy: 'Land Use Type'
-            })}
+            {tableComp({scenarioIds, title: 'Buildings By Land Use', groupBy: 'Land Use Type', filterBy: 'Land Use Type'})}
             {tableComp({scenarioIds, title: 'Critical Infrastructure', groupBy: 'Critical', filterBy: 'Critical'})}
         </>
     )
@@ -53,6 +48,25 @@ const renderAssets = ({scenarioIds}) => {
 const renderStateAssets = ({scenarioIds}) => {
     return (
         <>
+            <div className='pt-5 pb-3'>
+                <h3 className='inline text-xl'> Buildings By Agency </h3>
+            </div>
+            <AssetsFilteredTable
+                viewOnly={false}
+                onChange={(e) => console.log('onChange', e)}
+
+                geo={'County'}
+                groupBy={'Agency'}
+                groupByFilter={[]}
+                filterBy={'Agency'}
+                filterByValue={[]}
+                scenarioId={scenarioIds}
+                pageSize={25}
+
+                cols={Object.assign({'Agency': {disableFilters: true, disableSortBy: false}}, cols)}
+
+            />
+
             <div className='pt-5 pb-3'>
                 <h3 className='inline text-xl'> Buildings By Jurisdiction </h3>
             </div>
@@ -72,25 +86,6 @@ const renderStateAssets = ({scenarioIds}) => {
                 cols={Object.assign({'Agency': {disableFilters: true, disableSortBy: false}}, cols)}
 
             />
-
-            <div className='pt-5 pb-3'>
-                <h3 className='inline text-xl'> Buildings By Agency </h3>
-            </div>
-            <AssetsFilteredTable
-                viewOnly={false}
-                onChange={(e) => console.log('onChange', e)}
-
-                geo={'County'}
-                groupBy={'Agency'}
-                groupByFilter={[]}
-                filterBy={'Agency'}
-                filterByValue={[]}
-                scenarioId={scenarioIds}
-                pageSize={25}
-
-                cols={Object.assign({'Agency': {disableFilters: true, disableSortBy: false}}, cols)}
-
-            />
         </>
     )
 }
@@ -106,21 +101,28 @@ const renderSearch = () => {
 const Tables = ({children}) => {
     const [activeTab, setActiveTab] = useState('stateAssets');
 
-    const tabMapping = {
-        'stateAssets': renderStateAssets,
-        'assets': renderAssets,
-        'search': renderSearch
-    }
-
     const scenarioIds = ['3', '4', '9', '10', '38', '12', '14', '15', '16', '40', '18', '19', '41', '43', '22', '44',
         '23', '24', '25', '26', '46', '28', '29', '47', '30', '49', '31', '52', '20', '27', '17', '33', '34', '13', '32',
         '42', '36', '35', '53', '54', '55', '56'];
+
+    const tabMapping = {
+        'stateAssets': renderStateAssets({scenarioIds}),
+        'assets': renderAssets({scenarioIds}),
+        'search': renderSearch({scenarioIds})
+    }
 
     return (
         <AdminLayout>
             <div className="w-full max-w-7xl mx-auto p-2 mb-5">
                 <RenderTabs view={activeTab} setView={setActiveTab}/>
-                {tabMapping[activeTab]({scenarioIds})}
+                {
+                    Object.keys(tabMapping)
+                        .map(k => (
+                            <div className={k === activeTab ? `block` : `hidden`}>
+                                {tabMapping[k]}
+                            </div>
+                        ))
+                }
             </div>
         </AdminLayout>
     );

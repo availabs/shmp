@@ -146,6 +146,7 @@ function AssetsTable(props) {
         <div>
           {/*  {props.viewOnly ? null : renderMetaOptions(props, state, setState, falcorCache)}
             {props.viewOnly ? null : divider}*/}
+            {state.loading ? 'loading...' : ''}
             {renderTable(props, state, setState, falcorCache)}
         </div>)
 }

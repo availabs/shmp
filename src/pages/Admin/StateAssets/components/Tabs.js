@@ -7,7 +7,7 @@ function classNames(...classes) {
 export const RenderTabs = ({view, setView}) => {
     const tabs = [{name: 'State Assets', id: 'stateAssets', href: '#', current: view === 'stateAssets'},
         // {name: 'Search', id: 'search', href: '#', current: view === 'search'},
-        {name: 'Assets', id:'assets', href: '#', current: view === 'assets'},
+        {name: 'Building Footprints', id:'assets', href: '#', current: view === 'assets'},
     ];
 
     return (

@@ -133,6 +133,7 @@ function AssetsTable(props) {
 
     return (
         <div>
+            {state.loading ? 'loading...' : ''}
             {renderTable(props, state, setState, falcorCache)}
         </div>)
 }
