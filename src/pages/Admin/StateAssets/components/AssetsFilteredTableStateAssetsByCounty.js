@@ -5,6 +5,7 @@ import get from 'lodash.get'
 import filterByTypes from './meta'
 import {colProperties, columnsForMeta, columnsForTable, formatMapping} from "utils/tableColProperties"
 import divider from 'components/UI/divider'
+import {CSVLink} from "react-csv";
 
 const nameMapping = {
     'Jurisdiction': 'jurisdiction',
@@ -18,6 +19,7 @@ const nameMapping = {
 }
 
 function processData(state, cache) {
+    if (!state.cols || !state.geo) return {data: [], columns: []};
     const childGeo = nameMapping[state.geo];
     const geoGraph = get(cache, ['geo', '36', childGeo, 'value'], []);
     const activeGeo = '36'
@@ -58,7 +60,13 @@ function processData(state, cache) {
             return a
         }, {});
 
-    data = Object.keys(data).map(gbvKey => data[gbvKey]);
+    data = Object.keys(data).map(gbvKey => data[gbvKey])
+
+    try{
+        data = data.sort((a, b) => b[state.groupBy].localeCompare(a[state.groupBy]));
+    }catch (e) {
+
+    }
 
     data.push(
         data.reduce((total, current) => {
@@ -72,15 +80,9 @@ function processData(state, cache) {
     return {data, columns}
 }
 
-function renderTable(props, state, setState, cache) {
-    if (!state.cols || !state.geo) return null;
-    let data;
-
-    data = processData(state, cache);
-
-    return <Table data={data.data.reverse()} columns={data.columns} initialPageSize={Math.min(100, state.pageSize || 10)}
+function renderTable(props, state, data) {
+    return <Table data={data.data.sort((a,b) => a[state.groupBy] === 'Total' ? -1 : b[state.groupBy] - a[state.groupBy])} columns={data.columns} initialPageSize={Math.min(100, state.pageSize || 10)}
                   striped/>
-
 }
 
 function AssetsTable(props) {
@@ -119,7 +121,6 @@ function AssetsTable(props) {
                 ['building', 'statewide', 'byGeoid', response, nameMapping[state.groupBy], 'byRiskScenario', scenarios, 'byRiskZone', 'all']
             ];
 
-
             if (response.length) {
                 await falcor.get(
                     ...reqs
@@ -131,10 +132,24 @@ function AssetsTable(props) {
         return fetchData();
     }, [childGeo, falcor, falcorCache, state]);
 
+    let data = processData(state, falcorCache);
+    let d;
+    if(data.data.length){
+        try{
+            d = [...data.data.filter(d => d[state.groupBy] !== 'Total').sort((a, b) => a[state.groupBy].localeCompare(b[state.groupBy])),
+                ...data.data.filter(d => d[state.groupBy] === 'Total')
+            ]
+        }catch (e){
+            console.error('e', e)
+        }
+    }
     return (
-        <div>
+        <div className={'flex flex-col'}>
             {state.loading ? 'loading...' : ''}
-            {renderTable(props, state, setState, falcorCache)}
+            <div className={'self-end -mt-9 mb-5'}>
+                <CSVLink className={'bg-black text-white p-2 rounded-md'} data={d ? d : data.data} filename={'table_data.csv'}> Download CSV </CSVLink>
+            </div>
+            {renderTable(props, state, data)}
         </div>)
 }
 

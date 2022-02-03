@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import AdminLayout from "../Layout";
 import AssetsFilteredTable from "./components/AssetsFilteredTable";
 import AssetsFilteredTableStateAssetsByCounty from "./components/AssetsFilteredTableStateAssetsByCounty";
+import SearchComp from "./components/AssetsSearchComp";
 import {RenderTabs} from './components/Tabs'
 
 const cols = {
@@ -93,7 +94,7 @@ const renderStateAssets = ({scenarioIds}) => {
 const renderSearch = () => {
     return (
         <>
-            state assets
+            <SearchComp />
         </>
     )
 }
@@ -118,7 +119,7 @@ const Tables = ({children}) => {
                 {
                     Object.keys(tabMapping)
                         .map(k => (
-                            <div className={k === activeTab ? `block` : `hidden`}>
+                            <div className={k === activeTab ? `block w-full` : `hidden`}>
                                 {tabMapping[k]}
                             </div>
                         ))
